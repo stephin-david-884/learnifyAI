@@ -74,3 +74,5 @@ export class VerifyRegister {
         })
     }
 }
+
+const a=10;

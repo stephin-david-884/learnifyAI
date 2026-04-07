@@ -26,10 +26,10 @@ export default [
     },
 
     rules: {
-      "@typescript-eslint/no-unused-vars": ["warn"],
+      "@typescript-eslint/no-unused-vars": "error",
       "@typescript-eslint/explicit-function-return-type": "off",
 
-      "no-console": ["warn", { allow: ["warn", "error"] }],
+      "no-console": "error",
       "no-process-env": "off",
     },
   },
