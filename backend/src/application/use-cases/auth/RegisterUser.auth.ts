@@ -1,6 +1,6 @@
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { IOtpStore } from "../../interfaces/services/IOtpStore";
-import { RegisterInputDTO, RegisterOutputDTO } from "../../dtos/auth.dto";
+import { RegisterInputDTO, RegisterOutputDTO } from "../../dtos/register.auth.dto";
 import { IOtpService } from "../../interfaces/services/IOtpservice";
 import { ILogger } from "../../interfaces/services/ILogger";
 import { IHashService } from "../../interfaces/services/IHashService";

@@ -15,7 +15,7 @@ if (!fs.existsSync(logDir)) {
 const logFile = path.join(logDir, "app.log");
 const fileStream = fs.createWriteStream(logFile, { flags: "a" });
 
-// Create pino instance (PRIVATE)
+// Create pino instance
 const pinoLogger = pino(
   {
     level: isProduction ? "info" : "debug",
@@ -46,7 +46,7 @@ class PinoLogger implements ILogger {
   }
 }
 
-// Export abstraction (not raw pino)
+// Export abstraction
 export const logger: ILogger = new PinoLogger();
 
 export function logError(error: unknown, contextMessage?: string): void {

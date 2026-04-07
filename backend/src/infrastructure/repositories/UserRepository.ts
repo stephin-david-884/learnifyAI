@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
-import { User } from "../../domain/entities/User.entity";
+import { NewUser, User } from "../../domain/entities/User.entity";
 import { UserModel } from "../database/models/User";
-import { toDomainUser, toPersistenceUser } from "../database/mappers/UserMapper";
+import { toDomainUser } from "../database/mappers/UserMapper";
 
 export class UserRepository implements IUserRepository {
     async findByEmail(email: string): Promise<User | null> {
@@ -14,11 +14,15 @@ export class UserRepository implements IUserRepository {
         return toDomainUser(user);
     }
 
-    async create(user: User): Promise<User> {
-        const dbUser = toPersistenceUser(user);
+    async create(user: NewUser): Promise<User> {
+        const created = await UserModel.create({
+            ...user,
+            subscriptionPlan: "FREE",
+            credits:20,
+            isBlocked: false,
+            refreshToken: []
+        });
 
-        const created = await UserModel.create(dbUser);
-        
-        return toDomainUser(created.toObject());
+        return toDomainUser(created.toObject())
     }
 }

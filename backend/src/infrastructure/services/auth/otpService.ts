@@ -1,4 +1,3 @@
-import bcrypt from "bcrypt";
 import { IOtpService } from "../../../application/interfaces/services/IOtpservice";
 import { logger } from "../log/logger";
 
@@ -9,10 +8,10 @@ export class OtpService implements IOtpService {
     return otp.toString();
   }
 
-  async compare(
-    enteredOtp: string,
-    hashedOtp: string
-  ): Promise<boolean> {
-    return bcrypt.compare(enteredOtp, hashedOtp);
-  }
+  // async compare(
+  //   enteredOtp: string,
+  //   hashedOtp: string
+  // ): Promise<boolean> {
+  //   return bcrypt.compare(enteredOtp, hashedOtp);
+  // }
 }

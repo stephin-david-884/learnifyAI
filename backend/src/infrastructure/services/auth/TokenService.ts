@@ -1,0 +1,28 @@
+import jwt from 'jsonwebtoken';
+import { AccessTokenPayload, ITokenService, RefreshTokenPayload } from '../../../application/interfaces/services/ITokenService';
+import { jwtConfig } from '../../config/jwt.config';
+import { AppError } from '../../../domain/errors/AppError';
+import { authMessages } from '../../../application/constants/messages/authMessages';
+import { statusCode } from '../../../application/constants/enums/statusCode';
+
+export class TokenService implements ITokenService {
+    generateAccessToken(payload: AccessTokenPayload): string {
+        const accessSecret = jwtConfig.accessToken.secret
+        if(!accessSecret){
+            throw new AppError(authMessages.error.ACCESS_TOKEN_SECRET_NOT_FOUND, statusCode.NOT_FOUND)
+        }
+        return jwt.sign(payload, accessSecret, {
+            expiresIn: "15m",
+        });
+    }
+
+    generateRefreshToken(payload: RefreshTokenPayload): string {
+        const refreshSecret = jwtConfig.refreshToken.secret
+        if(!refreshSecret){
+            throw new AppError(authMessages.error.REFRESH_TOKEN_NOT_FOUND, statusCode.NOT_FOUND)
+        }
+        return jwt.sign(payload, refreshSecret, {
+            expiresIn: "7d",
+        });
+    }
+}
