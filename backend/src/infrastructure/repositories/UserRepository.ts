@@ -1,7 +1,7 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 import { NewUser, User } from "../../domain/entities/User.entity";
 import { UserModel } from "../database/models/User";
-import { toDomainUser } from "../database/mappers/UserMapper";
+import { toDomainUser, toPersistenceUser } from "../database/mappers/UserMapper";
 
 export class UserRepository implements IUserRepository {
     async findByEmail(email: string): Promise<User | null> {
