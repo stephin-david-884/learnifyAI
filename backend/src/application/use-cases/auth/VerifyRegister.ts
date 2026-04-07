@@ -76,3 +76,4 @@ export class VerifyRegister {
 }
 
 const a=10;
+console.log("hello");
