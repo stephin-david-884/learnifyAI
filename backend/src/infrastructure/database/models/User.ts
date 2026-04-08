@@ -6,7 +6,7 @@ export interface IUser extends Document {
   password: string,
   profileImage?: string | null;
   googleId?: string | null;
-  refreshToken: string[];
+  refreshTokens: string[];
   subscriptionPlan: "FREE" | "PRO";
   credits: number;
   subscriptionExpiresAt?: Date | null;
@@ -53,7 +53,7 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    refreshToken: {
+    refreshTokens: {
       type: [String],
       default: []
     }

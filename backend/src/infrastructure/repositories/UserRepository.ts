@@ -1,28 +1,41 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
-import { NewUser, User } from "../../domain/entities/User.entity";
+import { User } from "../../domain/entities/User.entity";
 import { UserModel } from "../database/models/User";
 import { toDomainUser, toPersistenceUser } from "../database/mappers/UserMapper";
+import { AppError } from "../../domain/errors/AppError";
+import { authMessages } from "../../application/constants/messages/authMessages";
+import { statusCode } from "../../application/constants/enums/statusCode";
 
 export class UserRepository implements IUserRepository {
     async findByEmail(email: string): Promise<User | null> {
-        const user = await UserModel.findOne({email})
-                                    .select("+password")    
-                                    .lean();
-        
-        if(!user) return null;
+        const user = await UserModel.findOne({ email })
+            .select("+password")
+            .lean();
+
+        if (!user) return null;
 
         return toDomainUser(user);
     }
 
-    async create(user: NewUser): Promise<User> {
-        const created = await UserModel.create({
-            ...user,
-            subscriptionPlan: "FREE",
-            credits:20,
-            isBlocked: false,
-            refreshToken: []
-        });
+    async save(user: User): Promise<User> {
+        const data = toPersistenceUser(user);
 
-        return toDomainUser(created.toObject())
+        let savedUser;
+
+        if (user.id) {
+
+            savedUser = await UserModel.findByIdAndUpdate(
+                user.id,
+                data,
+                { new: true, runValidators: true }
+            );
+        } else {
+            savedUser = await UserModel.create(data);
+        }
+        if (!savedUser) {
+            throw new AppError(authMessages.error.USER_SAVE_FAILED, statusCode.BAD_REQUEST);
+        }
+
+        return toDomainUser(savedUser.toObject());
     }
 }

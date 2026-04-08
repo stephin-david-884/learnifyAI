@@ -38,6 +38,7 @@ export const authMessages = {
         USER_ID_NOT_FOUND: "User ID not found",
         USER_ALREADY_EXISTS: "User with this email already exists",
         USER_BLOCKED: "User is blocked by the admin",
+        USER_SAVE_FAILED: "Failed to save user",
 
         // Admin Errors
         ADMIN_NOT_FOUND: "Admin not found"

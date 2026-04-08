@@ -2,17 +2,6 @@ import bcrypt from "bcrypt";
 import { IHashService } from "../../../application/interfaces/services/IHashService";
 import { logError } from "../log/logger";
 
-// export const hashPassword = async (password: string) => {
-//   return bcrypt.hash(password, 10);
-// };
-
-// export const comparePassword = async (
-//   password: string,
-//   hashed: string
-// ) => {
-//   return bcrypt.compare(password, hashed);
-// };
-
 export class HashService implements IHashService {
 
   constructor(private readonly saltRounds: number = 10) {}
