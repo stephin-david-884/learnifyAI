@@ -7,11 +7,4 @@ export class OtpService implements IOtpService {
     logger.info(`OTP: ${otp}`);
     return otp.toString();
   }
-
-  // async compare(
-  //   enteredOtp: string,
-  //   hashedOtp: string
-  // ): Promise<boolean> {
-  //   return bcrypt.compare(enteredOtp, hashedOtp);
-  // }
 }

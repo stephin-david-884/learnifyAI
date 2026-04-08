@@ -66,6 +66,13 @@ export class User {
   getRefreshTokens() {
      return [...this.refreshTokens];
   }
+
+  getId(): string {
+  if (!this.id) {
+    throw new Error("User ID is not set");
+  }
+  return this.id;
+}
 }
 
 type UserProps = {
