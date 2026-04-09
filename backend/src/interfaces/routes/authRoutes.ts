@@ -5,6 +5,6 @@ import { ROUTES } from '../../shared/constants/routes';
 const router = express.Router();
 
 router.post(ROUTES.AUTH.REGISTER, authController.register);
-router.post(ROUTES.AUTH.VERIFY_OTP, authController);
+router.post(ROUTES.AUTH.VERIFY_OTP, authController.VerifyOtp);
 
 export default router;

@@ -67,7 +67,7 @@ export class VerifyRegister {
             userId: createdUser.id!
         })
         const accessToken = this.tokenService.generateAccessToken({
-            userId: createdUser.id!,
+            userId: createdUser.getId(),
             email: createdUser.email
         });
 
