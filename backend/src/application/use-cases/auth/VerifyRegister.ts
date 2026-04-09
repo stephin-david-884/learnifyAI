@@ -1,13 +1,12 @@
 import { User } from "../../../domain/entities/User.entity";
 import { AppError } from "../../../domain/errors/AppError";
-import { ITokenRepository } from "../../../domain/repositories/ITokenRepository";
+// import { ITokenRepository } from "../../../domain/repositories/ITokenRepository";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
 import { VerifyRegisterInputDTO, VerifyRegisterOutputDTO } from "../../dtos/verifyRegister.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
-import { ILogger } from "../../interfaces/services/ILogger";
-import { IOtpService } from "../../interfaces/services/IOtpservice";
+// import { IOtpService } from "../../interfaces/services/IOtpservice";
 import { IOtpStore } from "../../interfaces/services/IOtpStore";
 import { ITempUserStore } from "../../interfaces/services/ITempUserStore";
 import { ITokenService } from "../../interfaces/services/ITokenService";
@@ -16,12 +15,11 @@ export class VerifyRegister {
     constructor(
         private userRepository: IUserRepository,
         private otpStore: IOtpStore,
-        private otpService: IOtpService,
+        // private otpService: IOtpService,
         private tokenService: ITokenService,
-        private tokenRepository: ITokenRepository,
+        // private tokenRepository: ITokenRepository,
         private tempUserStore: ITempUserStore,
         private hashService: IHashService,
-        private logger: ILogger
     ) { }
 
     async execute(data: VerifyRegisterInputDTO): Promise<VerifyRegisterOutputDTO> {

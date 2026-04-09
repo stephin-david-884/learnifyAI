@@ -1,22 +1,42 @@
-// // interfaces/http/controllers/AuthController.ts
-// import { Request, Response } from "express";
-// import { RegisterUser } from "../../../application/use-cases/auth/RegisterUser.auth";
+import { NextFunction, Request, Response } from "express";
+import { statusCode } from "../../../application/constants/enums/statusCode";
+import { authMessages } from "../../../application/constants/messages/authMessages";
+import { RegisterUser } from "../../../application/use-cases/auth/RegisterUser.auth";
+import { VerifyRegister } from "../../../application/use-cases/auth/VerifyRegister";
+import { registerSchema } from "../../validators/auth/registerValidator";
+import { RegisterInputDTO } from "../../../application/dtos/register.auth.dto";
 
-// export class AuthController {
-//   constructor(private registerUserUseCase: RegisterUser) {}
+export class AuthController {
+    constructor(
+        private _registerUseCase: RegisterUser,
+        private _verifyRegister: VerifyRegister,
+    ) { }
 
-//   async register(req: Request, res: Response) {
-//     try {
-//       const user = await this.registerUserUseCase.execute(req.body);
-//       res.status(201).json({
-//         id: user.id,
-//         name: user.name,
-//         email: user.email,
-//         subscriptionPlan: user.subscriptionPlan,
-//         credits: user.credits,
-//       });
-//     } catch (err: any) {
-//       res.status(400).json({ message: err.message });
-//     }
-//   }
-// }
+    register = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const parsed = registerSchema.safeParse(req.body);
+
+            if (!parsed.success) {
+                return res.status(statusCode.BAD_REQUEST).json({
+                    success: false,
+                    message: parsed.error.issues[0].message,
+                });
+            }
+
+            const payload : RegisterInputDTO = {
+                name: parsed.data.name,
+                email: parsed.data.email,
+                password: parsed.data.password,
+            };
+
+            await this._registerUseCase.execute(payload);
+
+            return res.status(statusCode.OK).json({
+                success: true,
+                message: authMessages.success.OTP_SEND_SUCCESS
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+}
