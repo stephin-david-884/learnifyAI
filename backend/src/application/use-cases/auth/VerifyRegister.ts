@@ -52,6 +52,16 @@ export class VerifyRegister {
             )
         }
 
+        //check existing user
+        const existingUser = await this.userRepository.findByEmail(email);
+
+        if (existingUser) {
+            throw new AppError(
+                authMessages.error.USER_ALREADY_EXISTS,
+                statusCode.BAD_REQUEST
+            );
+        }
+
         //Create user
         const user = new User({
             name: tempUser.name,
@@ -64,7 +74,7 @@ export class VerifyRegister {
 
         //Generate token
         const refreshToken = this.tokenService.generateRefreshToken({
-            userId: createdUser.id!
+            userId: createdUser.getId()
         })
         const accessToken = this.tokenService.generateAccessToken({
             userId: createdUser.getId(),

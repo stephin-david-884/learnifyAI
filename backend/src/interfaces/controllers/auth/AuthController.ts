@@ -5,7 +5,6 @@ import { RegisterUser } from "../../../application/use-cases/auth/RegisterUser.a
 import { VerifyRegister } from "../../../application/use-cases/auth/VerifyRegister";
 import { otpSchema, registerSchema } from "../../validators/auth/registerValidator";
 import { RegisterInputDTO } from "../../../application/dtos/register.auth.dto";
-import { success } from "zod";
 import { VerifyRegisterInputDTO } from "../../../application/dtos/verifyRegister.auth.dto";
 
 export class AuthController {
