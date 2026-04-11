@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { email, z } from 'zod';
 
 export const registerSchema = z.object({
     name: z
@@ -34,4 +34,11 @@ export const otpSchema = z.object({
         .trim()
         .regex(/^\d{6}$/, 'OTP must contain only numbers')
         .min(6, "OTP must be exactly 6 digit")
+})
+
+export const resendOtpSchema = z.object({
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .email('Invalid email')
 })

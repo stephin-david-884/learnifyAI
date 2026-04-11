@@ -4,7 +4,12 @@ import { OtpMailPayload } from "../../../application/interfaces/services/mail.ty
 import { generateOtpTemplate } from "../../emailTemplate/OtpTemplate";
 
 export class MailService implements IMailService<OtpMailPayload> {
-    private transporter = createMailerTransporter();
+    // private transporter = createMailerTransporter();
+    private transporter;
+
+    constructor() {
+        this.transporter = createMailerTransporter();
+    }
 
     async send(payload: OtpMailPayload): Promise<void> {
 

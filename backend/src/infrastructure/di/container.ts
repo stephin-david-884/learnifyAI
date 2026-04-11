@@ -1,3 +1,4 @@
+import "../../config/env"
 import { UserRepository } from "../repositories/UserRepository";
 import { redisClient } from "../config/redis.config";
 
@@ -12,6 +13,7 @@ import { OtpStore } from "../services/auth/otpStore";
 //use-cases
 import { RegisterUser } from "../../application/use-cases/auth/RegisterUser.auth";
 import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister";
+import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
@@ -45,8 +47,17 @@ const verifyRegister = new VerifyRegister(
     hashService,
 );
 
+const resendOtp = new ResendOtp(
+    otpService,
+    otpStore,
+    mailService,
+    hashService,
+    tempUserStore
+);
+
 // Controller
 export const authController = new AuthController(
     registerUser,
-    verifyRegister
+    verifyRegister,
+    resendOtp
 )

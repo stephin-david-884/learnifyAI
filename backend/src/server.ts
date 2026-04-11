@@ -1,24 +1,36 @@
-import express from "express";
+import express, { RequestHandler } from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import cors from "cors";
-import { logger } from "./infrastructure/services/log/logger";
+import { logger, pinoLogger } from "./infrastructure/services/log/logger";
 import { connectDB } from "./infrastructure/config/mongo.config";
 import authRouter from './interfaces/routes/authRoutes';
-
-dotenv.config();
+import cookieParser from "cookie-parser";
+import { errorHandler } from "./interfaces/middlewares/errorHandler";
+import pinoHttp from "pino-http";
 
 const app = express();
+
+app.use(
+    pinoHttp({logger: pinoLogger})
+)
 
 connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+
 
 app.get("/", (req, res) => {
     res.send("LearnifyAI API is running");
 });
 
 app.use("/api/auth", authRouter)
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

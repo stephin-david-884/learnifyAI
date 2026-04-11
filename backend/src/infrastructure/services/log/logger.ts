@@ -16,7 +16,7 @@ const logFile = path.join(logDir, "app.log");
 const fileStream = fs.createWriteStream(logFile, { flags: "a" });
 
 // Create pino instance
-const pinoLogger = pino(
+export const pinoLogger = pino(
   {
     level: isProduction ? "info" : "debug",
   },
