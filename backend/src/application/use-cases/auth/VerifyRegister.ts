@@ -80,6 +80,7 @@ export class VerifyRegister {
             userId: createdUser.getId(),
             email: createdUser.email
         });
+        const csrfToken = this.tokenService.generateCsrfToken();
 
         //add refresh token to entity
         createdUser.addRefreshToken(refreshToken);
@@ -94,6 +95,7 @@ export class VerifyRegister {
             success: true,
             accessToken,
             refreshToken,
+            csrfToken,
             user: {
                 id: createdUser.getId(),
                 name: createdUser.name,

@@ -26,6 +26,7 @@ export const authMessages = {
         ACCESS_TOKEN_EXPIRED: "Access token has expired",
         REFRESH_TOKEN_NOT_FOUND: "Refresh token is missing",
         INVALID_REFRESH_TOKEN: "Invalid refresh token payload",
+        INVALID_CSRF_TOKEN:"Invalid CSRF token",
         REFRESH_TOKEN_SECRET_NOT_FOUND: "Refresh token secret is not available",
         ACCESS_TOKEN_SECRET_NOT_FOUND: "Access token secret is not available",
         INVALID_GOOGLE_ID: "Invalid Google ID",

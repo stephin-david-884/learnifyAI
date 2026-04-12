@@ -4,6 +4,7 @@ import { jwtConfig } from '../../config/jwt.config';
 import { AppError } from '../../../domain/errors/AppError';
 import { authMessages } from '../../../application/constants/messages/authMessages';
 import { statusCode } from '../../../application/constants/enums/statusCode';
+import crypto from "crypto";
 
 export class TokenService implements ITokenService {
     generateAccessToken(payload: AccessTokenPayload): string {
@@ -24,5 +25,9 @@ export class TokenService implements ITokenService {
         return jwt.sign(payload, refreshSecret, {
             expiresIn: "7d",
         });
+    }
+
+    generateCsrfToken(): string {
+        return crypto.randomBytes(32).toString("hex");
     }
 }

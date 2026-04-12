@@ -13,5 +13,6 @@ export interface VerifyRegisterOutputDTO {
         credits: number;
     };
     accessToken: string;
-    refreshToken: string
+    refreshToken: string;
+    csrfToken: string;
 }

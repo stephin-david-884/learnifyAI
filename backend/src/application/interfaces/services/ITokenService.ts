@@ -10,4 +10,5 @@ export interface RefreshTokenPayload {
 export interface ITokenService {
     generateAccessToken(payload: AccessTokenPayload): string;
     generateRefreshToken(payload: RefreshTokenPayload): string;
+    generateCsrfToken(): string;
 }

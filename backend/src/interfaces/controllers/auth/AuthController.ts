@@ -72,6 +72,12 @@ export class AuthController {
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             });
 
+            res.cookie("XSRF-TOKEN", result.csrfToken, {
+                httpOnly: false,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: "lax"
+            })
+
             return res.status(statusCode.CREATED).json({
 
                 message: authMessages.success.REGISTER_SUCCESS,
