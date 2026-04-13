@@ -1,23 +1,48 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const BASE_URL = import.meta.env.VITE_BACKEND_URL
+  ? `${import.meta.env.VITE_BACKEND_URL}/api`
+  : "http://localhost:5000/api";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-    _retry: boolean
+    _retry?: boolean;
 }
 
-const getCsrfToken = () => {
+//Logout handler
+let logoutHandler: (() => void) | null = null;
+
+export const setLogoutHandler = (handler: () => void) => {
+    logoutHandler = handler;
+};
+
+const getCsrfToken = (): string | null => {
     return document.cookie
         .split("; ")
         .find((row) => row.startsWith("XSRF-TOKEN="))
-        ?.split("=")[1]
-}
+        ?.split("=")[1] || null;
+};
 
 const api = axios.create({
-    baseURL:BACKEND_URL,
+    baseURL:BASE_URL,
     withCredentials: true
-})
+});
 
+let isRefreshing = false;
+
+let failedQueue: {
+    resolve: () => void;
+    reject: (err: unknown) => void;
+}[] = [];
+
+const processQueue = (error: unknown) => {
+    failedQueue.forEach((p) => {
+        if(error) p.reject(error);
+        else p.resolve();
+    });
+    failedQueue=[];
+}
+
+//Request interceptor
 api.interceptors.request.use((config) => {
     const csrfToken = getCsrfToken();
 
@@ -28,15 +53,56 @@ api.interceptors.request.use((config) => {
     return config;
 })
 
+
+//Response interceptor
 api.interceptors.response.use(
-    (response) => response,
-    async (error: AxiosError ) => {
-        console.log("Interceptor caught error:" error.response?.status);
-        const originalRequest = error.config as CustomAxiosRequestConfig
+    (res) => res,
+    async (error: AxiosError ) => {      
+        const originalRequest = error.config as CustomAxiosRequestConfig;
 
         if(!error.response){
-            console.error("Network error or server not reachable")
-            return Promise.reject(error)
+            return Promise.reject(error);
         } 
+
+        const status = error.response.status;
+
+        const isAuthRoute = 
+            originalRequest.url?.includes("/auth/refresh") ||
+            originalRequest.url?.includes("/auth/register") ||
+            originalRequest.url?.includes("/auth/verify-otp");
+
+        if(status === 401 && !originalRequest._retry && !isAuthRoute) {
+            if(isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({
+                        resolve: () => resolve(api(originalRequest)),
+                        reject,
+                    });
+                });
+            }
+
+            originalRequest._retry = true;
+            isRefreshing = true;
+
+            try {
+                await api.post("/auth/refresh");
+
+                processQueue(null);
+
+                return api(originalRequest);
+            } catch (error) {
+                processQueue(error);
+
+                if(logoutHandler) {
+                    logoutHandler();
+                }
+
+                return Promise.reject(error)
+            } finally {
+                isRefreshing = false;
+            }
+        }
+        
+        return Promise.reject(error);
     }
 )
