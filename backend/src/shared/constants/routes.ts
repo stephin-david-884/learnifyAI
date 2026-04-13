@@ -2,6 +2,7 @@ export const ROUTES = {
   AUTH: {
     REGISTER: "/register",
     VERIFY_OTP: "/verify",
-    RESEND_OTP: "/resendotp"
+    RESEND_OTP: "/resendotp",
+    REFRESH_TOKEN: "/refresh"
   },
 };

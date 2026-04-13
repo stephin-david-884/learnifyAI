@@ -14,6 +14,7 @@ import { OtpStore } from "../services/auth/otpStore";
 import { RegisterUser } from "../../application/use-cases/auth/RegisterUser.auth";
 import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister";
 import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
+import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth";
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
@@ -55,9 +56,16 @@ const resendOtp = new ResendOtp(
     tempUserStore
 );
 
+const refreshToken = new RefreshToken(
+    userRepository,
+    tokenService,
+    hashService,
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
-    resendOtp
+    resendOtp,
+    refreshToken
 )

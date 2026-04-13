@@ -11,4 +11,6 @@ export interface ITokenService {
     generateAccessToken(payload: AccessTokenPayload): string;
     generateRefreshToken(payload: RefreshTokenPayload): string;
     generateCsrfToken(): string;
+    verifyRefreshToken(token: string): RefreshTokenPayload;
+    verifyAccessToken(token: string): AccessTokenPayload;
 }

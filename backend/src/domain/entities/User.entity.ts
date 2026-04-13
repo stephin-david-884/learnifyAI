@@ -64,15 +64,19 @@ export class User {
   }
 
   getRefreshTokens() {
-     return [...this.refreshTokens];
+    return [...this.refreshTokens];
   }
 
   getId(): string {
-  if (!this.id) {
-    throw new Error("User ID is not set");
+    if (!this.id) {
+      throw new Error("User ID is not set");
+    }
+    return this.id;
   }
-  return this.id;
-}
+
+  setRefreshTokens(tokens: string[]) {
+    this.refreshTokens = tokens;
+  }
 }
 
 type UserProps = {

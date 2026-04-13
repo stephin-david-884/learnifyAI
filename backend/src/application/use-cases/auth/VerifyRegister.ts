@@ -82,8 +82,10 @@ export class VerifyRegister {
         });
         const csrfToken = this.tokenService.generateCsrfToken();
 
+        const hashedRefreshToken = await this.hashService.hash(refreshToken);
+
         //add refresh token to entity
-        createdUser.addRefreshToken(refreshToken);
+        createdUser.addRefreshToken(hashedRefreshToken);
 
         await this.userRepository.save(createdUser);
 

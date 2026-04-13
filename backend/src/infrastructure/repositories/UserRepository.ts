@@ -38,4 +38,10 @@ export class UserRepository implements IUserRepository {
 
         return toDomainUser(savedUser.toObject());
     }
+
+    async findById(id: string): Promise<User | null> {
+        const user = await UserModel.findById(id);
+        if(!user) return null;
+        return toDomainUser(user);
+    }
 }

@@ -30,4 +30,20 @@ export class TokenService implements ITokenService {
     generateCsrfToken(): string {
         return crypto.randomBytes(32).toString("hex");
     }
+
+    verifyRefreshToken(token: string): RefreshTokenPayload {
+        const refreshSecret = jwtConfig.refreshToken.secret;
+        if(!refreshSecret){
+            throw new AppError(authMessages.error.REFRESH_TOKEN_NOT_FOUND, statusCode.NOT_FOUND)
+        }
+        return jwt.verify(token, refreshSecret) as RefreshTokenPayload 
+    }
+
+    verifyAccessToken(token: string): AccessTokenPayload {
+        const accessSecret = jwtConfig.accessToken.secret;
+        if(!accessSecret){
+            throw new AppError(authMessages.error.ACCESS_TOKEN_SECRET_NOT_FOUND, statusCode.NOT_FOUND)
+        }
+        return jwt.verify(token, accessSecret) as AccessTokenPayload 
+    }
 }

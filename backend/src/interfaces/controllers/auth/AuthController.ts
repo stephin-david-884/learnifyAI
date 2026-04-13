@@ -9,13 +9,14 @@ import { VerifyRegisterInputDTO } from "../../../application/dtos/verifyRegister
 import { AppError } from "../../../domain/errors/AppError";
 import { ResendOtpInputDTO } from "../../../application/dtos/resendOtp.auth.dto";
 import { ResendOtp } from "../../../application/use-cases/auth/resendOtp.auth";
-import { success } from "zod";
+import { RefreshToken } from "../../../application/use-cases/auth/RefreshToken.auth";
 
 export class AuthController {
     constructor(
         private _registerUseCase: RegisterUser,
         private _verifyRegister: VerifyRegister,
-        private _resendOtp: ResendOtp
+        private _resendOtp: ResendOtp,
+        private _refreshToken: RefreshToken
     ) { }
 
     register = async (req: Request, res: Response, next: NextFunction) => {
@@ -109,6 +110,43 @@ export class AuthController {
             })
         } catch (error) {
             next(error)
+        }
+    }
+
+    refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const refreshToken = req.cookies.refreshToken;
+
+            const result = await this._refreshToken.execute({ token: refreshToken });
+
+            res.cookie('refreshToken', result.refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: '/'
+            })
+
+            res.cookie('accessToken', result.accessToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                maxAge: 15 * 60 * 1000,
+                path: '/'
+            })
+
+            res.cookie("XSRF-TOKEN", result.csrfToken, {
+                httpOnly: false,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+            })
+
+            return res.status(statusCode.OK).json({
+                success: true,
+                message: authMessages.success.TOKEN_REFRESHED,
+            });
+        } catch (error) {
+            next(error);
         }
     }
 }

@@ -14,6 +14,5 @@ export const verifyCsrf = (req: Request, res: Response, next: NextFunction) => {
         throw new AppError(authMessages.error.INVALID_CSRF_TOKEN, statusCode.FORBIDDEN)
     }
 
-    console.log("CSRF PASSED");
     next()
 }
