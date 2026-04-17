@@ -17,7 +17,7 @@ export const authMessages = {
         BAD_REQUEST: "Invalid email or password",
         CONFLICT: "Email already exists",
         UNAUTHORIZED: "Unauthorized access",
-        INVALID_PASSWORD: "Invalid password", // typo fixed (passwod)
+        INVALID_PASSWORD: "Invalid password",
         EMAIL_NOT_FOUND: "Email not found",
         OTP_EXPIRED: "OTP has expired",
         INVALID_OTP: "Invalid OTP",
@@ -33,6 +33,8 @@ export const authMessages = {
         INVALID_GOOGLE_TOKEN_PAYLOAD: "Invalid Google token payload",
         GOOGLE_TOKEN_VERIFICATION_FAILURE: "Failed to verify Google token",
         REG_SESSION_EXPIRED: "Registration session expired",
+        SAVE_FAILED: "Save Failed",
+        ENTITY_NOT_FOUND:"Entity not found",
 
        // User Errors
         USER_NOT_FOUND: "User not found",

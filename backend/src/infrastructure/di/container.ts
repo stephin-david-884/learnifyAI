@@ -15,6 +15,7 @@ import { RegisterUser } from "../../application/use-cases/auth/RegisterUser.auth
 import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister";
 import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
 import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth";
+import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.auth";
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
@@ -60,6 +61,11 @@ const refreshToken = new RefreshToken(
     userRepository,
     tokenService,
     hashService,
+);
+
+const getCurrentUser = new GetCurrentUser(
+    userRepository,
+    tokenService
 )
 
 // Controller
@@ -67,5 +73,6 @@ export const authController = new AuthController(
     registerUser,
     verifyRegister,
     resendOtp,
-    refreshToken
+    refreshToken,
+    getCurrentUser
 )

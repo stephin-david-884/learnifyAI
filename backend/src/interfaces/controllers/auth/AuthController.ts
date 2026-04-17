@@ -10,13 +10,15 @@ import { AppError } from "../../../domain/errors/AppError";
 import { ResendOtpInputDTO } from "../../../application/dtos/resendOtp.auth.dto";
 import { ResendOtp } from "../../../application/use-cases/auth/resendOtp.auth";
 import { RefreshToken } from "../../../application/use-cases/auth/RefreshToken.auth";
+import { GetCurrentUser } from "../../../application/use-cases/auth/GetCurrentUser.auth";
 
 export class AuthController {
     constructor(
         private _registerUseCase: RegisterUser,
         private _verifyRegister: VerifyRegister,
         private _resendOtp: ResendOtp,
-        private _refreshToken: RefreshToken
+        private _refreshToken: RefreshToken,
+        private _getCurrentUser: GetCurrentUser
     ) { }
 
     register = async (req: Request, res: Response, next: NextFunction) => {
@@ -115,9 +117,9 @@ export class AuthController {
 
     refreshToken = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const refreshToken = req.cookies.refreshToken;
+            const refreshTokenFromCookie = req.cookies.refreshToken;
 
-            const result = await this._refreshToken.execute({ token: refreshToken });
+            const result = await this._refreshToken.execute({ token: refreshTokenFromCookie });
 
             res.cookie('refreshToken', result.refreshToken, {
                 httpOnly: true,
@@ -138,7 +140,8 @@ export class AuthController {
             res.cookie("XSRF-TOKEN", result.csrfToken, {
                 httpOnly: false,
                 secure: process.env.NODE_ENV === "production",
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+                path: '/'
             })
 
             return res.status(statusCode.OK).json({
@@ -149,4 +152,26 @@ export class AuthController {
             next(error);
         }
     }
+
+    getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const accessToken = req.cookies.accessToken;
+
+            if (!accessToken) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Not authenticated",
+                });
+            }
+
+            const user = await this._getCurrentUser.execute(accessToken);
+
+            return res.status(200).json({
+                success: true,
+                user,
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
 }

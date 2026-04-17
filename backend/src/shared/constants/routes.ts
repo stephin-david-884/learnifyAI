@@ -3,6 +3,7 @@ export const ROUTES = {
     REGISTER: "/register",
     VERIFY_OTP: "/verify",
     RESEND_OTP: "/resendotp",
-    REFRESH_TOKEN: "/refresh"
+    REFRESH_TOKEN: "/refresh",
+    GET_ME: "/me",
   },
 };
