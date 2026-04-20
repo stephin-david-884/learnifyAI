@@ -23,6 +23,9 @@ export const registerSchema = z.object({
         message: 'Password do not match',
         path: ['confirmPassword']
     })
+    .transform(({ confirmPassword, ...rest }) => rest);
+
+export type RegisterBody = z.infer<typeof registerSchema>;    
 
 export const otpSchema = z.object({
     email: z
@@ -34,11 +37,16 @@ export const otpSchema = z.object({
         .trim()
         .regex(/^\d{6}$/, 'OTP must contain only numbers')
         .min(6, "OTP must be exactly 6 digit")
-})
+});
+
+export type VerifyOtpBody = z.infer<typeof otpSchema>;
 
 export const resendOtpSchema = z.object({
     email: z
         .string()
+        .trim()
         .min(1, 'Email is required')
         .email('Invalid email')
-})
+});
+
+export type ResendOtpBody = z.infer<typeof resendOtpSchema>;

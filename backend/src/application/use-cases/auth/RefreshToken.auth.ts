@@ -5,9 +5,10 @@ import { authMessages } from "../../constants/messages/authMessages";
 import { RefreshTokenInputDTO, RefreshTokenOutputDTO } from "../../dtos/refreshToken.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
 import { ITokenService } from "../../interfaces/services/ITokenService";
+import { IRefreshTokenUseCase } from "../../interfaces/usecases/auth/IRefreshTokenUsecase";
 
 
-export class RefreshToken {
+export class RefreshToken implements IRefreshTokenUseCase {
     constructor(
         private userRepository: IUserRepository,
         private tokenService: ITokenService,

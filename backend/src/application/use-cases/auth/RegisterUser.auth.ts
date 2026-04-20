@@ -7,8 +7,12 @@ import { IHashService } from "../../interfaces/services/IHashService";
 import { IMailService } from "../../interfaces/services/IMailService";
 import { OtpMailPayload } from "../../interfaces/services/mail.types";
 import { ITempUserStore } from "../../interfaces/services/ITempUserStore";
+import { IRegisterUserUsecase } from "../../interfaces/usecases/auth/IRegisterUserUsecase";
+import { AppError } from "../../../domain/errors/AppError";
+import { authMessages } from "../../constants/messages/authMessages";
+import { statusCode } from "../../constants/enums/statusCode";
 
-export class RegisterUser {
+export class RegisterUser implements IRegisterUserUsecase {
   constructor(
     private userRepository: IUserRepository,
     private otpService: IOtpService,
@@ -25,7 +29,7 @@ export class RegisterUser {
     //Check if user exists
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) {
-      throw new Error("User already exists");
+      throw new AppError(authMessages.error.USER_ALREADY_EXISTS, statusCode.BAD_REQUEST);
     }
 
     //Hash password

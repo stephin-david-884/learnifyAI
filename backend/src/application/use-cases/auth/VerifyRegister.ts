@@ -10,8 +10,9 @@ import { IHashService } from "../../interfaces/services/IHashService";
 import { IOtpStore } from "../../interfaces/services/IOtpStore";
 import { ITempUserStore } from "../../interfaces/services/ITempUserStore";
 import { ITokenService } from "../../interfaces/services/ITokenService";
+import { IVerifyRegisterUsecase } from "../../interfaces/usecases/auth/IVerifyRegisterUsecase";
 
-export class VerifyRegister {
+export class VerifyRegister implements IVerifyRegisterUsecase{
     constructor(
         private userRepository: IUserRepository,
         private otpStore: IOtpStore,

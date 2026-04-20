@@ -1,38 +1,28 @@
 import { NextFunction, Request, Response } from "express";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { authMessages } from "../../../application/constants/messages/authMessages";
-import { RegisterUser } from "../../../application/use-cases/auth/RegisterUser.auth";
-import { VerifyRegister } from "../../../application/use-cases/auth/VerifyRegister";
-import { otpSchema, registerSchema, resendOtpSchema } from "../../validators/auth/registerValidator";
-import { RegisterInputDTO } from "../../../application/dtos/register.auth.dto";
-import { VerifyRegisterInputDTO } from "../../../application/dtos/verifyRegister.auth.dto";
-import { AppError } from "../../../domain/errors/AppError";
-import { ResendOtpInputDTO } from "../../../application/dtos/resendOtp.auth.dto";
-import { ResendOtp } from "../../../application/use-cases/auth/resendOtp.auth";
-import { RefreshToken } from "../../../application/use-cases/auth/RefreshToken.auth";
-import { GetCurrentUser } from "../../../application/use-cases/auth/GetCurrentUser.auth";
+import { RegisterBody, ResendOtpBody, VerifyOtpBody } from "../../validators/auth/registerValidator";
+import { IRegisterUserUsecase } from "../../../application/interfaces/usecases/auth/IRegisterUserUsecase";
+import { IVerifyRegisterUsecase } from "../../../application/interfaces/usecases/auth/IVerifyRegisterUsecase";
+import { IResendOtpUsecase } from "../../../application/interfaces/usecases/auth/IResendOtpUsecase";
+import { IRefreshTokenUseCase } from "../../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
+import { IGetCurrentUsecase } from "../../../application/interfaces/usecases/auth/IGetCurrentUsecase";
 
 export class AuthController {
     constructor(
-        private _registerUseCase: RegisterUser,
-        private _verifyRegister: VerifyRegister,
-        private _resendOtp: ResendOtp,
-        private _refreshToken: RefreshToken,
-        private _getCurrentUser: GetCurrentUser
+        private _registerUseCase: IRegisterUserUsecase,
+        private _verifyRegister: IVerifyRegisterUsecase,
+        private _resendOtp: IResendOtpUsecase,
+        private _refreshToken: IRefreshTokenUseCase,
+        private _getCurrentUser: IGetCurrentUsecase
     ) { }
 
-    register = async (req: Request, res: Response, next: NextFunction) => {
+    register = async (req: Request<Record<string, never>, Record<string, never>, RegisterBody>, res: Response, next: NextFunction) => {
         try {
-            const parsed = registerSchema.safeParse(req.body);
-
-            if (!parsed.success) {
-                throw new AppError(parsed.error.issues[0].message, statusCode.BAD_REQUEST);
-            }
-
-            const payload: RegisterInputDTO = {
-                name: parsed.data.name,
-                email: parsed.data.email,
-                password: parsed.data.password,
+            const payload = {
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
             };
 
             await this._registerUseCase.execute(payload);
@@ -46,17 +36,12 @@ export class AuthController {
         }
     }
 
-    VerifyOtp = async (req: Request, res: Response, next: NextFunction) => {
+    VerifyOtp = async (req: Request<Record<string, never>, Record<string, never>, VerifyOtpBody>, res: Response, next: NextFunction) => {
         try {
-            const parsed = otpSchema.safeParse(req.body);
-
-            if (!parsed.success) {
-                throw new AppError(parsed.error.issues[0].message, statusCode.BAD_REQUEST);
-            }
-
-            const payload: VerifyRegisterInputDTO = {
-                email: parsed.data.email,
-                otp: parsed.data.otp
+            
+            const payload = {
+                email: req.body.email,
+                otp: req.body.otp
             };
 
             const result = await this._verifyRegister.execute(payload);
@@ -91,17 +76,10 @@ export class AuthController {
         }
     }
 
-    resendOtp = async (req: Request, res: Response, next: NextFunction) => {
+    resendOtp = async (req: Request<Record<string, never>, Record<string, never>, ResendOtpBody>, res: Response, next: NextFunction) => {
         try {
-            const parsed = resendOtpSchema.safeParse(req.body);
-            if (!parsed.success) {
-                throw new AppError(
-                    parsed.error.issues[0].message,
-                    statusCode.BAD_REQUEST
-                );
-            }
-            const payload: ResendOtpInputDTO = {
-                email: parsed.data.email
+            const payload = {
+                email: req.body.email,
             }
 
             await this._resendOtp.execute(payload);

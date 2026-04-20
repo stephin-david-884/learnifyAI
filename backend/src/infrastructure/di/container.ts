@@ -20,6 +20,12 @@ import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
 import { logger } from "../services/log/logger";
+//interfaces
+import { IRegisterUserUsecase } from "../../application/interfaces/usecases/auth/IRegisterUserUsecase";
+import { IVerifyRegisterUsecase } from "../../application/interfaces/usecases/auth/IVerifyRegisterUsecase";
+import { IResendOtpUsecase } from "../../application/interfaces/usecases/auth/IResendOtpUsecase";
+import { IRefreshTokenUseCase } from "../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
+import { IGetCurrentUsecase } from "../../application/interfaces/usecases/auth/IGetCurrentUsecase";
 
 //Instances
 const userRepository = new UserRepository();
@@ -31,7 +37,7 @@ const otpStore = new OtpStore(redisClient);
 const tempUserStore = new TempUserStore(redisClient);
 
 //Use cases
-const registerUser = new RegisterUser(
+const registerUser: IRegisterUserUsecase = new RegisterUser(
   userRepository,
   otpService,
   logger,
@@ -41,7 +47,7 @@ const registerUser = new RegisterUser(
   tempUserStore
 );
 
-const verifyRegister = new VerifyRegister(
+const verifyRegister: IVerifyRegisterUsecase = new VerifyRegister(
     userRepository,
     otpStore,
     tokenService,
@@ -49,7 +55,7 @@ const verifyRegister = new VerifyRegister(
     hashService,
 );
 
-const resendOtp = new ResendOtp(
+const resendOtp:IResendOtpUsecase = new ResendOtp(
     otpService,
     otpStore,
     mailService,
@@ -57,13 +63,13 @@ const resendOtp = new ResendOtp(
     tempUserStore
 );
 
-const refreshToken = new RefreshToken(
+const refreshToken: IRefreshTokenUseCase = new RefreshToken(
     userRepository,
     tokenService,
     hashService,
 );
 
-const getCurrentUser = new GetCurrentUser(
+const getCurrentUser: IGetCurrentUsecase = new GetCurrentUser(
     userRepository,
     tokenService
 )

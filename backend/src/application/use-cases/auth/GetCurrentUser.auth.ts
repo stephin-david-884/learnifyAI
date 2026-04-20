@@ -3,9 +3,10 @@ import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
 import { ITokenService } from "../../interfaces/services/ITokenService";
+import { IGetCurrentUsecase } from "../../interfaces/usecases/auth/IGetCurrentUsecase";
 
 
-export class GetCurrentUser {
+export class GetCurrentUser implements IGetCurrentUsecase {
   constructor(
     private userRepository: IUserRepository,
     private tokenService: ITokenService

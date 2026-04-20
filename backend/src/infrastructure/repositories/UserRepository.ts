@@ -1,14 +1,11 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepository";
 import { User } from "../../domain/entities/User.entity";
-import { UserModel } from "../database/models/User";
-import { AppError } from "../../domain/errors/AppError";
-import { authMessages } from "../../application/constants/messages/authMessages";
-import { statusCode } from "../../application/constants/enums/statusCode";
+import { UserLean, UserModel } from "../database/models/User";
 import { BaseRepository } from "./BaseRepository";
 import { toDomainUser, toPersistenceUser } from "../../application/mappers/UserMapper";
 
 export class UserRepository 
-    extends BaseRepository<User, any> 
+    extends BaseRepository<User, UserLean> 
     implements IUserRepository {
 
     constructor() {
@@ -20,7 +17,7 @@ export class UserRepository
     }
 
     async findByEmail(email: string): Promise<User | null> {
-        const user = await UserModel.findOne({ email })
+        const user = await this._model.findOne({ email })
             .select("+password")
             .lean();
 
@@ -30,13 +27,13 @@ export class UserRepository
     }
 
 
-    async findById(id: string): Promise<User | null> {
-        const user = await UserModel.findById(id)
-                            .select("+password")
-                            .lean();
-        if (!user) return null;
-        return toDomainUser(user);
-    }
+    // async findByIdWithPassword(id: string): Promise<User | null> {
+    //     const user = await UserModel.findById(id)
+    //                         .select("+password")
+    //                         .lean();
+    //     if (!user) return null;
+    //     return toDomainUser(user);
+    // }
 
 
     // async delete(id: string): Promise<void> {

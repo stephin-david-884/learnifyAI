@@ -8,8 +8,9 @@ import { IOtpService } from "../../interfaces/services/IOtpservice";
 import { IOtpStore } from "../../interfaces/services/IOtpStore";
 import { ITempUserStore } from "../../interfaces/services/ITempUserStore";
 import { OtpMailPayload } from "../../interfaces/services/mail.types";
+import { IResendOtpUsecase } from "../../interfaces/usecases/auth/IResendOtpUsecase";
 
-export class ResendOtp {
+export class ResendOtp implements IResendOtpUsecase {
     constructor(
         private otpService: IOtpService,
         private otpStore: IOtpStore,

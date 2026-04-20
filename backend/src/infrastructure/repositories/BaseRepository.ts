@@ -1,13 +1,6 @@
-// export abstract class BaseRepository<T> {
-//     abstract findById(id: string): Promise<T | null>;
-//     abstract save(entity: T): Promise<T>;
-//     abstract deleteById(id: string): Promise<void>;
-// }
-
 import { Model, Types } from "mongoose";
 import { IBaseRepository } from "../../domain/repositories/IBaseRepository";
 import { AppError } from "../../domain/errors/AppError";
-import { authMessages } from "../../application/constants/messages/authMessages";
 import { statusCode } from "../../application/constants/enums/statusCode";
 
 export abstract class BaseRepository<
@@ -17,7 +10,7 @@ export abstract class BaseRepository<
     constructor(
         protected _model: Model<D>,
         protected _toDomain: (doc: D) => T,
-        protected _toPersistence: (entity: T) => Partial<D>
+        protected _toPersistence: (entity: T) => Partial<D>,
     ) { }
 
     async findById(id: string): Promise<T | null> {
@@ -44,20 +37,35 @@ export abstract class BaseRepository<
         }
 
         if (!saved) {
-            throw new AppError(authMessages.error.SAVE_FAILED, statusCode.BAD_REQUEST);
+            throw new AppError("Failed to save entity", statusCode.BAD_REQUEST);
         }
 
-        return this._toDomain(
-            typeof saved.toObject === "function" ? saved.toObject() : saved
-        );
+        const plain = saved.toObject ? saved.toObject() : saved;
+        return this._toDomain(plain);
     }
 
     async deleteById(id: string): Promise<void> {
         const deleted = await this._model.findByIdAndDelete(id);
 
         if (!deleted) {
-            throw new AppError(authMessages.error.ENTITY_NOT_FOUND, statusCode.NOT_FOUND);
+            throw new AppError("Entity not found", statusCode.NOT_FOUND);
         }
     }
+
+    // async deleteById(id: string): Promise<void> {
+    //     if(this._supportsSoftDelete) {
+    //         const updated = await this._model.findByIdAndUpdate(
+    //             id,
+    //             { isDeleted: true },
+    //             { new: true }
+    //         );
+
+    //         if(!updated) {
+    //             throw new AppError("Entity not found", statusCode.NOT_FOUND);
+    //         }
+    //     } else {
+
+    //     }
+    // }
 }
 
