@@ -6,13 +6,13 @@ import { statusCode } from "../../application/constants/enums/statusCode";
 type RequestProperty = "body" | "query" | "params";
 
 export const validate = 
-    <T extends ZodSchema>(schema: T, property: RequestProperty) =>
+    <T extends ZodSchema, K extends RequestProperty>(schema: T, property: K) =>
     (
         req: Request,
         res: Response,
         next: NextFunction
     ):asserts req is Request & {
-        [K in typeof property]: z.infer<T>
+        [P in K]: z.infer<T>
     } => {
         const result = schema.safeParse(req[property]);
 

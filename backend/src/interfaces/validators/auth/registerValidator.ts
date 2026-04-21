@@ -23,7 +23,7 @@ export const registerSchema = z.object({
         message: 'Password do not match',
         path: ['confirmPassword']
     })
-    .transform(({ confirmPassword, ...rest }) => rest);
+    .transform(({ confirmPassword: _confirmPassword, ...rest }) => rest);
 
 export type RegisterBody = z.infer<typeof registerSchema>;    
 
