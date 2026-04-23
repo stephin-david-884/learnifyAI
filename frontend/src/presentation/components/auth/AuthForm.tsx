@@ -67,7 +67,7 @@ const AuthForm = ({ mode }: Props) => {
             if (registerUser.fulfilled.match(result)) {
                 toast.success("OTP sent to your email");
 
-                navigate("/verify-otp", {
+                navigate("/verifyotp", {
                     state: { email: formData.email },
                 });
             } else {

@@ -76,12 +76,34 @@ export const getCurrentUser = createAsyncThunk<
             return response.data.user;
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
-            // return rejectWithValue(err.response?.data?.message || "Not authenticated");
             if (err.response?.status === 401 || err.response?.status === 403) {
                 return rejectWithValue("NOT_AUTHENTICATED");
             }
 
             return rejectWithValue("Something went wrong");
+        }
+    }
+);
+
+export const resendOtp = createAsyncThunk<
+    { message: string },
+    { email: string },
+    { rejectValue: string }
+>(
+    "auth/resendOtp",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(API_ROUTES.AUTH.RESEND_OTP, data);
+
+            return {
+                message: response.data.message
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+
+            return rejectWithValue(
+                err.response?.data?.message || "Failed to resend OTP"
+            );
         }
     }
 );
@@ -142,10 +164,23 @@ const authSlice = createSlice({
                     state.isAuthenticated = false;
                 }
             })
+
             .addCase(getCurrentUser.rejected, (state) => {
                 state.initialized = true;
                 state.isAuthenticated = false;
                 state.user = null;
+            })
+
+            .addCase(resendOtp.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(resendOtp.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(resendOtp.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to resend OTP";
             })
 
     }

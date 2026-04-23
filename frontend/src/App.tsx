@@ -6,6 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import PublicRoute from "./components/auth/PublicRoute";
 import AuthGateway from "./presentation/pages/auth/AuthGateway";
 import Spinner from "./presentation/components/common/Spinner";
+import UserProtectedRoute from "./components/auth/UserProtectedRoute";
+import DashboardPage from "./presentation/pages/Dashboard/DashboardPage";
+import VerifyOtp from "./presentation/pages/auth/VerifyOtp";
 
 const App = () => {
   const { checkAuth, initialized } = useAuth();
@@ -32,6 +35,11 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<PublicRoute><AuthGateway mode="signup" /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><AuthGateway mode="login" /></PublicRoute>} />
+          <Route path="/verifyotp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
+
+          <Route element={<UserProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
         </Routes>
       </Suspense>
     </BrowserRouter>
