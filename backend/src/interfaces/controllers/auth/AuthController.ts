@@ -10,7 +10,6 @@ import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { AppError } from "../../../domain/errors/AppError";
 
-// refactor: clean auth controller using asyncHandler and standardized response handling
 
 export class AuthController {
     constructor(
@@ -131,7 +130,12 @@ export class AuthController {
         const accessToken = req.cookies.accessToken;
 
         if (!accessToken) {
-            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
+            return sendSuccess(
+                res,
+                statusCode.OK,
+                authMessages.error.USER_NOT_FOUND,
+                {user: null}
+            )
         }
 
         const user = await this._getCurrentUser.execute(accessToken);

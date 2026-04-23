@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AuthState, RegisterPayload, RegisterResponse, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
+import type { AuthState, RegisterPayload, RegisterResponse, User, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -64,6 +64,28 @@ export const verifyOtp = createAsyncThunk<
     }
 );
 
+export const getCurrentUser = createAsyncThunk<
+    User | null,
+    void,
+    { rejectValue: string }
+>(
+    "auth/getCurrentUser",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get(API_ROUTES.AUTH.GET_ME);
+            return response.data.user;
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            // return rejectWithValue(err.response?.data?.message || "Not authenticated");
+            if (err.response?.status === 401 || err.response?.status === 403) {
+                return rejectWithValue("NOT_AUTHENTICATED");
+            }
+
+            return rejectWithValue("Something went wrong");
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -97,16 +119,37 @@ const authSlice = createSlice({
                 state.user = action.payload.user;
                 state.isAuthenticated = true;
                 state.initialized = true;
-                state.registerEmail = null; // cleanup
+                state.registerEmail = null;
             })
 
             .addCase(verifyOtp.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "OTP verification failed";
-            });
+            })
+
+            .addCase(getCurrentUser.pending, (state) => {
+                state.loading = true;
+            })
+
+            .addCase(getCurrentUser.fulfilled, (state, action) => {
+                state.initialized = true;
+                state.loading = false;
+                if (action.payload) {
+                    state.user = action.payload;
+                    state.isAuthenticated = true;
+                } else {
+                    state.user = null;
+                    state.isAuthenticated = false;
+                }
+            })
+            .addCase(getCurrentUser.rejected, (state) => {
+                state.initialized = true;
+                state.isAuthenticated = false;
+                state.user = null;
+            })
 
     }
 })
 
 export const { clearError } = authSlice.actions;
-export default authSlice.reducer
+export default authSlice.reducer;
