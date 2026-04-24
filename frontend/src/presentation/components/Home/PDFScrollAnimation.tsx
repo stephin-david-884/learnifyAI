@@ -371,16 +371,13 @@ const navigate = useNavigate();
       ref={containerRef}
       className="sticky top-0 h-screen overflow-hidden"
     >
-      {/* Background glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(129,140,248,0.3),transparent_60%),radial-gradient(circle_at_bottom,_rgba(15,23,42,0.95),transparent_55%)] mix-blend-screen opacity-60 z-0" />
 
-      {/* Canvas Animation */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full z-10"
       />
 
-      {/* Overlay Content */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <div className="flex flex-col items-center gap-6 text-center px-4">
 

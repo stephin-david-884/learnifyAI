@@ -16,6 +16,7 @@ import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister"
 import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
 import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth";
 import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.auth";
+import { Logout } from "../../application/use-cases/auth/Logout.auth";
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
@@ -26,6 +27,7 @@ import { IVerifyRegisterUsecase } from "../../application/interfaces/usecases/au
 import { IResendOtpUsecase } from "../../application/interfaces/usecases/auth/IResendOtpUsecase";
 import { IRefreshTokenUseCase } from "../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
 import { IGetCurrentUsecase } from "../../application/interfaces/usecases/auth/IGetCurrentUsecase";
+import { ILogoutUsecase } from "../../application/interfaces/usecases/auth/ILogoutUsecase";
 
 //Instances
 const userRepository = new UserRepository();
@@ -74,11 +76,18 @@ const getCurrentUser: IGetCurrentUsecase = new GetCurrentUser(
     tokenService
 )
 
+const logout: ILogoutUsecase = new Logout(
+    userRepository,
+    tokenService,
+    hashService
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
     resendOtp,
     refreshToken,
-    getCurrentUser
+    getCurrentUser,
+    logout
 )

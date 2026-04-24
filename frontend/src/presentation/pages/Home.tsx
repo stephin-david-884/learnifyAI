@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import PDFScrollAnimation from "../components/Home/PdfScrollAnimation";
+import PDFScrollAnimation from "../components/Home/PDFScrollAnimation";
+
 
 
 const Home: React.FC = () => {

@@ -5,5 +5,6 @@ export const ROUTES = {
     RESEND_OTP: "/resendotp",
     REFRESH_TOKEN: "/refresh",
     GET_ME: "/me",
+    LOG_OUT: "/logout"
   },
 };

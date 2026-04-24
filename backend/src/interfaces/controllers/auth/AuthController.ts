@@ -9,6 +9,9 @@ import { IGetCurrentUsecase } from "../../../application/interfaces/usecases/aut
 import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { AppError } from "../../../domain/errors/AppError";
+import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/ILogoutUsecase";
+import { env } from "../../../config/env";
+import { cookieConfig } from "../../../config/cookie.config";
 
 
 export class AuthController {
@@ -17,7 +20,8 @@ export class AuthController {
         private _verifyRegister: IVerifyRegisterUsecase,
         private _resendOtp: IResendOtpUsecase,
         private _refreshToken: IRefreshTokenUseCase,
-        private _getCurrentUser: IGetCurrentUsecase
+        private _getCurrentUser: IGetCurrentUsecase,
+        private _logout: ILogoutUsecase
     ) { }
 
     register = asyncHandler(async (req: Request, res: Response) => {
@@ -44,26 +48,11 @@ export class AuthController {
             otp,
         });
 
-        // cookies
-        res.cookie("accessToken", result.accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 15 * 60 * 1000,
-        });
+        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
 
-        res.cookie("refreshToken", result.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
 
-        res.cookie("XSRF-TOKEN", result.csrfToken, {
-            httpOnly: false,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "lax",
-        });
+        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -93,31 +82,9 @@ export class AuthController {
             token: refreshTokenFromCookie,
         });
 
-        res.cookie("refreshToken", result.refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite:
-                process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-            path: "/",
-        });
-
-        res.cookie("accessToken", result.accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite:
-                process.env.NODE_ENV === "production" ? "none" : "lax",
-            maxAge: 15 * 60 * 1000,
-            path: "/",
-        });
-
-        res.cookie("XSRF-TOKEN", result.csrfToken, {
-            httpOnly: false,
-            secure: process.env.NODE_ENV === "production",
-            sameSite:
-                process.env.NODE_ENV === "production" ? "none" : "lax",
-            path: "/",
-        });
+        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -134,7 +101,7 @@ export class AuthController {
                 res,
                 statusCode.OK,
                 authMessages.error.USER_NOT_FOUND,
-                {user: null}
+                { user: null }
             )
         }
 
@@ -147,4 +114,23 @@ export class AuthController {
             { user }
         );
     });
+
+    logout = asyncHandler(async (req: Request, res: Response) => {
+
+        const refreshToken = req.cookies.refreshToken;
+
+        if (refreshToken) {
+            await this._logout.execute(refreshToken);
+        }
+
+        res.clearCookie("accessToken", cookieConfig.accessToken);
+        res.clearCookie("refreshToken", cookieConfig.refreshToken);
+        res.clearCookie("XSRF-TOKEN", cookieConfig.csrfToken);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.USER_LOGGEDOUT_SUCCESS
+        );
+    })
 }
