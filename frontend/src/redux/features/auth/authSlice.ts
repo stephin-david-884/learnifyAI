@@ -108,6 +108,24 @@ export const resendOtp = createAsyncThunk<
     }
 );
 
+export const logoutUser = createAsyncThunk<
+    void,
+    void,
+    { rejectValue: string }
+>(
+    "auth/logout",
+    async (_, { rejectWithValue }) => {
+        try {
+            await api.post(API_ROUTES.AUTH.LOGOUT);
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            return rejectWithValue(
+                err.response?.data?.message || "Logout failed"
+            );
+        }
+    }
+)
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -181,6 +199,11 @@ const authSlice = createSlice({
             .addCase(resendOtp.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to resend OTP";
+            })
+            .addCase(logoutUser.fulfilled, (state) => {
+                state.user = null;
+                state.isAuthenticated = false;
+                state.initialized = true;
             })
 
     }

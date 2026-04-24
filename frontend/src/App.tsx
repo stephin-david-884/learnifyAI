@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
-import { BrowserRouter, Route, Routes, } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./presentation/pages/Home";
 import { Toaster } from 'react-hot-toast';
 import PublicRoute from "./components/auth/PublicRoute";
@@ -9,13 +9,21 @@ import Spinner from "./presentation/components/common/Spinner";
 import UserProtectedRoute from "./components/auth/UserProtectedRoute";
 import DashboardPage from "./presentation/pages/Dashboard/DashboardPage";
 import VerifyOtp from "./presentation/pages/auth/VerifyOtp";
+import { setLogoutHandler } from "./lib/axios";
 
 const App = () => {
-  const { checkAuth, initialized } = useAuth();
+  const { checkAuth, initialized, logout } = useAuth();
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    setLogoutHandler(() => {
+      logout();
+      window.location.href = "/login";
+    })
+  },[logout])
 
   if (!initialized) {
     return <div className="flex h-screen items-center justify-center">
