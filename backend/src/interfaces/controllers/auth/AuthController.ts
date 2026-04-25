@@ -8,9 +8,7 @@ import { IRefreshTokenUseCase } from "../../../application/interfaces/usecases/a
 import { IGetCurrentUsecase } from "../../../application/interfaces/usecases/auth/IGetCurrentUsecase";
 import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
-import { AppError } from "../../../domain/errors/AppError";
 import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/ILogoutUsecase";
-import { env } from "../../../config/env";
 import { cookieConfig } from "../../../config/cookie.config";
 import { IGoogleAuthUsecase } from "../../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
 

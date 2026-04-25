@@ -27,8 +27,9 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
         unique: true },
     password: { 
         type: String, 
-        required: true, 
-        select: false },
+        required: false, 
+        select: false 
+    },
     profileImage: { 
         type: String, 
         default: null },

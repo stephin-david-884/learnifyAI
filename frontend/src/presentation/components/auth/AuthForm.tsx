@@ -4,88 +4,117 @@ import { type AppDispatch, type RootState } from '../../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { loginSchema, registerSchema } from '../../../lib/validation/authValidation';
 import { ZodError } from 'zod';
-import { registerUser } from '../../../redux/features/auth/authSlice';
+import { googleLogin, registerUser } from '../../../redux/features/auth/authSlice';
 import toast from 'react-hot-toast';
+import { GoogleLogin } from '@react-oauth/google';
 
 interface Props {
-    mode: "login" | "signup";
+  mode: "login" | "signup";
 }
 
 const AuthForm = ({ mode }: Props) => {
 
-    const dispatch = useDispatch<AppDispatch>();
-    const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
-    const { loading } = useSelector((state: RootState) => state.auth);
+  const { loading } = useSelector((state: RootState) => state.auth);
 
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-    });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-    const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-    //validation
-    const validate = () => {
-        try {
-            if (mode === "signup") {
-                registerSchema.parse(formData);
-            } else {
-                loginSchema.parse({ email: formData.email, password: formData.password });
-            }
+  //validation
+  const validate = () => {
+    try {
+      if (mode === "signup") {
+        registerSchema.parse(formData);
+      } else {
+        loginSchema.parse({ email: formData.email, password: formData.password });
+      }
 
-            setErrors({});
-            return true;
-        } catch (err) {
-            if (err instanceof ZodError) {
-                const formatted: Record<string, string> = {};
+      setErrors({});
+      return true;
+    } catch (err) {
+      if (err instanceof ZodError) {
+        const formatted: Record<string, string> = {};
 
-                err.issues.forEach((issue) => {
-                    const field = issue.path[0];
-                    if (typeof field === "string") {
-                        formatted[field] = issue.message;
-                    }
-                });
+        err.issues.forEach((issue) => {
+          const field = issue.path[0];
+          if (typeof field === "string") {
+            formatted[field] = issue.message;
+          }
+        });
 
-                setErrors(formatted);
-            }
+        setErrors(formatted);
+      }
 
-            return false;
-        }
+      return false;
     }
+  }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-        if (!validate()) return;
+    if (!validate()) return;
 
-        if (mode === "signup") {
-            const result = await dispatch(registerUser(formData));
+    if (mode === "signup") {
+      const result = await dispatch(registerUser(formData));
 
-            if (registerUser.fulfilled.match(result)) {
-                toast.success("OTP sent to your email");
+      if (registerUser.fulfilled.match(result)) {
+        toast.success("OTP sent to your email");
 
-                navigate("/verifyotp", {
-                    state: { email: formData.email },
-                });
-            } else {
-                toast.error(result.payload || "Registration failed");
-            }
-        } else {
-            
-            toast("Login coming next ");
-        }
-    };
+        navigate("/verifyotp", {
+          state: { email: formData.email },
+        });
+      } else {
+        toast.error(result.payload || "Registration failed");
+      }
+    } else {
 
+      toast("Login coming next ");
+    }
+  };
 
-    return (
-        <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      if (!credentialResponse.credential) {
+        toast.error("Google login failed");
+        return;
+      }
+
+      const result = await dispatch(
+        googleLogin({ idToken: credentialResponse.credential })
+      );
+
+      if (googleLogin.fulfilled.match(result)) {
+        toast.success("Login successful");
+        navigate("/");
+      } else {
+        toast.error(result.payload || "Google login failed");
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
+  return (
+    <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
       <h2 className="text-2xl font-bold text-center mb-6">
         {mode === "login" ? "Welcome Back" : "Create Account"}
       </h2>
-     
+
+      <div className='mt-4 flex justify-center'>
+        <GoogleLogin
+          onSuccess={handleGoogleSuccess}
+          onError={() => toast.error("Google login failed")}
+        />
+      </div>
+
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         {mode === "signup" && (
@@ -93,9 +122,8 @@ const AuthForm = ({ mode }: Props) => {
             <input
               type="text"
               placeholder="Full Name"
-              className={`w-full border rounded-lg px-4 py-2 ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full border rounded-lg px-4 py-2 ${errors.name ? "border-red-500" : "border-gray-300"
+                }`}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
               }
@@ -111,9 +139,8 @@ const AuthForm = ({ mode }: Props) => {
           <input
             type="email"
             placeholder="Email"
-            className={`w-full border rounded-lg px-4 py-2 ${
-              errors.email ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full border rounded-lg px-4 py-2 ${errors.email ? "border-red-500" : "border-gray-300"
+              }`}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
@@ -128,9 +155,8 @@ const AuthForm = ({ mode }: Props) => {
           <input
             type="password"
             placeholder="Password"
-            className={`w-full border rounded-lg px-4 py-2 ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            }`}
+            className={`w-full border rounded-lg px-4 py-2 ${errors.password ? "border-red-500" : "border-gray-300"
+              }`}
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
@@ -146,9 +172,8 @@ const AuthForm = ({ mode }: Props) => {
             <input
               type="password"
               placeholder="Confirm Password"
-              className={`w-full border rounded-lg px-4 py-2 ${
-                errors.confirmPassword ? "border-red-500" : "border-gray-300"
-              }`}
+              className={`w-full border rounded-lg px-4 py-2 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+                }`}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -173,8 +198,8 @@ const AuthForm = ({ mode }: Props) => {
           {loading
             ? "Processing..."
             : mode === "login"
-            ? "Login"
-            : "Register"}
+              ? "Login"
+              : "Register"}
         </button>
       </form>
 
@@ -203,7 +228,7 @@ const AuthForm = ({ mode }: Props) => {
         )}
       </p>
     </div>
-    )
+  )
 }
 
 export default AuthForm

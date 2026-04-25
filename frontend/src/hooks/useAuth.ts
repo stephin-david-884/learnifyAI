@@ -46,6 +46,6 @@ export const useAuth = () => {
         checkAuth,
         resendOtp: resend,
         logout,
-        googleLogin
+        googleAuth
     }
 }
