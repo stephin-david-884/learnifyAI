@@ -12,6 +12,7 @@ import { AppError } from "../../../domain/errors/AppError";
 import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/ILogoutUsecase";
 import { env } from "../../../config/env";
 import { cookieConfig } from "../../../config/cookie.config";
+import { IGoogleAuthUsecase } from "../../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
 
 
 export class AuthController {
@@ -21,7 +22,8 @@ export class AuthController {
         private _resendOtp: IResendOtpUsecase,
         private _refreshToken: IRefreshTokenUseCase,
         private _getCurrentUser: IGetCurrentUsecase,
-        private _logout: ILogoutUsecase
+        private _logout: ILogoutUsecase,
+        private _googleAuth: IGoogleAuthUsecase,
     ) { }
 
     register = asyncHandler(async (req: Request, res: Response) => {
@@ -131,6 +133,24 @@ export class AuthController {
             res,
             statusCode.OK,
             authMessages.success.USER_LOGGEDOUT_SUCCESS
+        );
+    });
+
+    googleLogin = asyncHandler(async(req: Request, res: Response) => {
+
+        const { idToken } = req.body;
+
+        const result = await this._googleAuth.execute(idToken);
+
+        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.USER_LOGIN_SUCCESS,
+            { user: result.user }
         );
     })
 }

@@ -32,6 +32,7 @@ export const authMessages = {
         INVALID_GOOGLE_ID: "Invalid Google ID",
         INVALID_GOOGLE_TOKEN_PAYLOAD: "Invalid Google token payload",
         GOOGLE_TOKEN_VERIFICATION_FAILURE: "Failed to verify Google token",
+        GOOGLE_MAIL_VERIFICATION_FAILURE: "Google email not verified",
         REG_SESSION_EXPIRED: "Registration session expired",
         SAVE_FAILED: "Save Failed",
         ENTITY_NOT_FOUND:"Entity not found",

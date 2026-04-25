@@ -9,6 +9,7 @@ import { TokenService } from "../services/auth/TokenService";
 import { MailService } from "../services/auth/MailService";
 import { TempUserStore } from "../services/auth/TempUserStore";
 import { OtpStore } from "../services/auth/otpStore";
+import { GoogleAuthService } from "../services/auth/GoogleAuthService";
 
 //use-cases
 import { RegisterUser } from "../../application/use-cases/auth/RegisterUser.auth";
@@ -28,6 +29,8 @@ import { IResendOtpUsecase } from "../../application/interfaces/usecases/auth/IR
 import { IRefreshTokenUseCase } from "../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
 import { IGetCurrentUsecase } from "../../application/interfaces/usecases/auth/IGetCurrentUsecase";
 import { ILogoutUsecase } from "../../application/interfaces/usecases/auth/ILogoutUsecase";
+import { IGoogleAuthUsecase } from "../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
+import { GoogleAuth } from "../../application/use-cases/auth/GoogleAuth";
 
 //Instances
 const userRepository = new UserRepository();
@@ -37,6 +40,7 @@ const tokenService = new TokenService();
 const mailService = new MailService();
 const otpStore = new OtpStore(redisClient);
 const tempUserStore = new TempUserStore(redisClient);
+const googleAuthService = new GoogleAuthService();
 
 //Use cases
 const registerUser: IRegisterUserUsecase = new RegisterUser(
@@ -82,6 +86,13 @@ const logout: ILogoutUsecase = new Logout(
     hashService
 )
 
+const googleAuth: IGoogleAuthUsecase = new GoogleAuth(
+    userRepository,
+    googleAuthService,
+    tokenService,
+    hashService
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
@@ -89,5 +100,6 @@ export const authController = new AuthController(
     resendOtp,
     refreshToken,
     getCurrentUser,
-    logout
+    logout,
+    googleAuth
 )

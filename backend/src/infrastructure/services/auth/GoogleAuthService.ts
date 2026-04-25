@@ -4,7 +4,7 @@ import { OAuth2Client } from "google-auth-library"
 import { AppError } from "../../../domain/errors/AppError";
 import { authMessages } from "../../../application/constants/messages/authMessages";
 import { statusCode } from "../../../application/constants/enums/statusCode";
-import { logError, logger } from "../log/logger";
+import { logError } from "../log/logger";
 
 export class GoogleAuthService implements IGoogleAuthService {
     private client: OAuth2Client;
