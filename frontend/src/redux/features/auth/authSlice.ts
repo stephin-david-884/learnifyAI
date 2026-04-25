@@ -124,6 +124,32 @@ export const logoutUser = createAsyncThunk<
             );
         }
     }
+);
+
+export const googleLogin = createAsyncThunk<
+    { user: User },
+    { idToken: string },
+    { rejectValue: string }
+>(
+    "auth/googleLogin",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(
+                API_ROUTES.AUTH.GOOGLE_LOGIN,
+                data
+            );
+
+            return {
+                user: response.data.user
+            };
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+
+            return rejectWithValue(
+                err.response?.data?.message || "Google login failed"
+            );
+        }
+    }
 )
 
 const authSlice = createSlice({
@@ -204,6 +230,23 @@ const authSlice = createSlice({
                 state.user = null;
                 state.isAuthenticated = false;
                 state.initialized = true;
+            })
+
+            .addCase(googleLogin.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(googleLogin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload.user;
+                state.isAuthenticated = true;
+                state.initialized = true;
+            })
+
+            .addCase(googleLogin.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Google login failed";
             })
 
     }

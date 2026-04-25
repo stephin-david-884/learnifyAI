@@ -37,3 +37,10 @@ export const loginSchema = z.object({
         .min(6, 'Password must contain atleast 6 characters')
         .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/, "Password must contain uppercase, lowercase, number and special character")
 })
+
+export const googleLoginSchema = z.object({
+    idToken: z
+        .string()
+        .trim()
+        .min(1, 'Token is missing')
+})

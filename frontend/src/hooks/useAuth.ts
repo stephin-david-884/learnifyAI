@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../redux/store";
-import { clearError, getCurrentUser, logoutUser, registerUser, resendOtp } from "../redux/features/auth/authSlice";
+import { clearError, getCurrentUser, googleLogin, logoutUser, registerUser, resendOtp } from "../redux/features/auth/authSlice";
 import type { RegisterPayload } from "../types/user";
 
 export const useAuth = () => {
@@ -30,6 +30,10 @@ export const useAuth = () => {
         return dispatch(logoutUser()).unwrap()
     }
 
+    const googleAuth = async (idToken: string) => {
+        return dispatch(googleLogin({idToken})).unwrap();
+    }
+
     return {
         user,
         isAuthenticated,
@@ -41,6 +45,7 @@ export const useAuth = () => {
         register,
         checkAuth,
         resendOtp: resend,
-        logout
+        logout,
+        googleLogin
     }
 }

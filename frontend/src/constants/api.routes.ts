@@ -6,5 +6,6 @@ export const API_ROUTES = {
         RESEND_OTP: "/auth/resendotp",
         GET_ME: "/auth/me",
         LOGOUT: "/auth/logout",
+        GOOGLE_LOGIN: "/auth/googleLogin"
     }
 }

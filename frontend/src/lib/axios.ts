@@ -69,7 +69,8 @@ api.interceptors.response.use(
         const isAuthRoute = 
             originalRequest.url?.includes("/auth/refresh") ||
             originalRequest.url?.includes("/auth/register") ||
-            originalRequest.url?.includes("/auth/verify");
+            originalRequest.url?.includes("/auth/verify") ||
+            originalRequest.url?.includes("/auth/googleLogin");
 
         if(status === 401 && !originalRequest._retry && !isAuthRoute) {
             if(isRefreshing) {
