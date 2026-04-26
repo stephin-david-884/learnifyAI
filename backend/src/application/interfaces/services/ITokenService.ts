@@ -13,4 +13,5 @@ export interface ITokenService {
     generateCsrfToken(): string;
     verifyRefreshToken(token: string): RefreshTokenPayload;
     verifyAccessToken(token: string): AccessTokenPayload;
+    generateResetTokenForForgotPassword(email: string): string;
 }

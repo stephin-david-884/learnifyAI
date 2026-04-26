@@ -29,6 +29,7 @@ export const authMessages = {
         INVALID_CSRF_TOKEN:"Invalid CSRF token",
         REFRESH_TOKEN_SECRET_NOT_FOUND: "Refresh token secret is not available",
         ACCESS_TOKEN_SECRET_NOT_FOUND: "Access token secret is not available",
+        RESET_TOKEN_SECRET_NOT_FOUND: "Reset token secret is not available",
         INVALID_GOOGLE_ID: "Invalid Google ID",
         INVALID_GOOGLE_TOKEN_PAYLOAD: "Invalid Google token payload",
         GOOGLE_TOKEN_VERIFICATION_FAILURE: "Failed to verify Google token",

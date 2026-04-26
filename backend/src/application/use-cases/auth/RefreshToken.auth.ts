@@ -2,7 +2,7 @@ import { AppError } from "../../../domain/errors/AppError";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
-import { RefreshTokenInputDTO, RefreshTokenOutputDTO } from "../../dtos/refreshToken.auth.dto";
+import { RefreshTokenInputDTO, RefreshTokenOutputDTO } from "../../dtos/auth/refreshToken.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
 import { ITokenService } from "../../interfaces/services/ITokenService";
 import { IRefreshTokenUseCase } from "../../interfaces/usecases/auth/IRefreshTokenUsecase";

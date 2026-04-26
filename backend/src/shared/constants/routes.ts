@@ -7,6 +7,9 @@ export const ROUTES = {
     GET_ME: "/me",
     LOG_OUT: "/logout",
     GOOGLE_LOGIN: "/googleLogin",
-    LOGIN: "/login"
+    LOGIN: "/login",
+    FORGOT_PASSWORD: "/forgotpassword",
+    VERIFY_OTP_RESET: "/verify-otp-forgotpassword",
+    RESET_PASSWORD: "/resetpassword"
   },
 };

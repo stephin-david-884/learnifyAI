@@ -1,4 +1,4 @@
-import { GoogleAuthDTO } from "../../../application/dtos/googleAuth.dto";
+import { GoogleAuthDTO } from "../../../application/dtos/auth/googleAuth.dto";
 import { IGoogleAuthService } from "../../../application/interfaces/services/IGoogleAuthService";
 import { OAuth2Client } from "google-auth-library"
 import { AppError } from "../../../domain/errors/AppError";

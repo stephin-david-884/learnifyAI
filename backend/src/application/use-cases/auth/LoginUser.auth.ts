@@ -2,7 +2,7 @@ import { AppError } from "../../../domain/errors/AppError";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
-import { LoginInputDTO, LoginOutputDTO } from "../../dtos/login.auth.dto";
+import { LoginInputDTO, LoginOutputDTO } from "../../dtos/auth/login.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
 import { ITokenService } from "../../interfaces/services/ITokenService";
 import { ILoginUsecase } from "../../interfaces/usecases/auth/ILoginUsecase";

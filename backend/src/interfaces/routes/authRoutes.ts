@@ -3,7 +3,7 @@ import { authController } from '../../infrastructure/di/container';
 import { ROUTES } from '../../shared/constants/routes';
 import { validate } from '../middlewares/validate';
 import { otpSchema, registerSchema, resendOtpSchema } from '../validators/auth/registerValidator';
-import { googleLoginSchema, loginSchema } from '../validators/auth/loginValidator';
+import { forgotPasswordSchema, googleLoginSchema, loginSchema } from '../validators/auth/loginValidator';
 
 
 const router = express.Router();
@@ -15,6 +15,8 @@ router.post(ROUTES.AUTH.REFRESH_TOKEN, authController.refreshToken);
 router.get(ROUTES.AUTH.GET_ME, authController.getCurrentUser);
 router.post(ROUTES.AUTH.LOG_OUT, authController.logout);
 router.post(ROUTES.AUTH.GOOGLE_LOGIN, validate(googleLoginSchema, 'body'), authController.googleLogin);
-router.post(ROUTES.AUTH.LOGIN, validate(loginSchema, 'body'), authController.login);  
+router.post(ROUTES.AUTH.LOGIN, validate(loginSchema, 'body'), authController.login);
+router.post(ROUTES.AUTH.FORGOT_PASSWORD, validate(forgotPasswordSchema, 'body'), authController.forgotPassword);
+router.post(ROUTES.AUTH.VERIFY_OTP_RESET, validate(otpSchema, 'body'), authController.verifyForgotPasswordOtp);
 
 export default router;

@@ -1,4 +1,4 @@
-import { VerifyRegisterInputDTO, VerifyRegisterOutputDTO } from "../../../dtos/verifyRegister.auth.dto";
+import { VerifyRegisterInputDTO, VerifyRegisterOutputDTO } from "../../../dtos/auth/verifyRegister.auth.dto";
 
 
 export interface IVerifyRegisterUsecase {

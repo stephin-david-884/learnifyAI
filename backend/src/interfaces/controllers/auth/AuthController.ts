@@ -12,6 +12,8 @@ import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/IL
 import { cookieConfig } from "../../../config/cookie.config";
 import { IGoogleAuthUsecase } from "../../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { ILoginUsecase } from "../../../application/interfaces/usecases/auth/ILoginUsecase";
+import { IForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IForgotPasswordUsecase";
+import { IVerifyForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
 
 
 export class AuthController {
@@ -23,7 +25,9 @@ export class AuthController {
         private _getCurrentUser: IGetCurrentUsecase,
         private _logout: ILogoutUsecase,
         private _googleAuth: IGoogleAuthUsecase,
-        private _login: ILoginUsecase
+        private _login: ILoginUsecase,
+        private _forgotPassword: IForgotPasswordUsecase,
+        private _verifyForgotPassword: IVerifyForgotPasswordUsecase
     ) { }
 
     register = asyncHandler(async (req: Request, res: Response) => {
@@ -175,4 +179,32 @@ export class AuthController {
             }
         );
     })
+
+    forgotPassword = asyncHandler(async (req: Request, res: Response) => {
+        const { email } = req.body;
+
+        await this._forgotPassword.execute({ email });
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.OTP_SEND_SUCCESS
+        )
+    })
+
+    verifyForgotPasswordOtp = asyncHandler(async (req, res) => {
+        const { email, otp } = req.body;
+
+        const result = await this._verifyForgotPassword.execute({
+            email,
+            otp
+        });
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.OTP_VERIFIED,
+            result
+        );
+    });
 }

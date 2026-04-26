@@ -6,5 +6,8 @@ export const jwtConfig = {
     },
     refreshToken: {
         secret: env.JWT_REFRESH_SECRET,
+    },
+    resetTokenForForgotPassword: {
+        secret: env.RESET_TOKEN_SECRET
     }
 }

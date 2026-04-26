@@ -34,6 +34,10 @@ import { IGoogleAuthUsecase } from "../../application/interfaces/usecases/auth/I
 import { GoogleAuth } from "../../application/use-cases/auth/GoogleAuth";
 import { ILoginUsecase } from "../../application/interfaces/usecases/auth/ILoginUsecase";
 import { LoginUser } from "../../application/use-cases/auth/LoginUser.auth";
+import { IForgotPasswordUsecase } from "../../application/interfaces/usecases/auth/IForgotPasswordUsecase";
+import { ForgotPassword } from "../../application/use-cases/auth/ForgotPassword.auth";
+import { IVerifyForgotPasswordUsecase } from "../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
+import { VerifyForgotPasswordOtp } from "../../application/use-cases/auth/VerifyForgotPassword.auth";
 
 //Instances
 const userRepository = new UserRepository();
@@ -102,6 +106,20 @@ const login: ILoginUsecase = new LoginUser(
     hashService
 )
 
+const forgotPassword: IForgotPasswordUsecase = new ForgotPassword(
+    userRepository,
+    otpService,
+    otpStore,
+    mailService,
+    hashService
+)
+
+const verifyForgotpassword: IVerifyForgotPasswordUsecase = new VerifyForgotPasswordOtp(
+    otpStore,
+    hashService,
+    tokenService
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
@@ -111,5 +129,7 @@ export const authController = new AuthController(
     getCurrentUser,
     logout,
     googleAuth,
-    login
+    login,
+    forgotPassword,
+    verifyForgotpassword
 )

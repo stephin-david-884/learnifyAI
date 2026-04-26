@@ -3,7 +3,7 @@ import { AppError } from "../../../domain/errors/AppError";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
-import { LoginOutputDTO } from "../../dtos/login.auth.dto";
+import { LoginOutputDTO } from "../../dtos/auth/login.auth.dto";
 import { IGoogleAuthService } from "../../interfaces/services/IGoogleAuthService";
 import { IHashService } from "../../interfaces/services/IHashService";
 import { ITokenService } from "../../interfaces/services/ITokenService";

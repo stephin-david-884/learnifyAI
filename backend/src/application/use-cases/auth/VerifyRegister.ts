@@ -4,7 +4,7 @@ import { AppError } from "../../../domain/errors/AppError";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
-import { VerifyRegisterInputDTO, VerifyRegisterOutputDTO } from "../../dtos/verifyRegister.auth.dto";
+import { VerifyRegisterInputDTO, VerifyRegisterOutputDTO } from "../../dtos/auth/verifyRegister.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
 // import { IOtpService } from "../../interfaces/services/IOtpservice";
 import { IOtpStore } from "../../interfaces/services/IOtpStore";

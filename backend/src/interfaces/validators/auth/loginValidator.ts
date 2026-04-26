@@ -12,9 +12,41 @@ export const loginSchema = z.object({
         .min(6, 'Password must contain atleast 6 characters')
         .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/)
 })
+
 export const googleLoginSchema = z.object({
     idToken: z
         .string()
         .trim()
         .min(1, 'Token is missing')
+})
+
+export const forgotPasswordSchema = z.object({
+    email: z
+          .string()
+          .trim()
+          .min(1, 'Email is required')
+          .email('Invalid email')
+})
+
+export const resetPasswordSchema = z.object({
+    email: z
+         .string()
+         .trim()
+         .min(1, 'Email is required')
+         .email('Invalid email'),
+    newPassword: z
+          .string()
+          .trim()
+          .min(6, 'Password must contain atleast 6 characters')
+          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%&*?])[a-zA-Z\d!@$%&*?]{6,}$/),
+    confirmPassword: z
+          .string(),
+    resetToken: z
+          .string()
+          .trim()
+          .min(1, 'Token is missing')
+})
+.refine(data => data.newPassword === data.confirmPassword, {
+    message: 'Password do not match',
+    path: ['confirmPassword']
 })
