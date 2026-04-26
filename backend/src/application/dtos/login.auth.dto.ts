@@ -11,3 +11,8 @@ export interface LoginOutputDTO {
     credits: number;
   };
 }
+
+export interface LoginInputDTO {
+  email: string;
+  password: string;
+}

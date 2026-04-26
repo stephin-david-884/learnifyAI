@@ -36,3 +36,12 @@ export interface VerifyOtpResponse {
   user: User;
   message: string;
 }
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+}

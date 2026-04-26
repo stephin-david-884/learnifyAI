@@ -19,6 +19,7 @@ import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth
 import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.auth";
 import { Logout } from "../../application/use-cases/auth/Logout.auth";
 
+
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
 import { logger } from "../services/log/logger";
@@ -31,6 +32,8 @@ import { IGetCurrentUsecase } from "../../application/interfaces/usecases/auth/I
 import { ILogoutUsecase } from "../../application/interfaces/usecases/auth/ILogoutUsecase";
 import { IGoogleAuthUsecase } from "../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { GoogleAuth } from "../../application/use-cases/auth/GoogleAuth";
+import { ILoginUsecase } from "../../application/interfaces/usecases/auth/ILoginUsecase";
+import { LoginUser } from "../../application/use-cases/auth/LoginUser.auth";
 
 //Instances
 const userRepository = new UserRepository();
@@ -93,6 +96,12 @@ const googleAuth: IGoogleAuthUsecase = new GoogleAuth(
     hashService
 )
 
+const login: ILoginUsecase = new LoginUser(
+    userRepository,
+    tokenService,
+    hashService
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
@@ -101,5 +110,6 @@ export const authController = new AuthController(
     refreshToken,
     getCurrentUser,
     logout,
-    googleAuth
+    googleAuth,
+    login
 )

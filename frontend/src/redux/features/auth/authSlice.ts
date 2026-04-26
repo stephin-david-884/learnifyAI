@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AuthState, RegisterPayload, RegisterResponse, User, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
+import type { AuthState, LoginPayload, LoginResponse, RegisterPayload, RegisterResponse, User, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -150,6 +150,29 @@ export const googleLogin = createAsyncThunk<
             );
         }
     }
+);
+
+export const loginUser = createAsyncThunk<
+    LoginResponse,
+    LoginPayload,
+    { rejectValue: string }
+>(
+    "auth/login",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
+
+            return {
+                user: response.data.user,
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+
+            return rejectWithValue(
+                err.response?.data?.message || "Login failed"
+            );
+        }
+    }
 )
 
 const authSlice = createSlice({
@@ -247,6 +270,21 @@ const authSlice = createSlice({
             .addCase(googleLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Google login failed";
+            })
+
+            .addCase(loginUser.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(loginUser.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload.user;
+                state.isAuthenticated = true;
+                state.initialized = true;
+            })
+            .addCase(loginUser.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Login failed";
             })
 
     }

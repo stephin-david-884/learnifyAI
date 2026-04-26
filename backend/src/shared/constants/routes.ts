@@ -6,6 +6,7 @@ export const ROUTES = {
     REFRESH_TOKEN: "/refresh",
     GET_ME: "/me",
     LOG_OUT: "/logout",
-    GOOGLE_LOGIN: "/googleLogin"
+    GOOGLE_LOGIN: "/googleLogin",
+    LOGIN: "/login"
   },
 };
