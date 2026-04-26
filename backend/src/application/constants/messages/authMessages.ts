@@ -10,6 +10,7 @@ export const authMessages = {
         PASSWORD_RESET: "Password reset successfully",
         OTP_VERIFIED: 'Otp verified successfully',
         TOKEN_REFRESHED: "Token refreshed successfully",
+        
     },
 
     error: {
@@ -18,6 +19,7 @@ export const authMessages = {
         CONFLICT: "Email already exists",
         UNAUTHORIZED: "Unauthorized access",
         INVALID_PASSWORD: "Invalid password",
+        PASSWORDS_DO_NOT_MATCH:"Passwords donot match",
         EMAIL_NOT_FOUND: "Email not found",
         OTP_EXPIRED: "OTP has expired",
         INVALID_OTP: "Invalid OTP",
@@ -37,6 +39,9 @@ export const authMessages = {
         REG_SESSION_EXPIRED: "Registration session expired",
         SAVE_FAILED: "Save Failed",
         ENTITY_NOT_FOUND:"Entity not found",
+        INVALID_TOKEN_PURPOSE: 'Invalid token purpose',
+        INVALID_OR_EXPIRED_TOKEN: "Invalid Token",
+        TOKEN_EMAIL_MISMATCH: "Wrong Token Email",
 
        // User Errors
         USER_NOT_FOUND: "User not found",
@@ -45,6 +50,7 @@ export const authMessages = {
         USER_BLOCKED: "User is blocked by the admin",
         USER_SAVE_FAILED: "Failed to save user",
         USE_GOOGLE_LOGIN:"Please login using Google",
+        
 
         // Admin Errors
         ADMIN_NOT_FOUND: "Admin not found"

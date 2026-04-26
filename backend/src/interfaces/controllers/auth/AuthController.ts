@@ -14,6 +14,7 @@ import { IGoogleAuthUsecase } from "../../../application/interfaces/usecases/aut
 import { ILoginUsecase } from "../../../application/interfaces/usecases/auth/ILoginUsecase";
 import { IForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IForgotPasswordUsecase";
 import { IVerifyForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
+import { IResetPasswordUsecase } from "../../../application/interfaces/usecases/auth/IResetPasswordUsecase";
 
 
 export class AuthController {
@@ -27,7 +28,8 @@ export class AuthController {
         private _googleAuth: IGoogleAuthUsecase,
         private _login: ILoginUsecase,
         private _forgotPassword: IForgotPasswordUsecase,
-        private _verifyForgotPassword: IVerifyForgotPasswordUsecase
+        private _verifyForgotPassword: IVerifyForgotPasswordUsecase,
+        private _resetPassword: IResetPasswordUsecase
     ) { }
 
     register = asyncHandler(async (req: Request, res: Response) => {
@@ -205,6 +207,23 @@ export class AuthController {
             statusCode.OK,
             authMessages.success.OTP_VERIFIED,
             result
+        );
+    });
+
+    resetPassword = asyncHandler(async (req, res) => {
+        const { email, newPassword, confirmPassword, resetToken } = req.body;
+
+        await this._resetPassword.execute({
+            email,
+            newPassword,
+            confirmPassword,
+            resetToken
+        });
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.PASSWORD_RESET
         );
     });
 }

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AccessTokenPayload, ITokenService, RefreshTokenPayload } from '../../../application/interfaces/services/ITokenService';
+import { AccessTokenPayload, ITokenService, RefreshTokenPayload, ResetTokenPayload } from '../../../application/interfaces/services/ITokenService';
 import { jwtConfig } from '../../config/jwt.config';
 import { AppError } from '../../../domain/errors/AppError';
 import { authMessages } from '../../../application/constants/messages/authMessages';
@@ -59,5 +59,29 @@ export class TokenService implements ITokenService {
             resetTokenSecret,
             { expiresIn: "10m" }
         );
+    }
+
+    verifyResetTokenForForgotPassword(token: string): ResetTokenPayload {
+        try {
+            const resetTokenSecret = jwtConfig.resetTokenForForgotPassword.secret;
+
+        if (!resetTokenSecret) {
+            throw new AppError(authMessages.error.RESET_TOKEN_SECRET_NOT_FOUND, statusCode.NOT_FOUND)
+        }
+
+        const decoded = jwt.verify(token, resetTokenSecret) as ResetTokenPayload;
+
+        if(decoded.purpose !=='password-reset'){
+            throw new AppError(authMessages.error.INVALID_TOKEN_PURPOSE, statusCode.BAD_REQUEST);
+        }
+
+        return decoded
+        } catch {
+            throw new AppError(
+                authMessages.error.INVALID_OR_EXPIRED_TOKEN,
+                statusCode.FORBIDDEN
+            );
+        }
+        
     }
 }

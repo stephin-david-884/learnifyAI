@@ -38,6 +38,8 @@ import { IForgotPasswordUsecase } from "../../application/interfaces/usecases/au
 import { ForgotPassword } from "../../application/use-cases/auth/ForgotPassword.auth";
 import { IVerifyForgotPasswordUsecase } from "../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
 import { VerifyForgotPasswordOtp } from "../../application/use-cases/auth/VerifyForgotPassword.auth";
+import { IResetPasswordUsecase } from "../../application/interfaces/usecases/auth/IResetPasswordUsecase";
+import { ResetPassword } from "../../application/use-cases/auth/ResetPassword.auth";
 
 //Instances
 const userRepository = new UserRepository();
@@ -120,6 +122,12 @@ const verifyForgotpassword: IVerifyForgotPasswordUsecase = new VerifyForgotPassw
     tokenService
 )
 
+const resetPassword: IResetPasswordUsecase = new ResetPassword(
+    userRepository,
+    hashService,
+    tokenService
+)
+
 // Controller
 export const authController = new AuthController(
     registerUser,
@@ -131,5 +139,6 @@ export const authController = new AuthController(
     googleAuth,
     login,
     forgotPassword,
-    verifyForgotpassword
+    verifyForgotpassword,
+    resetPassword
 )

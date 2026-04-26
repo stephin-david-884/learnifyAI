@@ -44,7 +44,7 @@ export const resetPasswordSchema = z.object({
     resetToken: z
           .string()
           .trim()
-          .min(1, 'Token is missing')
+          .min(1, 'Reset token is missing')
 })
 .refine(data => data.newPassword === data.confirmPassword, {
     message: 'Password do not match',
