@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./presentation/pages/Home";
@@ -10,6 +10,12 @@ import UserProtectedRoute from "./components/auth/UserProtectedRoute";
 import DashboardPage from "./presentation/pages/Dashboard/DashboardPage";
 import VerifyOtp from "./presentation/pages/auth/VerifyOtp";
 import { setLogoutHandler } from "./lib/axios";
+
+import ForgotPasswordProtectedRoute from "./components/auth/ForgotPasswordProtectedRoute";
+
+const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
+const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgotOtp'));
+const ResetPassword = lazy(() => import('./presentation/pages/auth/ResetPassword'));
 
 const App = () => {
   const { checkAuth, initialized, logout } = useAuth();
@@ -23,7 +29,7 @@ const App = () => {
       logout();
       window.location.href = "/login";
     })
-  },[logout])
+  }, [logout])
 
   if (!initialized) {
     return <div className="flex h-screen items-center justify-center">
@@ -44,9 +50,36 @@ const App = () => {
           <Route path="/register" element={<PublicRoute><AuthGateway mode="signup" /></PublicRoute>} />
           <Route path="/login" element={<PublicRoute><AuthGateway mode="login" /></PublicRoute>} />
           <Route path="/verifyotp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+
+          <Route
+            path="/verify-forgot-otp"
+            element={
+              <PublicRoute>
+                <ForgotPasswordProtectedRoute requireEmail>
+                  <VerifyForgotOtp />
+                </ForgotPasswordProtectedRoute>
+              </PublicRoute>
+            }
+          />
+
+          <Route
+            path="/reset-password"
+            element={
+              <PublicRoute>
+                <ForgotPasswordProtectedRoute
+                  requireEmail
+                  requireResetToken
+                >
+                  <ResetPassword />
+                </ForgotPasswordProtectedRoute>
+              </PublicRoute>
+            }
+          />
+
 
           <Route element={<UserProtectedRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
           </Route>
         </Routes>
       </Suspense>

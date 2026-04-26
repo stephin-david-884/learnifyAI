@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../redux/store";
-import { clearError, getCurrentUser, googleLogin, loginUser, logoutUser, registerUser, resendOtp } from "../redux/features/auth/authSlice";
-import type { LoginPayload, RegisterPayload } from "../types/user";
+import { clearError, forgotPassword, getCurrentUser, googleLogin, loginUser, logoutUser, registerUser, resendOtp, resetPassword, verifyForgotPasswordOtp } from "../redux/features/auth/authSlice";
+import type { LoginPayload, RegisterPayload, ResetPasswordPayload } from "../types/user";
 
 export const useAuth = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -22,8 +22,8 @@ export const useAuth = () => {
         }
     };
 
-    const resend = async(email: string) => {
-        return dispatch(resendOtp({email})).unwrap();
+    const resend = async (email: string) => {
+        return dispatch(resendOtp({ email })).unwrap();
     }
 
     const logout = async () => {
@@ -31,12 +31,24 @@ export const useAuth = () => {
     }
 
     const googleAuth = async (idToken: string) => {
-        return dispatch(googleLogin({idToken})).unwrap();
+        return dispatch(googleLogin({ idToken })).unwrap();
     }
 
     const login = async (data: LoginPayload) => {
         return dispatch(loginUser(data)).unwrap();
     }
+
+    const forgot = async (email: string) => {
+        return dispatch(forgotPassword({ email })).unwrap();
+    };
+
+    const verifyForgotOtp = async (email: string, otp: string) => {
+        return dispatch(verifyForgotPasswordOtp({ email, otp })).unwrap();
+    };
+
+    const reset = async (data: ResetPasswordPayload) => {
+        return dispatch(resetPassword(data)).unwrap();
+    };
 
     return {
         user,
@@ -51,6 +63,9 @@ export const useAuth = () => {
         resendOtp: resend,
         logout,
         googleAuth,
-        login
+        login,
+        forgotPassword: forgot,
+        verifyForgotOtp,
+        resetPassword: reset
     }
 }

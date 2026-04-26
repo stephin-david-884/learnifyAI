@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AuthState, LoginPayload, LoginResponse, RegisterPayload, RegisterResponse, User, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
+import type { AuthState, LoginPayload, LoginResponse, RegisterPayload, RegisterResponse, ResetPasswordPayload, User, VerifyForgotPasswordPayload, VerifyForgotPasswordResponse, VerifyOtpPayload, VerifyOtpResponse } from "../../../types/user";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -175,6 +175,81 @@ export const loginUser = createAsyncThunk<
     }
 )
 
+export const forgotPassword = createAsyncThunk<
+    { message: string },
+    { email: string },
+    { rejectValue: string }
+>(
+    "auth/forgotPassword",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(
+                API_ROUTES.AUTH.FORGOT_PASSWORD,
+                data
+            );
+
+            return { message: response.data.message };
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            return rejectWithValue(
+                err.response?.data?.message || "Failed to send OTP"
+            );
+        }
+    }
+)
+
+export const verifyForgotPasswordOtp = createAsyncThunk<
+    VerifyForgotPasswordResponse,
+    VerifyForgotPasswordPayload,
+    { rejectValue: string }
+>(
+    "auth/verifyForgotPasswordOtp",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(
+                API_ROUTES.AUTH.VERIFY_FORGOT_PASSWORD,
+                data
+            );
+
+            return {
+                email: response.data.data.email,
+                resetToken: response.data.data.resetToken,
+                message: response.data.message
+            };
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            return rejectWithValue(
+                err.response?.data?.message || "OTP verification failed"
+            );
+        }
+    }
+);
+
+export const resetPassword = createAsyncThunk<
+    { message: string },
+    ResetPasswordPayload,
+    { rejectValue: string }
+>(
+    "auth/resetPassword",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(
+                API_ROUTES.AUTH.RESET_PASSWORD,
+                data
+            );
+
+            return {
+                message: response.data.message
+            };
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            return rejectWithValue(
+                err.response?.data?.message || "Password reset failed"
+            );
+        }
+    }
+);
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -285,6 +360,39 @@ const authSlice = createSlice({
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Login failed";
+            })
+            .addCase(forgotPassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(forgotPassword.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(forgotPassword.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to send OTP";
+            })
+            .addCase(verifyForgotPasswordOtp.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(verifyForgotPasswordOtp.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(verifyForgotPasswordOtp.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "OTP verification failed";
+            })
+            .addCase(resetPassword.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(resetPassword.fulfilled, (state) => {
+                state.loading = false;
+            })
+            .addCase(resetPassword.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Password reset failed";
             })
 
     }

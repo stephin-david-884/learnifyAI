@@ -75,19 +75,19 @@ const AuthForm = ({ mode }: Props) => {
         toast.error(result.payload || "Registration failed");
       }
     } else {
-        const result = await dispatch(
-          loginUser({
-            email: formData.email,
-            password: formData.password
-          })
-        );
+      const result = await dispatch(
+        loginUser({
+          email: formData.email,
+          password: formData.password
+        })
+      );
 
-        if(loginUser.fulfilled.match(result)) {
-          toast.success("Login successful")
-          navigate("/dashboard");
-        } else {
-          toast.error(result.payload || "Login failed");
-        } 
+      if (loginUser.fulfilled.match(result)) {
+        toast.success("Login successful")
+        navigate("/dashboard");
+      } else {
+        toast.error(result.payload || "Login failed");
+      }
     }
   };
 
@@ -177,6 +177,18 @@ const AuthForm = ({ mode }: Props) => {
           )}
         </div>
 
+        {/* Forgot Password */}
+        {mode === "login" && (
+          <div className="text-right -mt-2">
+            <span
+              className="text-sm text-blue-600 cursor-pointer hover:underline"
+              onClick={() => navigate("/forgot-password")}
+            >
+              Forgot password?
+            </span>
+          </div>
+        )}
+
         {/* Confirm Password */}
         {mode === "signup" && (
           <div>
@@ -239,6 +251,7 @@ const AuthForm = ({ mode }: Props) => {
         )}
       </p>
     </div>
+
   )
 }
 

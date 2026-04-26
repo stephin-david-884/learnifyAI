@@ -45,3 +45,25 @@ export interface LoginPayload {
 export interface LoginResponse {
   user: User;
 }
+
+export interface ForgotPasswordPayload {
+  email: string;
+}
+
+export interface VerifyForgotPasswordPayload {
+  email: string;
+  otp: string;
+}
+
+export interface VerifyForgotPasswordResponse {
+  email: string;
+  resetToken: string;
+  message: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  newPassword: string;
+  confirmPassword: string;
+  resetToken: string;
+}
