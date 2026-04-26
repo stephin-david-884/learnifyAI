@@ -4,7 +4,7 @@ import { type AppDispatch, type RootState } from '../../../redux/store';
 import { useNavigate } from 'react-router-dom';
 import { loginSchema, registerSchema } from '../../../lib/validation/authValidation';
 import { ZodError } from 'zod';
-import { googleLogin, registerUser } from '../../../redux/features/auth/authSlice';
+import { googleLogin, loginUser, registerUser } from '../../../redux/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { GoogleLogin } from '@react-oauth/google';
 
@@ -75,8 +75,19 @@ const AuthForm = ({ mode }: Props) => {
         toast.error(result.payload || "Registration failed");
       }
     } else {
+        const result = await dispatch(
+          loginUser({
+            email: formData.email,
+            password: formData.password
+          })
+        );
 
-      toast("Login coming next ");
+        if(loginUser.fulfilled.match(result)) {
+          toast.success("Login successful")
+          navigate("/dashboard");
+        } else {
+          toast.error(result.payload || "Login failed");
+        } 
     }
   };
 
