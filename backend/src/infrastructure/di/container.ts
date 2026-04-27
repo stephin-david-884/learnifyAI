@@ -22,6 +22,8 @@ import { Logout } from "../../application/use-cases/auth/Logout.auth";
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
+
+
 import { logger } from "../services/log/logger";
 //interfaces
 import { IRegisterUserUsecase } from "../../application/interfaces/usecases/auth/IRegisterUserUsecase";
@@ -41,6 +43,9 @@ import { VerifyForgotPasswordOtp } from "../../application/use-cases/auth/Verify
 import { IResetPasswordUsecase } from "../../application/interfaces/usecases/auth/IResetPasswordUsecase";
 import { ResetPassword } from "../../application/use-cases/auth/ResetPassword.auth";
 import { AdminRepository } from "../repositories/AdminRepository";
+import { IAdminLoginUsecase } from "../../application/interfaces/usecases/admin/auth/IAdminLoginUsecase";
+import { AdminLogin } from "../../application/use-cases/admin/auth/AdminLogin";
+import { AdminController } from "../../interfaces/controllers/admin/AdminController";
 
 //Instances
 const userRepository = new UserRepository();
@@ -131,6 +136,13 @@ const resetPassword: IResetPasswordUsecase = new ResetPassword(
     tokenService
 )
 
+//admin usecases
+const adminLogin: IAdminLoginUsecase = new AdminLogin(
+    adminRepository,
+    tokenService,
+    hashService
+)
+
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -143,6 +155,10 @@ export const authController = new AuthController(
     forgotPassword,
     verifyForgotpassword,
     resetPassword
+)
+
+export const adminController = new AdminController(
+    adminLogin
 )
 
 export { tokenService };

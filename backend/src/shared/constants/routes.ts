@@ -12,4 +12,8 @@ export const ROUTES = {
     VERIFY_OTP_RESET: "/verify-otp-forgotpassword",
     RESET_PASSWORD: "/resetpassword"
   },
+
+  ADMIN: {
+    LOGIN: "/login"
+  }
 };
