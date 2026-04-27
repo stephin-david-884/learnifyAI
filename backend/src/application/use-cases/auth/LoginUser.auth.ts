@@ -41,15 +41,19 @@ export class LoginUser implements ILoginUsecase {
         const accessToken = this.tokenService.generateAccessToken({
             userId: user.getId(),
             email: user.email,
+            type: "USER",
         });
 
         const refreshToken = this.tokenService.generateRefreshToken({
-            userId: user.getId()
+            userId: user.getId(),
+            type: "USER",
         });
 
         const csrfToken = this.tokenService.generateCsrfToken();
 
-        user.addRefreshToken(refreshToken);
+        const hashedRefreshToken = await this.hashService.hash(refreshToken);
+
+        user.addRefreshToken(hashedRefreshToken);
 
         await this.userRepository.save(user);
 

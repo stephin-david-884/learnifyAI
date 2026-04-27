@@ -64,10 +64,12 @@ export class GoogleAuth implements IGoogleAuthUsecase {
         const accessToken = this.tokenService.generateAccessToken({
             userId: user.getId(),
             email: user.email,
+            type: "USER",
         });
 
         const refreshToken = this.tokenService.generateRefreshToken({
             userId: user.getId(),
+            type: "USER",
         });
 
         const csrfToken = this.tokenService.generateCsrfToken();

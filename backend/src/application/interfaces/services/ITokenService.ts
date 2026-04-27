@@ -1,10 +1,14 @@
+export type TokenType = "USER" | "ADMIN";
+
 export interface AccessTokenPayload {
     userId: string;
     email: string;
+    type: TokenType;
 }
 
 export interface RefreshTokenPayload {
     userId: string;
+    type: TokenType;
 }
 
 export interface ResetTokenPayload {

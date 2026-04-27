@@ -40,6 +40,7 @@ import { IVerifyForgotPasswordUsecase } from "../../application/interfaces/useca
 import { VerifyForgotPasswordOtp } from "../../application/use-cases/auth/VerifyForgotPassword.auth";
 import { IResetPasswordUsecase } from "../../application/interfaces/usecases/auth/IResetPasswordUsecase";
 import { ResetPassword } from "../../application/use-cases/auth/ResetPassword.auth";
+import { AdminRepository } from "../repositories/AdminRepository";
 
 //Instances
 const userRepository = new UserRepository();
@@ -50,6 +51,7 @@ const mailService = new MailService();
 const otpStore = new OtpStore(redisClient);
 const tempUserStore = new TempUserStore(redisClient);
 const googleAuthService = new GoogleAuthService();
+const adminRepository = new AdminRepository();
 
 //Use cases
 const registerUser: IRegisterUserUsecase = new RegisterUser(
@@ -80,6 +82,7 @@ const resendOtp:IResendOtpUsecase = new ResendOtp(
 
 const refreshToken: IRefreshTokenUseCase = new RefreshToken(
     userRepository,
+    adminRepository,
     tokenService,
     hashService,
 );
@@ -128,7 +131,6 @@ const resetPassword: IResetPasswordUsecase = new ResetPassword(
     tokenService
 )
 
-// Controller
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -142,3 +144,5 @@ export const authController = new AuthController(
     verifyForgotpassword,
     resetPassword
 )
+
+export { tokenService };

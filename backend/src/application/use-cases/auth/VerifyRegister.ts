@@ -75,11 +75,13 @@ export class VerifyRegister implements IVerifyRegisterUsecase{
 
         //Generate token
         const refreshToken = this.tokenService.generateRefreshToken({
-            userId: createdUser.getId()
+            userId: createdUser.getId(),
+            type: "USER",
         })
         const accessToken = this.tokenService.generateAccessToken({
             userId: createdUser.getId(),
-            email: createdUser.email
+            email: createdUser.email,
+            type: "USER",
         });
         const csrfToken = this.tokenService.generateCsrfToken();
 

@@ -1,4 +1,5 @@
 import { AppError } from "../../../domain/errors/AppError";
+import { IAdminRepository } from "../../../domain/repositories/IAdminRepository";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
@@ -11,6 +12,7 @@ import { IRefreshTokenUseCase } from "../../interfaces/usecases/auth/IRefreshTok
 export class RefreshToken implements IRefreshTokenUseCase {
     constructor(
         private userRepository: IUserRepository,
+        private adminRepository: IAdminRepository,
         private tokenService: ITokenService,
         private hashService: IHashService
     ) { }
@@ -22,21 +24,32 @@ export class RefreshToken implements IRefreshTokenUseCase {
 
         //verify the current token
         const payload = this.tokenService.verifyRefreshToken(request.token);
-        const userId = payload.userId;
+        const { userId, type } = payload;
 
         if (!userId) {
             throw new AppError(authMessages.error.INVALID_REFRESH_TOKEN, statusCode.UNAUTHORIZED);
         }
 
         //Find the user with the ID
-        const user = await this.userRepository.findById(userId);
+        let entity;
 
-        if (!user) {
+        if (type === "USER") {
+            entity = await this.userRepository.findById(userId);
+        } else if (type === "ADMIN") {
+            entity = await this.adminRepository.findById(userId);
+        } else {
+            throw new AppError(
+                authMessages.error.INVALID_REFRESH_TOKEN,
+                statusCode.UNAUTHORIZED
+            );
+        }
+
+        if (!entity) {
             throw new AppError(authMessages.error.USER_NOT_FOUND, statusCode.NOT_FOUND);
         }
 
         //Validate token against stored tokens
-        const storedTokens = user.getRefreshTokens();
+        const storedTokens = entity.getRefreshTokens();
 
         let matched = false;
         const updatedTokens: string[] = [];
@@ -64,12 +77,14 @@ export class RefreshToken implements IRefreshTokenUseCase {
 
         //Generate new tokens
         const newAccessToken = this.tokenService.generateAccessToken({
-            userId: user.getId(),
-            email: user.email
+            userId: entity.getId(),
+            email: entity.email,
+            type,
         });
 
         const newRefreshToken = this.tokenService.generateRefreshToken({
-            userId: user.getId(),
+            userId: entity.getId(),
+            type,
         })
 
         const csrfToken = this.tokenService.generateCsrfToken();
@@ -77,16 +92,24 @@ export class RefreshToken implements IRefreshTokenUseCase {
         const hashedRefreshToken = await this.hashService.hash(newRefreshToken);
 
         updatedTokens.push(hashedRefreshToken);
-        
-        user.setRefreshTokens(updatedTokens);
-        
-        await this.userRepository.save(user);
+
+        entity.setRefreshTokens(updatedTokens);
+
+        await this.saveEntity(entity, type)
 
         return {
-            userId: user.getId(),
+            userId: entity.getId(),
             accessToken: newAccessToken,
             refreshToken: newRefreshToken,
             csrfToken
+        }
+    }
+
+    private async saveEntity(entity: any, type: string) {
+        if (type === "USER") {
+            await this.userRepository.save(entity);
+        } else if (type === "ADMIN") {
+            await this.adminRepository.save(entity);
         }
     }
 }

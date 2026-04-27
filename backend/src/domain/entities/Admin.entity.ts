@@ -49,6 +49,10 @@ export class Admin {
     deactivate() {
         this.isActive = false;
     }
+
+    setRefreshTokens(tokens: string[]) {
+        this.refreshTokens = tokens;
+    }
 }
 
 type AdminProps = {
@@ -57,6 +61,6 @@ type AdminProps = {
     password: string;
     name: string;
     isActive?: boolean;
-    isSuperAdmin?:boolean;
+    isSuperAdmin?: boolean;
     refreshTokens?: string[];
 };
