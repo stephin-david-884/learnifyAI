@@ -52,16 +52,7 @@ const App = () => {
           <Route path="/verifyotp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
           <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
 
-          <Route
-            path="/verify-forgot-otp"
-            element={
-              <PublicRoute>
-                <ForgotPasswordProtectedRoute requireEmail>
-                  <VerifyForgotOtp />
-                </ForgotPasswordProtectedRoute>
-              </PublicRoute>
-            }
-          />
+          <Route path="/verify-forgot-otp" element={ <PublicRoute> <ForgotPasswordProtectedRoute requireEmail> <VerifyForgotOtp /> </ForgotPasswordProtectedRoute> </PublicRoute> } />
 
           <Route
             path="/reset-password"
