@@ -12,6 +12,9 @@ import VerifyOtp from "./presentation/pages/auth/VerifyOtp";
 import { setLogoutHandler } from "./lib/axios";
 
 import ForgotPasswordProtectedRoute from "./components/auth/ForgotPasswordProtectedRoute";
+import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
+import AdminLogin from "./presentation/pages/admin/AdminLogin";
+import AdminDashboard from "./presentation/pages/admin/AdminDashboard";
 
 const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
 const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgotOtp'));
@@ -52,7 +55,7 @@ const App = () => {
           <Route path="/verifyotp" element={<PublicRoute><VerifyOtp /></PublicRoute>} />
           <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
 
-          <Route path="/verify-forgot-otp" element={ <PublicRoute> <ForgotPasswordProtectedRoute requireEmail> <VerifyForgotOtp /> </ForgotPasswordProtectedRoute> </PublicRoute> } />
+          <Route path="/verify-forgot-otp" element={<PublicRoute> <ForgotPasswordProtectedRoute requireEmail> <VerifyForgotOtp /> </ForgotPasswordProtectedRoute> </PublicRoute>} />
 
           <Route
             path="/reset-password"
@@ -68,9 +71,14 @@ const App = () => {
             }
           />
 
-
           <Route element={<UserProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
+
+          <Route path="/admin/login" element={<AdminLogin />} />
+
+          <Route element={<AdminProtectedRoute />}>
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Route>
         </Routes>
       </Suspense>

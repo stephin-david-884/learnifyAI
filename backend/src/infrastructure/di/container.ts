@@ -158,7 +158,8 @@ export const authController = new AuthController(
 )
 
 export const adminController = new AdminController(
-    adminLogin
+    adminLogin,
+    refreshToken
 )
 
 export { tokenService };

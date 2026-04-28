@@ -1,8 +1,8 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL
-  ? `${import.meta.env.VITE_BACKEND_URL}/api`
-  : "http://localhost:5000/api";
+    ? `${import.meta.env.VITE_BACKEND_URL}/api`
+    : "http://localhost:5000/api";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
@@ -23,7 +23,7 @@ const getCsrfToken = (): string | null => {
 };
 
 const api = axios.create({
-    baseURL:BASE_URL,
+    baseURL: BASE_URL,
     withCredentials: true
 });
 
@@ -36,17 +36,17 @@ let failedQueue: {
 
 const processQueue = (error: unknown) => {
     failedQueue.forEach((p) => {
-        if(error) p.reject(error);
+        if (error) p.reject(error);
         else p.resolve();
     });
-    failedQueue=[];
+    failedQueue = [];
 }
 
 //Request interceptor
 api.interceptors.request.use((config) => {
     const csrfToken = getCsrfToken();
 
-    if(csrfToken){
+    if (csrfToken) {
         config.headers["x-csrf-token"] = csrfToken;
     }
 
@@ -57,23 +57,24 @@ api.interceptors.request.use((config) => {
 //Response interceptor
 api.interceptors.response.use(
     (res) => res,
-    async (error: AxiosError ) => {      
+    async (error: AxiosError) => {
         const originalRequest = error.config as CustomAxiosRequestConfig;
 
-        if(!error.response){
+        if (!error.response) {
             return Promise.reject(error);
-        } 
+        }
 
         const status = error.response.status;
 
-        const isAuthRoute = 
+        const isAuthRoute =
             originalRequest.url?.includes("/auth/refresh") ||
             originalRequest.url?.includes("/auth/register") ||
             originalRequest.url?.includes("/auth/verify") ||
-            originalRequest.url?.includes("/auth/googleLogin");
+            originalRequest.url?.includes("/auth/googleLogin") ||
+            originalRequest.url?.includes("/admin/login");
 
-        if(status === 401 && !originalRequest._retry && !isAuthRoute) {
-            if(isRefreshing) {
+        if (status === 401 && !originalRequest._retry && !isAuthRoute) {
+            if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({
                         resolve: () => resolve(api(originalRequest)),
@@ -86,7 +87,13 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                await api.post("/auth/refresh");
+                const isAdminRoute = originalRequest.url?.startsWith("/admin");
+
+                const refreshUrl = isAdminRoute
+                    ? "/admin/refresh"
+                    : "/auth/refresh";
+
+                await api.post(refreshUrl);
 
                 processQueue(null);
 
@@ -94,7 +101,7 @@ api.interceptors.response.use(
             } catch (error) {
                 processQueue(error);
 
-                if(logoutHandler) {
+                if (logoutHandler) {
                     logoutHandler();
                 }
 
@@ -103,7 +110,7 @@ api.interceptors.response.use(
                 isRefreshing = false;
             }
         }
-        
+
         return Promise.reject(error);
     }
 )

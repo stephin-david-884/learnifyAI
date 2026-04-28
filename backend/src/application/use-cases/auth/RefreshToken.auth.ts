@@ -30,7 +30,7 @@ export class RefreshToken implements IRefreshTokenUseCase {
             throw new AppError(authMessages.error.INVALID_REFRESH_TOKEN, statusCode.UNAUTHORIZED);
         }
 
-        //Find the user with the ID
+        //Find the entity with the ID for admin or user
         let entity;
 
         if (type === "USER") {
@@ -99,6 +99,7 @@ export class RefreshToken implements IRefreshTokenUseCase {
 
         return {
             userId: entity.getId(),
+            type,
             accessToken: newAccessToken,
             refreshToken: newRefreshToken,
             csrfToken

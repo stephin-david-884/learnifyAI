@@ -15,6 +15,7 @@ import { ILoginUsecase } from "../../../application/interfaces/usecases/auth/ILo
 import { IForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IForgotPasswordUsecase";
 import { IVerifyForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
 import { IResetPasswordUsecase } from "../../../application/interfaces/usecases/auth/IResetPasswordUsecase";
+import { AppError } from "../../../domain/errors/AppError";
 
 
 export class AuthController {
@@ -89,6 +90,10 @@ export class AuthController {
         const result = await this._refreshToken.execute({
             token: refreshTokenFromCookie,
         });
+
+        if (result.type !== 'USER') {
+            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
+        }
 
         res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
         res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);

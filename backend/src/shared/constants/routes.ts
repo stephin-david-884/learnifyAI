@@ -14,6 +14,7 @@ export const ROUTES = {
   },
 
   ADMIN: {
-    LOGIN: "/login"
+    LOGIN: "/login",
+    REFRESH_TOKEN: "/refresh",
   }
 };
