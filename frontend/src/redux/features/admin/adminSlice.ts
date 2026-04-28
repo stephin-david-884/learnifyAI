@@ -14,6 +14,7 @@ interface AdminState {
     isAuthenticated: boolean;
     loading: boolean;
     error: string | null;
+    initialized: boolean;
 }
 
 const initialState: AdminState = {
@@ -21,6 +22,7 @@ const initialState: AdminState = {
     isAuthenticated: false,
     loading: false,
     error: null,
+    initialized: false,
 };
 
 export const adminLogin = createAsyncThunk<
@@ -44,6 +46,28 @@ export const adminLogin = createAsyncThunk<
         }
     }
 );
+
+export const getCurrentAdmin = createAsyncThunk<
+    Admin | null,
+    void,
+    { rejectValue: string }
+>(
+    "admin/getCurrentAdmin",
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await api.get(API_ROUTES.ADMIN.GET_ME);
+            return res.data.admin;
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+
+            if (err.response?.status === 401 || err.response?.status === 403) {
+                return rejectWithValue("NOT_AUTHENTICATED");
+            }
+
+            return rejectWithValue("Something went wrong");
+        }
+    }
+)
 
 const adminSlice = createSlice({
     name: "admin",
@@ -71,7 +95,27 @@ const adminSlice = createSlice({
             .addCase(adminLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Login failed";
-            });
+            })
+            .addCase(getCurrentAdmin.pending, (state) => {
+                state.loading = true;
+            })
+            .addCase(getCurrentAdmin.fulfilled, (state, action) => {
+                state.loading = false;
+                state.initialized = true;
+                if (action.payload) {
+                    state.admin = action.payload;
+                    state.isAuthenticated = true;
+                } else {
+                    state.admin = null;
+                    state.isAuthenticated = false;
+                }
+            })
+            .addCase(getCurrentAdmin.rejected, (state) => {
+                state.loading = false;
+                state.admin = null;
+                state.isAuthenticated = false;
+                state.initialized = true;
+            })
     },
 });
 

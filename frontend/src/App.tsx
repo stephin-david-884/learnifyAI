@@ -15,17 +15,25 @@ import ForgotPasswordProtectedRoute from "./components/auth/ForgotPasswordProtec
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import AdminLogin from "./presentation/pages/admin/AdminLogin";
 import AdminDashboard from "./presentation/pages/admin/AdminDashboard";
+import { useAdminAuth } from "./hooks/useAdminAuth";
 
 const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
 const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgotOtp'));
 const ResetPassword = lazy(() => import('./presentation/pages/auth/ResetPassword'));
 
 const App = () => {
-  const { checkAuth, initialized, logout } = useAuth();
+  const { checkAuth, initialized: userInitialized, logout } = useAuth();
+  const { checkAdminAuth, initialized: adminInitialized } = useAdminAuth();
 
   useEffect(() => {
-    checkAuth();
-  }, []);
+    const isAdminRoute = window.location.pathname.startsWith("/admin");
+
+    if(isAdminRoute) {
+      checkAdminAuth();
+    } else {
+      checkAuth();
+    }
+  },[]);
 
   useEffect(() => {
     setLogoutHandler(() => {
@@ -34,7 +42,9 @@ const App = () => {
     })
   }, [logout])
 
-  if (!initialized) {
+  const isAdminRoute = window.location.pathname.startsWith("/admin");
+
+  if (isAdminRoute ? !adminInitialized : !userInitialized) {
     return <div className="flex h-screen items-center justify-center">
       <Spinner />
     </div>

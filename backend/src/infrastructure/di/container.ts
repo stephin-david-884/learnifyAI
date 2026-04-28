@@ -46,6 +46,8 @@ import { AdminRepository } from "../repositories/AdminRepository";
 import { IAdminLoginUsecase } from "../../application/interfaces/usecases/admin/auth/IAdminLoginUsecase";
 import { AdminLogin } from "../../application/use-cases/admin/auth/AdminLogin";
 import { AdminController } from "../../interfaces/controllers/admin/AdminController";
+import { IGetCurrentAdminUsecase } from "../../application/interfaces/usecases/admin/auth/IGetCurrentAdminUsecase";
+import { GetCurrentAdmin } from "../../application/use-cases/admin/auth/GetCurrentAdmin.auth";
 
 //Instances
 const userRepository = new UserRepository();
@@ -143,6 +145,11 @@ const adminLogin: IAdminLoginUsecase = new AdminLogin(
     hashService
 )
 
+const getCurrentAdmin: IGetCurrentAdminUsecase = new GetCurrentAdmin(
+    adminRepository,
+    tokenService
+)
+
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -159,7 +166,8 @@ export const authController = new AuthController(
 
 export const adminController = new AdminController(
     adminLogin,
-    refreshToken
+    refreshToken,
+    getCurrentAdmin
 )
 
 export { tokenService };

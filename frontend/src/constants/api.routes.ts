@@ -13,6 +13,7 @@ export const API_ROUTES = {
         RESET_PASSWORD: "/auth/resetpassword"
     },
     ADMIN: {
-        LOGIN: "/admin/login"
+        LOGIN: "/admin/login",
+        GET_ME: "/admin/me",
     }
 }

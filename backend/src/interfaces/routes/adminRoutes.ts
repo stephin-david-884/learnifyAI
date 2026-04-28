@@ -8,5 +8,6 @@ const router = express.Router();
 
 router.post(ROUTES.ADMIN.LOGIN, validate(loginSchema, 'body'), adminController.login);
 router.post(ROUTES.ADMIN.REFRESH_TOKEN, adminController.refreshToken);
+router.post(ROUTES.ADMIN.GET_ME, adminController.getCurrentAdmin);
 
 export default router;

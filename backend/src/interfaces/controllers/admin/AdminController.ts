@@ -7,18 +7,20 @@ import { statusCode } from "../../../application/constants/enums/statusCode";
 import { authMessages } from "../../../application/constants/messages/authMessages";
 import { IRefreshTokenUseCase } from "../../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
 import { AppError } from "../../../domain/errors/AppError";
+import { IGetCurrentAdminUsecase } from "../../../application/interfaces/usecases/admin/auth/IGetCurrentAdminUsecase";
 
 export class AdminController {
     constructor(
         private _loginUsecase: IAdminLoginUsecase,
-        private _refreshToken: IRefreshTokenUseCase
+        private _refreshToken: IRefreshTokenUseCase,
+        private _getCurrentAdmin: IGetCurrentAdminUsecase
     ) { }
 
     login = asyncHandler(async (req: Request, res: Response) => {
         const result = await this._loginUsecase.execute(req.body);
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
+        res.cookie("adminAccessToken", result.accessToken, cookieConfig.accessToken);
+        res.cookie("adminRefreshToken", result.refreshToken, cookieConfig.refreshToken);
         res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
 
         return sendSuccess(
@@ -32,7 +34,7 @@ export class AdminController {
     });
 
     refreshToken = asyncHandler(async (req: Request, res: Response) => {
-        const refreshTokenFromCookie = req.cookies.refreshToken;
+        const refreshTokenFromCookie = req.cookies.adminRefreshToken;
 
         const result = await this._refreshToken.execute({ token: refreshTokenFromCookie });
 
@@ -40,8 +42,8 @@ export class AdminController {
             throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
         }
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
+        res.cookie("adminAccessToken", result.accessToken, cookieConfig.accessToken);
+        res.cookie("adminRefreshToken", result.refreshToken, cookieConfig.refreshToken);
         res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
         return sendSuccess(
             res,
@@ -49,4 +51,16 @@ export class AdminController {
             authMessages.success.TOKEN_REFRESHED
         );
     })
+
+    getCurrentAdmin = asyncHandler(async (req: Request, res: Response) => {
+        const accessToken = req.cookies.adminAccessToken;
+
+        if (!accessToken) {
+            return sendSuccess(res, statusCode.OK, "No admin", { admin: null });
+        }
+
+        const admin = await this._getCurrentAdmin.execute(accessToken);
+
+        return sendSuccess(res, statusCode.OK, "Admin fetched", { admin });
+    });
 }
