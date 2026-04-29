@@ -1,9 +1,11 @@
+import { Admin } from "../../../domain/entities/Admin.entity";
+import { User } from "../../../domain/entities/User.entity";
 import { AppError } from "../../../domain/errors/AppError";
 import { IAdminRepository } from "../../../domain/repositories/IAdminRepository";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
 import { statusCode } from "../../constants/enums/statusCode";
 import { authMessages } from "../../constants/messages/authMessages";
-import { RefreshTokenInputDTO, RefreshTokenOutputDTO } from "../../dtos/auth/refreshToken.auth.dto";
+import { RefreshTokenInputDTO, RefreshTokenOutputDTO, TokenType } from "../../dtos/auth/refreshToken.auth.dto";
 import { IHashService } from "../../interfaces/services/IHashService";
 import { ITokenService } from "../../interfaces/services/ITokenService";
 import { IRefreshTokenUseCase } from "../../interfaces/usecases/auth/IRefreshTokenUsecase";
@@ -30,8 +32,7 @@ export class RefreshToken implements IRefreshTokenUseCase {
             throw new AppError(authMessages.error.INVALID_REFRESH_TOKEN, statusCode.UNAUTHORIZED);
         }
 
-        //Find the entity with the ID for admin or user
-        let entity;
+        let entity: User | Admin | null;
 
         if (type === "USER") {
             entity = await this.userRepository.findById(userId);
@@ -106,11 +107,11 @@ export class RefreshToken implements IRefreshTokenUseCase {
         }
     }
 
-    private async saveEntity(entity: any, type: string) {
+    private async saveEntity(entity: User | Admin, type: TokenType) {
         if (type === "USER") {
-            await this.userRepository.save(entity);
-        } else if (type === "ADMIN") {
-            await this.adminRepository.save(entity);
+            await this.userRepository.save(entity as User);
+        } else {
+            await this.adminRepository.save(entity as Admin);
         }
     }
 }
