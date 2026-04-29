@@ -63,10 +63,10 @@ api.interceptors.response.use(
         const status = error.response.status;
 
         const isAuthRoute =
-            originalRequest.url?.includes("/auth/refresh") ||
-            originalRequest.url?.includes("/admin/refresh") ||
-            originalRequest.url?.includes("/auth/me") ||
-            originalRequest.url?.includes("/admin/me") ||   
+            // originalRequest.url?.includes("/auth/refresh") ||
+            // originalRequest.url?.includes("/admin/refresh") ||
+            // originalRequest.url?.includes("/auth/me") ||
+            // originalRequest.url?.includes("/admin/me") ||   
             originalRequest.url?.includes("/auth/register") ||
             originalRequest.url?.includes("/auth/verify") ||
             originalRequest.url?.includes("/auth/googleLogin") ||

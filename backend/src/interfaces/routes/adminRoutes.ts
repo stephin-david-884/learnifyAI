@@ -15,5 +15,6 @@ router.post(ROUTES.ADMIN.LOG_OUT, verifyCsrf, adminController.logout);
 
 //Usermanagement Routes
 router.get(ROUTES.ADMIN.GET_USERS, verifyCsrf, userManagementController.getAllUsers);
+router.patch(ROUTES.ADMIN.BLOCK_USER, verifyCsrf, userManagementController.blockUser)
 
 export default router;

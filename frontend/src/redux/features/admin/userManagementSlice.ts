@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AdminUser, GetUsersResponse } from "../../../types/admin/user";
+import type { AdminUser, BlockUserParams, GetUsersResponse } from "../../../types/admin/user";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -21,12 +21,12 @@ interface UserManagementState {
 }
 
 const initialState: UserManagementState = {
-  users: [],
-  loading: false,
-  error: null,
-  page: 1,
-  limit: 10,
-  total: 0,
+    users: [],
+    loading: false,
+    error: null,
+    page: 1,
+    limit: 10,
+    total: 0,
 };
 
 
@@ -56,6 +56,32 @@ export const fetchUsers = createAsyncThunk<
     }
 );
 
+export const toggleUserBlockStatus = createAsyncThunk<
+    { userId: string; isBlocked: boolean },
+    BlockUserParams,
+    { rejectValue: string }
+>("admin/toggleUserBlockStatus", async (data, { rejectWithValue }) => {
+    try {
+        const res = await api.patch(
+            API_ROUTES.ADMIN.BLOCK_USER(data.userId),
+            {
+                action: data.action,
+            }
+        );
+
+        if (!res.data.success) {
+            return rejectWithValue("Invalid response");
+        }
+
+        return res.data.data;
+    } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        return rejectWithValue(
+            err.response?.data?.message || "Failed to update user status"
+        );
+    }
+});
+
 const userManagementSlice = createSlice({
     name: "userManagement",
     initialState,
@@ -81,8 +107,27 @@ const userManagementSlice = createSlice({
             .addCase(fetchUsers.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to fetch users";
-            });
-    },
+            })
+            .addCase(toggleUserBlockStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+        .addCase(toggleUserBlockStatus.fulfilled, (state, action) => {
+            state.loading = false;
+
+            const { userId, isBlocked } = action.payload;
+
+            const user = state.users.find((u) => u.id === userId);
+
+            if (user) {
+                user.isBlocked = isBlocked;
+            }
+        })
+        .addCase(toggleUserBlockStatus.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Failed to update user status";
+        })
+},
 });
 
 export const { clearError } = userManagementSlice.actions;

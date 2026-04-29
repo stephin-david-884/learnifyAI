@@ -14,3 +14,10 @@ export interface GetUsersResponse {
   page: number;
   limit: number;
 }
+
+export type BlockAction = "BLOCK" | "UNBLOCK";
+
+export interface BlockUserParams {
+  userId: string;
+  action: BlockAction;
+}

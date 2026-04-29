@@ -52,6 +52,8 @@ import { IGetCurrentAdminUsecase } from "../../application/interfaces/usecases/a
 
 
 import { IGetAllUsersUsecase } from "../../application/interfaces/usecases/userManagement/IGetAllUsersUsecase";
+import { IBlockUserUseCase } from "../../application/interfaces/usecases/admin/user/IBlockUserUseCase";
+import { BlockUserUseCase } from "../../application/use-cases/admin/user/BlockUser.usecase";
 
 
 
@@ -167,6 +169,10 @@ const getAllUsers: IGetAllUsersUsecase = new GetAllUsers(
     userRepository
 )
 
+const blockUser: IBlockUserUseCase = new BlockUserUseCase(
+    userRepository
+)
+
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -189,7 +195,8 @@ export const adminController = new AdminController(
 )
 
 export const userManagementController = new UserManagementController(
-    getAllUsers
+    getAllUsers,
+    blockUser
 );
 
 export { tokenService };

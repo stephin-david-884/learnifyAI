@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
-import { fetchUsers } from "../redux/features/admin/userManagementSlice";
+import { fetchUsers, toggleUserBlockStatus } from "../redux/features/admin/userManagementSlice";
 
 export const useUserManagement = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +17,13 @@ export const useUserManagement = () => {
     return dispatch(fetchUsers(params)).unwrap();
   };
 
+  const toggleBlockUser = async (data: {
+    userId: string;
+    action: "BLOCK" | "UNBLOCK";
+  }) => {
+    return dispatch(toggleUserBlockStatus(data)).unwrap();
+  };
+
   return {
     users,
     loading,
@@ -25,5 +32,6 @@ export const useUserManagement = () => {
     limit,
     total,
     getUsers,
+    toggleBlockUser
   };
 };

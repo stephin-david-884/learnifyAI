@@ -4,10 +4,13 @@ import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { authMessages } from "../../../application/constants/messages/authMessages";
+import { IBlockUserUseCase } from "../../../application/interfaces/usecases/admin/user/IBlockUserUseCase";
+import { safeStringParam } from "../../../utils/safeParams";
 
 export class UserManagementController {
     constructor(
-        private _getAllUsers: IGetAllUsersUsecase
+        private _getAllUsers: IGetAllUsersUsecase,
+        private _blockUserUseCase: IBlockUserUseCase
     ) { }
 
     getAllUsers = asyncHandler(async (req: Request, res: Response) => {
@@ -25,5 +28,21 @@ export class UserManagementController {
         )
     });
 
+    blockUser = asyncHandler(async (req: Request, res: Response) => {
+    const userId = safeStringParam(req.params.userId);
+    const { action } = req.body;
+
+    const result = await this._blockUserUseCase.execute({
+      userId,
+      action,
+    });
+
+    return sendSuccess(
+      res,
+      statusCode.OK,
+      `User ${action.toLowerCase()}ed successfully`,
+      result
+    );
+  });
 
 }
