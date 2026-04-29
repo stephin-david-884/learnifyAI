@@ -11,6 +11,8 @@ export const authMessages = {
         OTP_VERIFIED: 'Otp verified successfully',
         TOKEN_REFRESHED: "Token refreshed successfully",
         
+        //user management
+        USERS_FETCHED: "Users fetched successfully",
     },
 
     error: {

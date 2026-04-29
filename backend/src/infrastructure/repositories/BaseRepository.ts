@@ -52,6 +52,11 @@ export abstract class BaseRepository<
         }
     }
 
+    async findAll(): Promise<T[]> {
+        const docs = await this._model.find().lean();
+        return docs.map((doc) => this._toDomain(doc));
+    }
+
     // async deleteById(id: string): Promise<void> {
     //     if(this._supportsSoftDelete) {
     //         const updated = await this._model.findByIdAndUpdate(

@@ -20,6 +20,7 @@ import { useAdminAuth } from "./hooks/useAdminAuth";
 const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
 const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgotOtp'));
 const ResetPassword = lazy(() => import('./presentation/pages/auth/ResetPassword'));
+const AdminUsersPage = lazy(() => import('./presentation/pages/admin/AdminUsersPage'))
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -94,6 +95,7 @@ const App = () => {
 
           <Route element={<AdminProtectedRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
           </Route>
         </Routes>
       </Suspense>

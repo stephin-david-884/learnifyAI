@@ -4,8 +4,8 @@ import { UserLean, UserModel } from "../database/models/User";
 import { BaseRepository } from "./BaseRepository";
 import { toDomainUser, toPersistenceUser } from "../../application/mappers/UserMapper";
 
-export class UserRepository 
-    extends BaseRepository<User, UserLean> 
+export class UserRepository
+    extends BaseRepository<User, UserLean>
     implements IUserRepository {
 
     constructor() {
@@ -24,6 +24,34 @@ export class UserRepository
         if (!user) return null;
 
         return toDomainUser(user);
+    }
+
+    async findAllPaginated(page: number, limit: number, search?: string): Promise<{ users: User[]; total: number; }> {
+        const skip = (page - 1) * limit;
+
+        const filter = search
+            ? {
+                $or: [
+                    { name: { $regex: search, $options: "i" } },
+                    { email: { $regex: search, $options: "i" } }
+                ]
+            }
+            : {};
+
+        const [users, total] = await Promise.all([
+            this._model
+                .find(filter)
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+
+            this._model.countDocuments(filter)
+        ]);
+
+        return {
+            users: users.map(toDomainUser),
+            total
+        };
     }
 
 

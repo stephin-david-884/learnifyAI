@@ -17,6 +17,7 @@ export const ROUTES = {
     LOGIN: "/login",
     REFRESH_TOKEN: "/refresh",
     GET_ME: "/me",
-    LOG_OUT: "/logout"
+    LOG_OUT: "/logout",
+    GET_USERS: "/users"
   }
 };

@@ -17,12 +17,14 @@ import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister"
 import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
 import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth";
 import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.auth";
+import { GetAllUsers } from "../../application/use-cases/userManagement/GetAllUsers";
+import { Logout } from "../../application/use-cases/common/Logout";
+import { GetCurrentAdmin } from "../../application/use-cases/admin/auth/GetCurrentAdmin.auth";
 // import { Logout } from "../../application/use-cases/auth/Logout.auth";
-
 
 //Controller
 import { AuthController } from "../../interfaces/controllers/auth/AuthController";
-
+import { UserManagementController } from "../../interfaces/controllers/admin/UserManagementController";
 
 import { logger } from "../services/log/logger";
 //interfaces
@@ -47,8 +49,11 @@ import { IAdminLoginUsecase } from "../../application/interfaces/usecases/admin/
 import { AdminLogin } from "../../application/use-cases/admin/auth/AdminLogin";
 import { AdminController } from "../../interfaces/controllers/admin/AdminController";
 import { IGetCurrentAdminUsecase } from "../../application/interfaces/usecases/admin/auth/IGetCurrentAdminUsecase";
-import { GetCurrentAdmin } from "../../application/use-cases/admin/auth/GetCurrentAdmin.auth";
-import { Logout } from "../../application/use-cases/common/Logout";
+
+
+import { IGetAllUsersUsecase } from "../../application/interfaces/usecases/userManagement/IGetAllUsersUsecase";
+
+
 
 //Instances
 const userRepository = new UserRepository();
@@ -157,6 +162,11 @@ const adminLogout: ILogoutUsecase = new Logout(
     hashService
 )
 
+//usermanagement use case
+const getAllUsers: IGetAllUsersUsecase = new GetAllUsers(
+    userRepository
+)
+
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -177,5 +187,9 @@ export const adminController = new AdminController(
     getCurrentAdmin,
     adminLogout
 )
+
+export const userManagementController = new UserManagementController(
+    getAllUsers
+);
 
 export { tokenService };

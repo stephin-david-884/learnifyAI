@@ -16,5 +16,6 @@ export const API_ROUTES = {
         LOGIN: "/admin/login",
         GET_ME: "/admin/me",
         LOG_OUT: "/admin/logout",
+        GET_USERS: "/admin/users"
     }
 }
