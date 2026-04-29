@@ -69,6 +69,24 @@ export const getCurrentAdmin = createAsyncThunk<
     }
 )
 
+export const adminLogout = createAsyncThunk<
+    void,
+    void,
+    { rejectValue: string }
+>(
+    "admin/logout",
+    async (_, { rejectWithValue }) => {
+        try {
+            await api.post(API_ROUTES.ADMIN.LOG_OUT);
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            return rejectWithValue(
+                err.response?.data?.message || "Logout failed"
+            );
+        }
+    }
+);
+
 const adminSlice = createSlice({
     name: "admin",
     initialState,
@@ -76,10 +94,6 @@ const adminSlice = createSlice({
         clearAdminError: (state) => {
             state.error = null;
         },
-        adminLogout: (state) => {
-            state.admin = null;
-            state.isAuthenticated = false;
-        }
     },
     extraReducers: (builder) => {
         builder
@@ -116,8 +130,26 @@ const adminSlice = createSlice({
                 state.isAuthenticated = false;
                 state.initialized = true;
             })
+            .addCase(adminLogout.pending, (state) => {
+                state.loading = true;
+            })
+
+            .addCase(adminLogout.fulfilled, (state) => {
+                state.loading = false;
+                state.admin = null;
+                state.isAuthenticated = false;
+                state.initialized = true;
+            })
+
+            .addCase(adminLogout.rejected, (state, action) => {
+                state.loading = false;
+                state.admin = null;
+                state.isAuthenticated = false;
+
+                state.error = action.payload || "Logout failed";
+            })
     },
 });
 
-export const { clearAdminError, adminLogout } = adminSlice.actions;
+export const { clearAdminError } = adminSlice.actions;
 export default adminSlice.reducer;

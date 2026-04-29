@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch,  RootState } from "../redux/store";
+import type { AppDispatch, RootState } from "../redux/store";
 import { adminLogin, adminLogout, clearAdminError, getCurrentAdmin } from "../redux/features/admin/adminSlice";
 
 export const useAdminAuth = () => {
@@ -12,7 +12,7 @@ export const useAdminAuth = () => {
     const login = async (data: { email: string; password: string }) => {
         return dispatch(adminLogin(data)).unwrap();
     };
-    
+
     const checkAdminAuth = async () => {
         try {
             return await dispatch(getCurrentAdmin()).unwrap();
@@ -21,13 +21,15 @@ export const useAdminAuth = () => {
         }
     }
 
-    const logout = () => dispatch(adminLogout());
+    const logout = async () => {
+        return dispatch(adminLogout()).unwrap();
+    };
 
     return {
         admin,
         isAuthenticated,
         loading,
-        initialized,    
+        initialized,
         error,
         login,
         logout,

@@ -8,11 +8,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
 
-// let logoutHandler: (() => void) | null = null;
 
-// export const setLogoutHandler = (handler: () => void) => {
-//     logoutHandler = handler;
-// };
 export const setLogoutHandler = (_handler: () => void) => {};   
 
 const getCsrfToken = (): string | null => {
@@ -74,7 +70,8 @@ api.interceptors.response.use(
             originalRequest.url?.includes("/auth/register") ||
             originalRequest.url?.includes("/auth/verify") ||
             originalRequest.url?.includes("/auth/googleLogin") ||
-            originalRequest.url?.includes("/admin/login");
+            originalRequest.url?.includes("/admin/login") ||
+            originalRequest.url?.includes("/admin/logout");
 
         if (status === 401 && !originalRequest._retry && !isAuthRoute) {
             if (isRefreshing) {
