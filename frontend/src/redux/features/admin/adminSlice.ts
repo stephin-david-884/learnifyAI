@@ -56,7 +56,7 @@ export const getCurrentAdmin = createAsyncThunk<
     async (_, { rejectWithValue }) => {
         try {
             const res = await api.get(API_ROUTES.ADMIN.GET_ME);
-            return res.data.admin;
+            return res.data.data?.admin ?? null;
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
 

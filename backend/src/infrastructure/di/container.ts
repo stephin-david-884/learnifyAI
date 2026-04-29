@@ -17,7 +17,7 @@ import { VerifyRegister } from "../../application/use-cases/auth/VerifyRegister"
 import { ResendOtp } from "../../application/use-cases/auth/resendOtp.auth";
 import { RefreshToken } from "../../application/use-cases/auth/RefreshToken.auth";
 import { GetCurrentUser } from "../../application/use-cases/auth/GetCurrentUser.auth";
-import { Logout } from "../../application/use-cases/auth/Logout.auth";
+// import { Logout } from "../../application/use-cases/auth/Logout.auth";
 
 
 //Controller
@@ -48,6 +48,7 @@ import { AdminLogin } from "../../application/use-cases/admin/auth/AdminLogin";
 import { AdminController } from "../../interfaces/controllers/admin/AdminController";
 import { IGetCurrentAdminUsecase } from "../../application/interfaces/usecases/admin/auth/IGetCurrentAdminUsecase";
 import { GetCurrentAdmin } from "../../application/use-cases/admin/auth/GetCurrentAdmin.auth";
+import { Logout } from "../../application/use-cases/common/Logout";
 
 //Instances
 const userRepository = new UserRepository();
@@ -150,6 +151,12 @@ const getCurrentAdmin: IGetCurrentAdminUsecase = new GetCurrentAdmin(
     tokenService
 )
 
+const adminLogout: ILogoutUsecase = new Logout(
+    adminRepository,
+    tokenService,
+    hashService
+)
+
 export const authController = new AuthController(
     registerUser,
     verifyRegister,
@@ -167,7 +174,8 @@ export const authController = new AuthController(
 export const adminController = new AdminController(
     adminLogin,
     refreshToken,
-    getCurrentAdmin
+    getCurrentAdmin,
+    adminLogout
 )
 
 export { tokenService };

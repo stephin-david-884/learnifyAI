@@ -27,7 +27,7 @@ export const useAdminAuth = () => {
         admin,
         isAuthenticated,
         loading,
-        initialized,
+        initialized,    
         error,
         login,
         logout,

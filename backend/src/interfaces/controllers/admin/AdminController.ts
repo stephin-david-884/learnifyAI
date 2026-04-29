@@ -8,12 +8,14 @@ import { authMessages } from "../../../application/constants/messages/authMessag
 import { IRefreshTokenUseCase } from "../../../application/interfaces/usecases/auth/IRefreshTokenUsecase";
 import { AppError } from "../../../domain/errors/AppError";
 import { IGetCurrentAdminUsecase } from "../../../application/interfaces/usecases/admin/auth/IGetCurrentAdminUsecase";
+import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/ILogoutUsecase";
 
 export class AdminController {
     constructor(
         private _loginUsecase: IAdminLoginUsecase,
         private _refreshToken: IRefreshTokenUseCase,
-        private _getCurrentAdmin: IGetCurrentAdminUsecase
+        private _getCurrentAdmin: IGetCurrentAdminUsecase,
+        private _logout: ILogoutUsecase
     ) { }
 
     login = asyncHandler(async (req: Request, res: Response) => {
@@ -56,11 +58,30 @@ export class AdminController {
         const accessToken = req.cookies.adminAccessToken;
 
         if (!accessToken) {
-            return sendSuccess(res, statusCode.OK, "No admin", { admin: null });
+            throw new AppError("Unauthorized", statusCode.UNAUTHORIZED);
         }
 
         const admin = await this._getCurrentAdmin.execute(accessToken);
 
         return sendSuccess(res, statusCode.OK, "Admin fetched", { admin });
+    });
+
+    logout = asyncHandler(async (req: Request, res: Response) => {
+
+        const refreshToken = req.cookies.adminRefreshToken;
+
+        if (refreshToken) {
+            await this._logout.execute(refreshToken);
+        }
+
+        res.clearCookie("adminAccessToken", cookieConfig.accessToken);
+        res.clearCookie("adminRefreshToken", cookieConfig.refreshToken);
+        res.clearCookie("XSRF-TOKEN", cookieConfig.csrfToken);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            authMessages.success.ADMIN_LOGOUT_SUCCESS
+        );
     });
 }

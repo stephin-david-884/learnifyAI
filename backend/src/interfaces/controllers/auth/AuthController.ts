@@ -71,7 +71,6 @@ export class AuthController {
         );
     });
 
-
     resendOtp = asyncHandler(async (req: Request, res: Response) => {
         const { email } = req.body;
 
@@ -110,12 +109,7 @@ export class AuthController {
         const accessToken = req.cookies.accessToken;
 
         if (!accessToken) {
-            return sendSuccess(
-                res,
-                statusCode.OK,
-                authMessages.error.USER_NOT_FOUND,
-                { user: null }
-            )
+            throw new AppError("Unauthorized", statusCode.UNAUTHORIZED);
         }
 
         const user = await this._getCurrentUser.execute(accessToken);

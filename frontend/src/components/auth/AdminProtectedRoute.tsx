@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAdminAuth } from "../../hooks/useAdminAuth";
 import Spinner from "../../presentation/components/common/Spinner";
+import AdminLayout from "../../presentation/layouts/admin/AdminLayout";
 
 const AdminProtectedRoute = () => {
     const { isAuthenticated, loading } = useAdminAuth();
@@ -14,11 +15,11 @@ const AdminProtectedRoute = () => {
     }
 
     return isAuthenticated ? (
-
-        <Outlet />
-
+        <AdminLayout>
+            <Outlet />
+        </AdminLayout>
     ) : (
-        <Navigate to="/login" replace />
+        <Navigate to="/admin/login" replace />
     )
 }
 

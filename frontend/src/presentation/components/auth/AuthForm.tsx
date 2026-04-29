@@ -119,7 +119,7 @@ const AuthForm = ({ mode }: Props) => {
         {mode === "login" ? "Welcome Back" : "Create Account"}
       </h2>
 
-      <div className='mt-4 flex justify-center'>
+      <div className='mt-4 flex justify-center py-4'>
         <GoogleLogin
           onSuccess={handleGoogleSuccess}
           onError={() => toast.error("Google login failed")}
@@ -127,7 +127,7 @@ const AuthForm = ({ mode }: Props) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
+        
         {mode === "signup" && (
           <div>
             <input
@@ -145,7 +145,7 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        {/* Email */}
+        
         <div>
           <input
             type="email"
@@ -161,7 +161,7 @@ const AuthForm = ({ mode }: Props) => {
           )}
         </div>
 
-        {/* Password */}
+        
         <div>
           <input
             type="password"
@@ -177,7 +177,7 @@ const AuthForm = ({ mode }: Props) => {
           )}
         </div>
 
-        {/* Forgot Password */}
+        
         {mode === "login" && (
           <div className="text-right -mt-2">
             <span
@@ -189,7 +189,7 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        {/* Confirm Password */}
+        
         {mode === "signup" && (
           <div>
             <input
@@ -212,7 +212,7 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        {/* Submit */}
+        
         <button
           type="submit"
           disabled={loading}
@@ -226,7 +226,7 @@ const AuthForm = ({ mode }: Props) => {
         </button>
       </form>
 
-      {/* Switch */}
+      
       <p className="text-sm text-center mt-4">
         {mode === "login" ? (
           <>

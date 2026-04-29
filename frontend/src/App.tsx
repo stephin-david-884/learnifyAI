@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {  Route, Routes, useLocation } from "react-router-dom";
 import Home from "./presentation/pages/Home";
 import { Toaster } from 'react-hot-toast';
 import PublicRoute from "./components/auth/PublicRoute";
@@ -22,27 +22,32 @@ const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgo
 const ResetPassword = lazy(() => import('./presentation/pages/auth/ResetPassword'));
 
 const App = () => {
-  const { checkAuth, initialized: userInitialized, logout } = useAuth();
-  const { checkAdminAuth, initialized: adminInitialized } = useAdminAuth();
+  const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
+  const { checkAdminAuth, initialized: adminInitialized, logout: adminLogout } = useAdminAuth();
+
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   useEffect(() => {
-    const isAdminRoute = window.location.pathname.startsWith("/admin");
-
-    if(isAdminRoute) {
+    if (isAdminRoute) {
       checkAdminAuth();
     } else {
       checkAuth();
     }
-  },[]);
+  }, [isAdminRoute]); 
 
   useEffect(() => {
     setLogoutHandler(() => {
-      logout();
-      window.location.href = "/login";
-    })
-  }, [logout])
+      const path = window.location.pathname;
+      const isAdmin = path.startsWith("/admin");
 
-  const isAdminRoute = window.location.pathname.startsWith("/admin");
+      if (isAdmin) {
+        adminLogout();
+      } else {
+        userLogout();
+      }
+    })
+  }, [adminLogout, userLogout])
 
   if (isAdminRoute ? !adminInitialized : !userInitialized) {
     return <div className="flex h-screen items-center justify-center">
@@ -51,7 +56,7 @@ const App = () => {
   }
 
   return (
-    <BrowserRouter>
+    <>
       <Toaster position="top-right" />
       <Suspense fallback={
         <div className="flex h-screen items-center justify-center">
@@ -92,7 +97,7 @@ const App = () => {
           </Route>
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </>
   )
 };
 

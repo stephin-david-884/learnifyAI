@@ -14,7 +14,7 @@ router.post(ROUTES.AUTH.REGISTER, validate(registerSchema, 'body'), authControll
 router.post(ROUTES.AUTH.VERIFY_OTP, validate(otpSchema, 'body'), authController.verifyOtp);
 router.post(ROUTES.AUTH.RESEND_OTP, validate(resendOtpSchema, 'body'), authController.resendOtp);
 router.post(ROUTES.AUTH.REFRESH_TOKEN, authController.refreshToken);
-router.get(ROUTES.AUTH.GET_ME, authController.getCurrentUser);
+// router.get(ROUTES.AUTH.GET_ME, authController.getCurrentUser);
 router.get(ROUTES.AUTH.GET_ME, authMiddleware(tokenService), authController.getCurrentUser);
 router.post(ROUTES.AUTH.LOG_OUT, verifyCsrf ,authController.logout);
 router.post(ROUTES.AUTH.GOOGLE_LOGIN, validate(googleLoginSchema, 'body'), authController.googleLogin);

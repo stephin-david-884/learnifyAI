@@ -73,7 +73,7 @@ export const getCurrentUser = createAsyncThunk<
     async (_, { rejectWithValue }) => {
         try {
             const response = await api.get(API_ROUTES.AUTH.GET_ME);
-            return response.data.user;
+            return response.data.data?.user ?? null;
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
             if (err.response?.status === 401 || err.response?.status === 403) {
@@ -309,6 +309,7 @@ const authSlice = createSlice({
 
             .addCase(getCurrentUser.rejected, (state) => {
                 state.initialized = true;
+                state.loading = false;
                 state.isAuthenticated = false;
                 state.user = null;
             })

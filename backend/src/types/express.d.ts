@@ -5,6 +5,6 @@ import { AccessTokenPayload } from "../application/interfaces/services/ITokenSer
 declare module "express-serve-static-core" {
   interface Request {
     log: Logger;
-    user?: AccessTokenPayload
+    user: AccessTokenPayload
   }
 }

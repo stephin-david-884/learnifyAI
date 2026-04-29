@@ -17,7 +17,7 @@ export const authMiddleware = (tokenService: ITokenService) => {
       req.user = payload;
 
       next();
-    } catch (error) {
+    } catch {
 
       return next(new AppError("Unauthorized", statusCode.UNAUTHORIZED));
     }

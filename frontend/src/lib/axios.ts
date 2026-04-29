@@ -8,12 +8,12 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
 
-//Logout handler
-let logoutHandler: (() => void) | null = null;
+// let logoutHandler: (() => void) | null = null;
 
-export const setLogoutHandler = (handler: () => void) => {
-    logoutHandler = handler;
-};
+// export const setLogoutHandler = (handler: () => void) => {
+//     logoutHandler = handler;
+// };
+export const setLogoutHandler = (_handler: () => void) => {};   
 
 const getCsrfToken = (): string | null => {
     return document.cookie
@@ -68,6 +68,9 @@ api.interceptors.response.use(
 
         const isAuthRoute =
             originalRequest.url?.includes("/auth/refresh") ||
+            originalRequest.url?.includes("/admin/refresh") ||
+            originalRequest.url?.includes("/auth/me") ||
+            originalRequest.url?.includes("/admin/me") ||   
             originalRequest.url?.includes("/auth/register") ||
             originalRequest.url?.includes("/auth/verify") ||
             originalRequest.url?.includes("/auth/googleLogin") ||
@@ -87,7 +90,7 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const isAdminRoute = originalRequest.url?.startsWith("/admin");
+                const isAdminRoute = originalRequest.url?.includes("/admin");
 
                 const refreshUrl = isAdminRoute
                     ? "/admin/refresh"
@@ -101,9 +104,9 @@ api.interceptors.response.use(
             } catch (error) {
                 processQueue(error);
 
-                if (logoutHandler) {
-                    logoutHandler();
-                }
+                // if (logoutHandler) {
+                //     logoutHandler();
+                // }
 
                 return Promise.reject(error)
             } finally {
