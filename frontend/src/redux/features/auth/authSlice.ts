@@ -52,7 +52,7 @@ export const verifyOtp = createAsyncThunk<
             const response = await api.post(API_ROUTES.AUTH.VERIFY_OTP, data);
 
             return {
-                user: response.data.user,
+                user: response.data.data.user,
                 message: response.data.message,
             };
         } catch (error) {
@@ -163,7 +163,7 @@ export const loginUser = createAsyncThunk<
             const response = await api.post(API_ROUTES.AUTH.LOGIN, data);
 
             return {
-                user: response.data.user,
+                user: response.data.data.user,
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
