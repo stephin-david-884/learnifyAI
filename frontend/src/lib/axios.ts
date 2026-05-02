@@ -9,7 +9,17 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 
-export const setLogoutHandler = (_handler: () => void) => {};   
+let logoutHandler: (() => void) | null = null;
+
+export const setLogoutHandler = (handler: () => void) => {
+    logoutHandler = handler;
+};
+
+let blockedHandler: (() => void) | null = null;
+
+export const setBlockedHandler = (handler: () => void) => {
+    blockedHandler = handler;
+};
 
 const getCsrfToken = (): string | null => {
     return document.cookie
@@ -62,11 +72,16 @@ api.interceptors.response.use(
 
         const status = error.response.status;
 
+        if (status === 403) {
+            if (blockedHandler) {
+                blockedHandler(); // ✅ trigger modal, not logout
+            }
+            return Promise.reject(error);
+        }
+
         const isAuthRoute =
-            // originalRequest.url?.includes("/auth/refresh") ||
-            // originalRequest.url?.includes("/admin/refresh") ||
-            // originalRequest.url?.includes("/auth/me") ||
-            // originalRequest.url?.includes("/admin/me") ||   
+            originalRequest.url?.includes("/auth/refresh") ||
+            originalRequest.url?.includes("/admin/refresh") ||
             originalRequest.url?.includes("/auth/register") ||
             originalRequest.url?.includes("/auth/verify") ||
             originalRequest.url?.includes("/auth/googleLogin") ||

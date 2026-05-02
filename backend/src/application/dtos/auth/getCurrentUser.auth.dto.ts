@@ -4,4 +4,5 @@ export interface GetCurrentUserOutputDTO {
   email: string;
   subscriptionPlan: string;
   credits: number;
+  isBlocked: boolean;
 }

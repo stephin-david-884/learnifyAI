@@ -86,6 +86,10 @@ export class AuthController {
     refreshToken = asyncHandler(async (req: Request, res: Response) => {
         const refreshTokenFromCookie = req.cookies.refreshToken;
 
+        if (!refreshTokenFromCookie) {
+            throw new AppError(authMessages.error.REFRESH_TOKEN_NOT_FOUND, statusCode.UNAUTHORIZED);
+        }
+
         const result = await this._refreshToken.execute({
             token: refreshTokenFromCookie,
         });
@@ -109,10 +113,14 @@ export class AuthController {
         const accessToken = req.cookies.accessToken;
 
         if (!accessToken) {
-            throw new AppError("Unauthorized", statusCode.UNAUTHORIZED);
+            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.UNAUTHORIZED);
         }
 
         const user = await this._getCurrentUser.execute(accessToken);
+
+        if(user.isBlocked) {
+            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
+        }
 
         return sendSuccess(
             res,

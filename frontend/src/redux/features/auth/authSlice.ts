@@ -12,6 +12,7 @@ const initialState: AuthState = {
     loading: false,
     registerEmail: null,
     initialized: false,
+    isBlocked: false
 }
 
 export const registerUser = createAsyncThunk<
@@ -76,8 +77,12 @@ export const getCurrentUser = createAsyncThunk<
             return response.data.data?.user ?? null;
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
-            if (err.response?.status === 401 || err.response?.status === 403) {
-                return rejectWithValue("NOT_AUTHENTICATED");
+            if (err.response?.status === 401) {
+                return null;
+            }
+
+            if (err.response?.status === 403) {
+                return rejectWithValue("BLOCKED");
             }
 
             return rejectWithValue("Something went wrong");
@@ -256,6 +261,9 @@ const authSlice = createSlice({
     reducers: {
         clearError: (state) => {
             state.error = null
+        },
+        setBlocked: (state, action) => {
+            state.isBlocked = action.payload;
         }
     },
     extraReducers: (builder) => {
@@ -307,96 +315,103 @@ const authSlice = createSlice({
                 }
             })
 
-            .addCase(getCurrentUser.rejected, (state) => {
+            .addCase(getCurrentUser.rejected, (state, action) => {
                 state.initialized = true;
                 state.loading = false;
-                state.isAuthenticated = false;
-                state.user = null;
+
+                if (action.payload === "BLOCKED") {
+                    state.isBlocked = true;
+                    state.isAuthenticated = true;
+                    // state.user = null;
+                } else {
+                    state.isAuthenticated = false;
+                    state.user = null;
+                }
             })
 
             .addCase(resendOtp.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(resendOtp.fulfilled, (state) => {
-                state.loading = false;
-            })
-            .addCase(resendOtp.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Failed to resend OTP";
-            })
-            .addCase(logoutUser.fulfilled, (state) => {
-                state.user = null;
-                state.isAuthenticated = false;
-                state.initialized = true;
-            })
+        .addCase(resendOtp.fulfilled, (state) => {
+            state.loading = false;
+        })
+        .addCase(resendOtp.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Failed to resend OTP";
+        })
+        .addCase(logoutUser.fulfilled, (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+            state.initialized = true;
+        })
 
-            .addCase(googleLogin.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
+        .addCase(googleLogin.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
 
-            .addCase(googleLogin.fulfilled, (state, action) => {
-                state.loading = false;
-                state.user = action.payload.user;
-                state.isAuthenticated = true;
-                state.initialized = true;
-            })
+        .addCase(googleLogin.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
+            state.initialized = true;
+        })
 
-            .addCase(googleLogin.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Google login failed";
-            })
+        .addCase(googleLogin.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Google login failed";
+        })
 
-            .addCase(loginUser.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(loginUser.fulfilled, (state, action) => {
-                state.loading = false;
-                state.user = action.payload.user;
-                state.isAuthenticated = true;
-                state.initialized = true;
-            })
-            .addCase(loginUser.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Login failed";
-            })
-            .addCase(forgotPassword.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(forgotPassword.fulfilled, (state) => {
-                state.loading = false;
-            })
-            .addCase(forgotPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Failed to send OTP";
-            })
-            .addCase(verifyForgotPasswordOtp.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(verifyForgotPasswordOtp.fulfilled, (state) => {
-                state.loading = false;
-            })
-            .addCase(verifyForgotPasswordOtp.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "OTP verification failed";
-            })
-            .addCase(resetPassword.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(resetPassword.fulfilled, (state) => {
-                state.loading = false;
-            })
-            .addCase(resetPassword.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload || "Password reset failed";
-            })
+        .addCase(loginUser.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(loginUser.fulfilled, (state, action) => {
+            state.loading = false;
+            state.user = action.payload.user;
+            state.isAuthenticated = true;
+            state.initialized = true;
+        })
+        .addCase(loginUser.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Login failed";
+        })
+        .addCase(forgotPassword.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(forgotPassword.fulfilled, (state) => {
+            state.loading = false;
+        })
+        .addCase(forgotPassword.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Failed to send OTP";
+        })
+        .addCase(verifyForgotPasswordOtp.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(verifyForgotPasswordOtp.fulfilled, (state) => {
+            state.loading = false;
+        })
+        .addCase(verifyForgotPasswordOtp.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "OTP verification failed";
+        })
+        .addCase(resetPassword.pending, (state) => {
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(resetPassword.fulfilled, (state) => {
+            state.loading = false;
+        })
+        .addCase(resetPassword.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload || "Password reset failed";
+        })
 
-    }
+}
 })
 
 export const { clearError } = authSlice.actions;

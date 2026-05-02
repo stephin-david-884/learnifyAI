@@ -27,6 +27,7 @@ export class GetCurrentUser implements IGetCurrentUsecase {
       email: user.email,
       subscriptionPlan: user.subscriptionPlan,
       credits: user.credits,
+      isBlocked: user.isBlocked
     };
   }
 }

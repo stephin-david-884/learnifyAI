@@ -4,6 +4,7 @@ export interface User {
     email: string;
     subscriptionPlan: "FREE" | "PRO";
     credits: number;
+    isBlocked: boolean;
 }
 
 export interface AuthState {
@@ -13,6 +14,7 @@ export interface AuthState {
     error: string | null;
     registerEmail: string | null;
     initialized: boolean;
+    isBlocked: boolean;
 }
 
 export interface RegisterPayload {

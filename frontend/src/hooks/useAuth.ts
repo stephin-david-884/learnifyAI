@@ -5,7 +5,7 @@ import type { LoginPayload, RegisterPayload, ResetPasswordPayload } from "../typ
 
 export const useAuth = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const { user, isAuthenticated, loading, error, registerEmail, initialized } = useSelector((state: RootState) => state.auth);
+    const { user, isAuthenticated, loading, error, registerEmail, initialized, isBlocked } = useSelector((state: RootState) => state.auth);
 
     const handleError = () => dispatch(clearError());
 
@@ -66,6 +66,7 @@ export const useAuth = () => {
         login,
         forgotPassword: forgot,
         verifyForgotOtp,
-        resetPassword: reset
+        resetPassword: reset,
+        isBlocked
     }
 }
