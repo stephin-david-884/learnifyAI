@@ -39,3 +39,7 @@ const paymentSchema = new Schema<IPayment>(
 
 export const PaymentModel: Model<IPayment> =
   mongoose.model<IPayment>("Payment", paymentSchema);
+ 
+export type PaymentLean = IPayment & {
+  _id: Types.ObjectId;
+};

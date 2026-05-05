@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from "mongoose";
+import mongoose, { Schema, Document, Model, Types } from "mongoose";
 
 export interface ISubscriptionPlan extends Document {
   name: string;
@@ -35,3 +35,7 @@ subscriptionPlanSchema.index({ name: 1, version: 1 }, { unique: true });
 
 export const SubscriptionPlanModel: Model<ISubscriptionPlan> =
   mongoose.model<ISubscriptionPlan>("SubscriptionPlan", subscriptionPlanSchema);
+
+  export type SubscriptionPlanlean = ISubscriptionPlan & {
+    _id: Types.ObjectId
+  };

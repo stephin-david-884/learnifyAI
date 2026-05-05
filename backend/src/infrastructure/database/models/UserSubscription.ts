@@ -56,3 +56,7 @@ export const UserSubscriptionModel: Model<IUserSubscription> =
     "UserSubscription",
     userSubscriptionSchema
   );
+
+export type UserSubscriptionLean = IUserSubscription & {
+  _id: Types.ObjectId;
+}  
