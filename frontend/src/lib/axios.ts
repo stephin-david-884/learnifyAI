@@ -74,7 +74,7 @@ api.interceptors.response.use(
 
         if (status === 403) {
             if (blockedHandler) {
-                blockedHandler(); // ✅ trigger modal, not logout
+                blockedHandler();
             }
             return Promise.reject(error);
         }

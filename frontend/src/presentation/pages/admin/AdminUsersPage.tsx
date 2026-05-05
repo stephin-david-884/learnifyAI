@@ -56,7 +56,7 @@ const AdminUsersPage = () => {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Plan</th>
               <th className="px-4 py-3">Credits</th>
-              <th className="px-4 py-3">Status</th>
+              {/* <th className="px-4 py-3">Status</th> */}
               <th className="px-4 py-3">Action</th>
             </tr>
           </thead>
@@ -93,7 +93,7 @@ const AdminUsersPage = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3">{user.credits}</td>
-                  <td className="px-4 py-3">
+                  {/* <td className="px-4 py-3">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${user.isBlocked
                         ? "bg-red-100 text-red-600"
@@ -102,7 +102,7 @@ const AdminUsersPage = () => {
                     >
                       {user.isBlocked ? "Blocked" : "Active"}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="px-4 py-3">
                     <button
                       onClick={() => handleToggleBlock(user)}
