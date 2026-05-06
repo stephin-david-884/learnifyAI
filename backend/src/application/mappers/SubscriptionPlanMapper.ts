@@ -1,4 +1,3 @@
-import { features } from "node:process";
 import { SubscriptionPlan } from "../../domain/entities/SubscriptionPlan.entity";
 import { SubscriptionPlanlean } from "../../infrastructure/database/models/SubscriptionPlan";
 

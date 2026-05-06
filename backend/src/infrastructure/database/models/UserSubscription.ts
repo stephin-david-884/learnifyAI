@@ -4,6 +4,15 @@ export interface IUserSubscription extends Document {
   userId: Types.ObjectId;
   planId: Types.ObjectId;
   planVersion: number;
+  planSnapShot: {
+    name: string;
+    price: number;
+    creditsPerMonth: number;
+    features: {
+      maxDocuments: number;
+      interviewAccess: boolean
+    };
+  };
 
   startDate: Date;
   endDate: Date;
@@ -27,6 +36,15 @@ const userSubscriptionSchema = new Schema<IUserSubscription>(
     planId: { type: Schema.Types.ObjectId, ref: "SubscriptionPlan" },
 
     planVersion: { type: Number, required: true },
+    planSnapShot: {
+      name:{ type: String, required: true },
+      price: { type: Number, required: true },
+      creditsPerMonth: { type: Number, required: true },
+      features: {
+        maxDocuments: { type: Number, required: true },
+        interviewAccess: { type: Boolean, required: true },
+      },
+    },
 
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
@@ -48,7 +66,14 @@ const userSubscriptionSchema = new Schema<IUserSubscription>(
   { timestamps: true }
 );
 
-userSubscriptionSchema.index({ userId: 1, status: 1 });
+// userSubscriptionSchema.index({ userId: 1, status: 1 });
+userSubscriptionSchema.index(
+  { userId: 1, status: 1 },
+  {
+    unique: true,
+    partialFilterExpression: { status: "ACTIVE" },
+  }
+);
 userSubscriptionSchema.index({ endDate: 1 });
 
 export const UserSubscriptionModel: Model<IUserSubscription> =

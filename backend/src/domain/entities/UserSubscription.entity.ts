@@ -1,26 +1,6 @@
+import { PlanFeatures } from "./SubscriptionPlan.entity";
+
 export type SubscriptionStatus = "ACTIVE" | "EXPIRED" | "CANCELLED";
-
-type UserSubscriptionProps = {
-  id?: string;
-  userId: string;
-  planId: string;
-  planVersion: number;
-
-  startDate: Date;
-  endDate: Date;
-
-  status?: SubscriptionStatus;
-
-  creditsRemaining: number;
-  creditsTotal: number;
-
-  lastCreditReset: Date;
-
-  paymentId?: string;
-
-  createdAt?: Date;
-  updatedAt?: Date;
-};
 
 export class UserSubscription {
   public readonly id?: string;
@@ -28,6 +8,7 @@ export class UserSubscription {
   public userId: string;
   public planId: string;
   public planVersion: number;
+  public planSnapshot: PlanSnapshot;
 
   public startDate: Date;
   public endDate: Date;
@@ -49,6 +30,7 @@ export class UserSubscription {
     this.userId = props.userId;
     this.planId = props.planId;
     this.planVersion = props.planVersion;
+    this.planSnapshot = props.planSnapshot;
 
     this.startDate = props.startDate;
     this.endDate = props.endDate;
@@ -111,6 +93,20 @@ export class UserSubscription {
     return new Date() > this.endDate;
   }
 
+  checkAndExpire() {
+    if (new Date() > this.endDate && this.status === "ACTIVE") {
+      this.status = "EXPIRED";
+    }
+  }
+
+  refreshState() {
+    this.checkAndExpire();
+
+    if (this.shouldResetCredits()) {
+      this.resetCredits();
+    }
+  }
+
   shouldResetCredits(): boolean {
     const now = new Date().getTime();
     const lastReset = this.lastCreditReset.getTime();
@@ -126,4 +122,34 @@ export class UserSubscription {
     }
     return this.id;
   }
+}
+
+type UserSubscriptionProps = {
+  id?: string;
+  userId: string;
+  planId: string;
+  planVersion: number;
+  planSnapshot: PlanSnapshot
+
+  startDate: Date;
+  endDate: Date;
+
+  status?: SubscriptionStatus;
+
+  creditsRemaining: number;
+  creditsTotal: number;
+
+  lastCreditReset: Date;
+
+  paymentId?: string;
+
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+type PlanSnapshot = {
+  name: string;
+  price: number;
+  creditsPerMonth: number;
+  features: PlanFeatures;
 }

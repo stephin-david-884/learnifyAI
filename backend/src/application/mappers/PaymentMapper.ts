@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Payment } from "../../domain/entities/Payment.entity";
 import { PaymentLean } from "../../infrastructure/database/models/Payment";
 
@@ -21,8 +22,8 @@ export const toDomainPayment = (db: PaymentLean): Payment => {
 
 export const toPersistencePayment = (entity: Payment) => {
   return {
-    userId: entity.userId,
-    planId: entity.planId,
+    userId: new Types.ObjectId(entity.userId),
+    planId: new Types.ObjectId(entity.planId),
 
     razorpayOrderId: entity.razorpayOrderId,
     razorpayPaymentId: entity.razorpayPaymentId,

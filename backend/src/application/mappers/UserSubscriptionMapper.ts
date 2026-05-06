@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { UserSubscription } from "../../domain/entities/UserSubscription.entity";
 import { UserSubscriptionLean } from "../../infrastructure/database/models/UserSubscription";
 
@@ -9,6 +10,7 @@ export const toDomainUserSubscription = (
     userId: db.userId.toString(),
     planId: db.planId.toString(),
     planVersion: db.planVersion,
+    planSnapshot: db.planSnapShot,
 
     startDate: db.startDate,
     endDate: db.endDate,
@@ -31,9 +33,10 @@ export const toPersistenceUserSubscription = (
   entity: UserSubscription
 ) => {
   return {
-    userId: entity.userId,
-    planId: entity.planId,
+    userId: new Types.ObjectId(entity.userId),
+    planId: new Types.ObjectId(entity.planId),
     planVersion: entity.planVersion,
+    planSnapshot: entity.planSnapshot,
 
     startDate: entity.startDate,
     endDate: entity.endDate,
