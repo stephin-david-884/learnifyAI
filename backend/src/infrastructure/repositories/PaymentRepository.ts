@@ -26,6 +26,7 @@ export class PaymentRepository
     async findByUserId(userId: string): Promise<Payment[]> {
         const docs = await this._model
             .find({ userId })
+            .sort({ createdAt: -1 })
             .lean();
 
         return docs.map(this._toDomain);
