@@ -3,6 +3,15 @@ import mongoose, { Schema, Document, Model, Types } from "mongoose";
 export interface IPayment extends Document {
   userId: Types.ObjectId;
   planId: Types.ObjectId;
+  planSnapshot: {
+    name: string;
+    price: number;
+    creditsPerMonth: number;
+    features: {
+      maxDocuments: number;
+      interviewAccess: boolean
+    };
+  };
 
   razorpayOrderId: string;
   razorpayPaymentId?: string;
@@ -20,6 +29,15 @@ const paymentSchema = new Schema<IPayment>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", index: true },
     planId: { type: Schema.Types.ObjectId, ref: "SubscriptionPlan" },
+    planSnapshot: {
+      name: { type: String, required: true },
+      price: { type: Number, required: true },
+      creditsPerMonth: { type: Number, required: true },
+      features: {
+        maxDocuments: { type: Number, required: true },
+        interviewAccess: { type: Boolean, required: true },
+      },
+    },
 
     razorpayOrderId: { type: String, required: true, unique: true },
     razorpayPaymentId: { type: String },
@@ -39,7 +57,7 @@ const paymentSchema = new Schema<IPayment>(
 
 export const PaymentModel: Model<IPayment> =
   mongoose.model<IPayment>("Payment", paymentSchema);
- 
+
 export type PaymentLean = IPayment & {
   _id: Types.ObjectId;
 };

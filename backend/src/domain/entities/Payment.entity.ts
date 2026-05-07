@@ -1,9 +1,12 @@
+import { PlanFeatures } from "./SubscriptionPlan.entity";
+
 export type PaymentStatus = "CREATED" | "SUCCESS" | "FAILED";
 
 type PaymentProps = {
   id?: string;
   userId: string;
   planId: string;
+  planSnapshot: PlanSnapshot;
 
   razorpayOrderId: string;
   razorpayPaymentId?: string;
@@ -22,6 +25,7 @@ export class Payment {
 
   public userId: string;
   public planId: string;
+  public planSnapshot: PlanSnapshot;
 
   public razorpayOrderId: string;
   public razorpayPaymentId?: string;
@@ -38,6 +42,7 @@ export class Payment {
     this.id = props.id;
     this.userId = props.userId;
     this.planId = props.planId;
+    this.planSnapshot = props.planSnapshot;
 
     this.razorpayOrderId = props.razorpayOrderId;
     this.razorpayPaymentId = props.razorpayPaymentId;
@@ -75,4 +80,11 @@ export class Payment {
     }
     return this.id;
   }
+}
+
+type PlanSnapshot = {
+  name: string;
+  price: number;
+  creditsPerMonth: number;
+  features: PlanFeatures;
 }

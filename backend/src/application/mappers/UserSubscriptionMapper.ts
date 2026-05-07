@@ -10,7 +10,7 @@ export const toDomainUserSubscription = (
     userId: db.userId.toString(),
     planId: db.planId.toString(),
     planVersion: db.planVersion,
-    planSnapshot: db.planSnapShot,
+    planSnapshot: db.planSnapshot,
 
     startDate: db.startDate,
     endDate: db.endDate,

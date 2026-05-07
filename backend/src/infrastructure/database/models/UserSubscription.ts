@@ -4,7 +4,7 @@ export interface IUserSubscription extends Document {
   userId: Types.ObjectId;
   planId: Types.ObjectId;
   planVersion: number;
-  planSnapShot: {
+  planSnapshot: {
     name: string;
     price: number;
     creditsPerMonth: number;
@@ -36,7 +36,7 @@ const userSubscriptionSchema = new Schema<IUserSubscription>(
     planId: { type: Schema.Types.ObjectId, ref: "SubscriptionPlan" },
 
     planVersion: { type: Number, required: true },
-    planSnapShot: {
+    planSnapshot: {
       name:{ type: String, required: true },
       price: { type: Number, required: true },
       creditsPerMonth: { type: Number, required: true },

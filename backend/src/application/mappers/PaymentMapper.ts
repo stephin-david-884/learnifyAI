@@ -7,6 +7,7 @@ export const toDomainPayment = (db: PaymentLean): Payment => {
     id: db._id.toString(),
     userId: db.userId.toString(),
     planId: db.planId.toString(),
+    planSnapshot: db.planSnapshot,
 
     razorpayOrderId: db.razorpayOrderId,
     razorpayPaymentId: db.razorpayPaymentId,
@@ -24,6 +25,7 @@ export const toPersistencePayment = (entity: Payment) => {
   return {
     userId: new Types.ObjectId(entity.userId),
     planId: new Types.ObjectId(entity.planId),
+    planSnapshot: entity.planSnapshot,
 
     razorpayOrderId: entity.razorpayOrderId,
     razorpayPaymentId: entity.razorpayPaymentId,
