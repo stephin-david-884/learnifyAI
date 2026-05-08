@@ -14,6 +14,9 @@ type SubscriptionPlanProps = {
     version: number;
     createdAt?: Date;
     updatedAt?: Date;
+    billingCycle: BillingCycle;
+    durationInDays: number;
+    creditResetIntervalInDays: number;
 };
 
 export class SubscriptionPlan {
@@ -26,6 +29,9 @@ export class SubscriptionPlan {
     public features: PlanFeatures;
     public isActive: boolean;
     public version: number;
+    public billingCycle: BillingCycle;
+    public durationInDays: number;
+    public creditResetIntervalInDays: number;
 
     public readonly createdAt?: Date;
     public readonly updatedAt?: Date;
@@ -39,6 +45,9 @@ export class SubscriptionPlan {
         this.features = props.features;
         this.isActive = props.isActive ?? true;
         this.version = props.version;
+        this.billingCycle = props.billingCycle;
+        this.durationInDays = props.durationInDays;
+        this.creditResetIntervalInDays = props.creditResetIntervalInDays;
 
         this.createdAt = props.createdAt;
         this.updatedAt = props.updatedAt;
@@ -57,6 +66,14 @@ export class SubscriptionPlan {
 
         if (this.version < 1) {
             throw new Error("Version must be at least 1");
+        }
+
+        if (this.durationInDays <= 0) {
+            throw new Error("Invalid duration");
+        }
+
+        if (this.creditResetIntervalInDays <= 0) {
+            throw new Error("Invalid credit reset interval");
         }
     }
 
@@ -83,9 +100,11 @@ export class SubscriptionPlan {
     }
 
     getId() {
-        if(!this.id) {
+        if (!this.id) {
             throw new Error("Plan ID not set")
         }
         return this.id;
     }
 }
+
+export type BillingCycle = "MONTHLY" | "YEARLY"

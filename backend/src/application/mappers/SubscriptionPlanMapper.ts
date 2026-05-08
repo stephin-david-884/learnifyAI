@@ -13,6 +13,9 @@ export const toDomainSubscriptionPlan = (
         features: db.features,
         version: db.version,
         isActive: db.isActive,
+        billingCycle: db.billingCycle,
+        durationInDays: db.durationInDays,
+        creditResetIntervalInDays: db.creditResetIntervalInDays,
         createdAt: db.createdAt,
         updatedAt: db.updatedAt
     });
@@ -28,6 +31,9 @@ export const toPersistenceSubscriptionPlan = (
         discount: entity.discount,
         features: entity.features,
         version: entity.version,
-        isActive: entity.isActive
+        isActive: entity.isActive,
+        billingCycle: entity.billingCycle,
+        durationInDays: entity.durationInDays,
+        creditResetIntervalInDays: entity.creditResetIntervalInDays,
     };
 };

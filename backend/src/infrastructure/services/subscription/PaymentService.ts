@@ -3,9 +3,9 @@ import crypto from "crypto";
 import { IPaymentService } from "../../../application/interfaces/services/subscription/IPaymentService";
 import { CreatePaymentOrderInputDTO, CreatePaymentOrderOutputDTO, VerifyPaymentDTO } from "../../../application/dtos/subscription/payment.subscription.dto";
 import { AppError } from "../../../domain/errors/AppError";
-import { authMessages } from "../../../application/constants/messages/authMessages";
 import { subMessages } from "../../../application/constants/messages/subMessags";
 import { statusCode } from "../../../application/constants/enums/statusCode";
+import { logError } from "../log/logger";
 
 export class PaymentService implements IPaymentService {
     private _razorpay: Razorpay;
@@ -35,6 +35,7 @@ export class PaymentService implements IPaymentService {
                 currency: order.currency,
             }
         } catch (error) {
+            logError(error, subMessages.error.FAILED_RAZORPAY_ORDER)
             throw new AppError(subMessages.error.FAILED_RAZORPAY_ORDER, statusCode.SERVER_ERROR)
         }
     }

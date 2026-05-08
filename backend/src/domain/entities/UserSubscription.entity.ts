@@ -1,4 +1,4 @@
-import { PlanFeatures } from "./SubscriptionPlan.entity";
+import { BillingCycle, PlanFeatures } from "./SubscriptionPlan.entity";
 
 export type SubscriptionStatus = "ACTIVE" | "EXPIRED" | "CANCELLED";
 
@@ -111,9 +111,10 @@ export class UserSubscription {
     const now = new Date().getTime();
     const lastReset = this.lastCreditReset.getTime();
 
-    const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    const resetMs =
+      this.planSnapshot.creditResetIntervalInDays * 24 * 60 * 60 * 1000;
 
-    return now - lastReset > THIRTY_DAYS;
+    return now - lastReset > resetMs;
   }
 
   getId(): string {
@@ -152,4 +153,7 @@ type PlanSnapshot = {
   price: number;
   creditsPerMonth: number;
   features: PlanFeatures;
+  billingCycle: BillingCycle;
+  durationInDays: number;
+  creditResetIntervalInDays: number;
 }

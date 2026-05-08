@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model, Types } from "mongoose";
+import { BillingCycle } from "../../../domain/entities/SubscriptionPlan.entity";
 
 export interface IUserSubscription extends Document {
   userId: Types.ObjectId;
@@ -12,6 +13,9 @@ export interface IUserSubscription extends Document {
       maxDocuments: number;
       interviewAccess: boolean
     };
+    billingCycle: BillingCycle;
+    durationInDays: number;
+    creditResetIntervalInDays: number;
   };
 
   startDate: Date;
@@ -37,13 +41,16 @@ const userSubscriptionSchema = new Schema<IUserSubscription>(
 
     planVersion: { type: Number, required: true },
     planSnapshot: {
-      name:{ type: String, required: true },
+      name: { type: String, required: true },
       price: { type: Number, required: true },
       creditsPerMonth: { type: Number, required: true },
       features: {
         maxDocuments: { type: Number, required: true },
         interviewAccess: { type: Boolean, required: true },
       },
+      billingCycle: { type: String, enum:["MONTHLY", "YEARLY"], required: true},
+      durationInDays: { type: Number, required: true },
+      creditResetIntervalInDays: { type: Number, required: true,},
     },
 
     startDate: { type: Date, required: true },

@@ -1,4 +1,4 @@
-import { PlanFeatures } from "./SubscriptionPlan.entity";
+import { BillingCycle, PlanFeatures } from "./SubscriptionPlan.entity";
 
 export type PaymentStatus = "CREATED" | "SUCCESS" | "FAILED";
 
@@ -87,4 +87,6 @@ type PlanSnapshot = {
   price: number;
   creditsPerMonth: number;
   features: PlanFeatures;
+  billingCycle: BillingCycle;
+  durationInDays: number;
 }

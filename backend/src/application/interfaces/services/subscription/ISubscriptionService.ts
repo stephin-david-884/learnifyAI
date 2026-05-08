@@ -8,5 +8,9 @@ export interface ISubscriptionService {
 
     refreshSubscription( subscription: UserSubscription): Promise<UserSubscription>;
 
-    canActivateNewSubscription( existingSubscription: UserSubscription | null): boolean;
+    // canActivateNewSubscription( existingSubscription: UserSubscription | null): boolean;
+
+    validateNewSubscriptionActivation( existingSubscription: UserSubscription | null ): void;
+
+    syncUserSubscriptionState( userId: string ): Promise<void>;
 }
