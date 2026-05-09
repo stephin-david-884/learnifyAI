@@ -9,7 +9,7 @@ export interface VerifyRegisterOutputDTO {
         id: string;
         name: string;
         email: string;
-        subscriptionPlan: "FREE" | "PRO";
+        subscriptionPlan: string;
         credits: number;
     };
     accessToken: string;

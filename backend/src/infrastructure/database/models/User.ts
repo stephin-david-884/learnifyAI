@@ -7,7 +7,7 @@ export interface IUser extends Document {
   profileImage?: string | null;
   googleId?: string | null;
   refreshTokens: string[];
-  subscriptionPlan: "FREE" | "PRO";
+  subscriptionPlan: string;
   credits: number;
   subscriptionExpiresAt?: Date | null;
   isBlocked: boolean;
@@ -39,7 +39,6 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
     },
     subscriptionPlan: {
       type: String,
-      enum: ["FREE", "PRO"],
       default: "FREE",
     },
     credits: {

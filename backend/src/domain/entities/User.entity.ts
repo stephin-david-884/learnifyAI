@@ -1,4 +1,3 @@
-export type SubscriptionPlan = "FREE" | "PRO";
 
 export class User {
   public readonly id?: string;
@@ -7,7 +6,7 @@ export class User {
   private password?: string;
   public googleId?: string;
 
-  public subscriptionPlan: SubscriptionPlan;
+  public subscriptionPlan: string;
   public credits: number;
   public isBlocked: boolean;
   public subscriptionExpiresAt?: Date;
@@ -86,7 +85,7 @@ type UserProps = {
   password?: string;
   googleId?: string;
 
-  subscriptionPlan?: SubscriptionPlan;
+  subscriptionPlan?: string;
   credits?: number;
   isBlocked?: boolean;
   subscriptionExpiresAt?: Date;

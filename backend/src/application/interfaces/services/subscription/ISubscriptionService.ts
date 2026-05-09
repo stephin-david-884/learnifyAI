@@ -4,6 +4,8 @@ import { CreateSubscriptionDTO } from "../../../dtos/subscription/subscription.d
 export interface ISubscriptionService {
     createSubscription( data: CreateSubscriptionDTO ): Promise<UserSubscription>;
 
+    getActiveSubscription( userId: string ): Promise<UserSubscription | null>;
+
     expireSubscription( subscription: UserSubscription): Promise<UserSubscription>;
 
     refreshSubscription( subscription: UserSubscription): Promise<UserSubscription>;

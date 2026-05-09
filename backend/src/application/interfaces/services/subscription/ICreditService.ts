@@ -9,4 +9,6 @@ export interface ICreditService {
     resetCredits( subscription: UserSubscription ): Promise<UserSubscription>;
 
     shouldResetCredits( subscription: UserSubscription ): boolean;
+
+    getValidSubscription( userId: string ): Promise<UserSubscription>;
 }
