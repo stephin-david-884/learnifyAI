@@ -45,17 +45,26 @@ export class UserSubscriptionRepository
         return docs.map(doc => this._toDomain(doc));
     }
 
-    async findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]> {
-        const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
-        const cutoff = new Date(Date.now() - THIRTY_DAYS);
+    async findActiveSubscriptions(): Promise<UserSubscription[]> {
 
         const docs = await this._model
-            .find({
-                lastCreditReset: { $lte: cutoff},
-                status: "ACTIVE"
-            })
+            .find({ status: "ACTIVE" })
             .lean();
 
         return docs.map(doc => this._toDomain(doc));
     }
+
+    // async findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]> {
+    //     const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
+    //     const cutoff = new Date(Date.now() - THIRTY_DAYS);
+
+    //     const docs = await this._model
+    //         .find({
+    //             lastCreditReset: { $lte: cutoff},
+    //             status: "ACTIVE"
+    //         })
+    //         .lean();
+
+    //     return docs.map(doc => this._toDomain(doc));
+    // }
 }

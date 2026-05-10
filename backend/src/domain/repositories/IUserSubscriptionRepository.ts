@@ -9,5 +9,7 @@ export interface IUserSubscriptionRepository extends IBaseRepository<UserSubscri
 
     findExpiringSubscriptions(date: Date): Promise<UserSubscription[]>;
 
-    findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]>;
+    findActiveSubscriptions(): Promise<UserSubscription[]>;
+
+    // findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]>;
 }
