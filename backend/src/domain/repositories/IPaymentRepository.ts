@@ -7,4 +7,5 @@ export interface IPaymentRepository extends IBaseRepository<Payment> {
 
     findByUserId(userId: string): Promise<Payment[]>;
 
+    findSuccessfulPaymentByPaymentId(razorpayPaymentId: string): Promise<Payment | null>;
 }

@@ -31,4 +31,13 @@ export class PaymentRepository
 
         return docs.map(this._toDomain);
     }
+
+    async findSuccessfulPaymentByPaymentId(razorpayPaymentId: string): Promise<Payment | null> {
+        const doc = await this._model.findOne({
+            razorpayPaymentId,
+            status: "SUCCESS"
+        }).lean();
+
+        return doc ? this._toDomain(doc) : null;
+    }
 }

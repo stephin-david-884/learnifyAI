@@ -64,6 +64,14 @@ export class Payment {
     }
   }
 
+  isSuccessful(): boolean {
+    return this.status === "SUCCESS";
+  }
+
+  isFailed(): boolean {
+    return this.status === "FAILED";
+  }
+
   markSuccess(paymentId: string, signature: string) {
     this.status = "SUCCESS";
     this.razorpayPaymentId = paymentId;
@@ -89,4 +97,5 @@ type PlanSnapshot = {
   features: PlanFeatures;
   billingCycle: BillingCycle;
   durationInDays: number;
+  creditResetIntervalInDays: number;
 }
