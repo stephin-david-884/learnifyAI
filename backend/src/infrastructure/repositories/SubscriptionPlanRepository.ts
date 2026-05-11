@@ -37,4 +37,16 @@ export class SubscriptionPlanRepository
 
         return doc ? this._toDomain(doc) : null;
     }
+
+    async findActivePlansByName( name: string ): Promise<SubscriptionPlan[]> {
+
+        const docs = await this._model
+            .find({
+                name,
+                isActive: true
+            })
+            .lean();
+
+        return docs.map(doc => this._toDomain(doc));
+    }
 }
