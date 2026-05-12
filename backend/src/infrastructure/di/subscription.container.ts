@@ -5,6 +5,8 @@ import { IGetActiveSubscriptionUseCase } from "../../application/interfaces/usec
 import { IGetAvailablePlansUseCase } from "../../application/interfaces/usecases/subscription/IGetAvailablePlansUseCase";
 import { IGetCreditStatusUseCase } from "../../application/interfaces/usecases/subscription/IGetCreditStatusUseCase";
 import { IGetUserPaymentsUseCase } from "../../application/interfaces/usecases/subscription/IGetUserPaymentsUseCase";
+import { IResetSubscriptionCreditsUseCase } from "../../application/interfaces/usecases/subscription/IResetSubscriptionCreditsUseCase";
+import { ISyncExpiredSubscriptionsUseCase } from "../../application/interfaces/usecases/subscription/ISyncExpiredSubscriptionsUseCase";
 import { IUpdateSubscriptionPlanUseCase } from "../../application/interfaces/usecases/subscription/IUpdateSubscriptionPlanUseCase";
 import { IVerifyPaymentAndActivateSubscriptionUseCase } from "../../application/interfaces/usecases/subscription/IVerifyPaymentAndActivateSubscriptionUseCase";
 import { CreateSubscriptionPlanUseCase } from "../../application/use-cases/subscription/admin/CreateSubscriptionPlanUseCase";
@@ -15,6 +17,8 @@ import { GetActiveSubscriptionUseCase } from "../../application/use-cases/subscr
 import { GetAvailablePlansUseCase } from "../../application/use-cases/subscription/GetAvailablePlansUseCase";
 import { GetUserPaymentsUseCase } from "../../application/use-cases/subscription/GetUserPaymentsUseCase";
 import { GetCreditStatusUseCase } from "../../application/use-cases/subscription/system/GetCreditStatusUseCase";
+import { ResetSubscriptionCreditsUseCase } from "../../application/use-cases/subscription/system/ResetSubscriptionCreditsUseCase";
+import { SyncExpiredSubscriptionsUseCase } from "../../application/use-cases/subscription/system/SyncExpiredSubscriptionsUseCase";
 import { VerifyPaymentAndActivateSubscriptionUseCase } from "../../application/use-cases/subscription/VerifyPaymentAndActivateSubscriptionUseCase";
 import { AdminSubscriptionController } from "../../interfaces/controllers/admin/AdminSubscriptionController";
 import { CreditController } from "../../interfaces/controllers/subscription/CreditController";
@@ -94,6 +98,15 @@ const getCreditStatusUseCase: IGetCreditStatusUseCase = new GetCreditStatusUseCa
     subscriptionService
 )
 
+const syncExpiredSubscriptionsUseCase: ISyncExpiredSubscriptionsUseCase = new SyncExpiredSubscriptionsUseCase(
+    userSubscriptionRepository,
+    subscriptionService
+)
+
+const resetSubscriptionCreditsUseCase: IResetSubscriptionCreditsUseCase = new ResetSubscriptionCreditsUseCase(
+    userSubscriptionRepository,
+    creditService
+)
 
 
 //controllers
@@ -117,3 +130,8 @@ export const adminSubscriptionController = new AdminSubscriptionController(
 export const creditController = new CreditController(
     getCreditStatusUseCase
 )
+
+export {
+    syncExpiredSubscriptionsUseCase,
+    resetSubscriptionCreditsUseCase,
+};

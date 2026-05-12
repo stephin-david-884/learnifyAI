@@ -10,6 +10,7 @@ import subscriptionRouter from './interfaces/routes/subscriptionRoutes';
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./interfaces/middlewares/errorHandler";
 import pinoHttp from "pino-http";
+import { initializeSubscriptionJobs } from "./infrastructure/jobs/subscription.jobs";
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.use("/api/admin", adminRouter);
 app.use("/api/subscription", subscriptionRouter);
 
 app.use(errorHandler);
+
+initializeSubscriptionJobs();
 
 const PORT = process.env.PORT || 5000;
 
