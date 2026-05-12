@@ -13,4 +13,6 @@ export interface CreatePaymentOrderUseCaseOutputDTO {
     currency: string;
 
     key: string;
+
+    planName: string;
 }

@@ -1,5 +1,6 @@
 import { AppError } from "../../../../domain/errors/AppError";
 import { statusCode } from "../../../constants/enums/statusCode";
+import { FREE_SUBSCRIPTION } from "../../../constants/enums/subscription.constants";
 import { subMessages } from "../../../constants/messages/subMessags";
 import { CreditStatusDTO } from "../../../dtos/subscription/credit-status.dto";
 import { ISubscriptionService } from "../../../interfaces/services/subscription/ISubscriptionService";
@@ -16,7 +17,26 @@ export class GetCreditStatusUseCase implements IGetCreditStatusUseCase {
         const subscription = await this._subscriptionService.getActiveSubscription(userId);
 
         if (!subscription) {
-            throw new AppError(subMessages.error.SUBSCRIPTION_NOT_FOUND, statusCode.NOT_FOUND);
+            return {
+                subscriptionId: null,
+
+                status: "FREE",
+
+                planName:
+                    FREE_SUBSCRIPTION.PLAN_NAME,
+
+                creditsRemaining:
+                    FREE_SUBSCRIPTION.CREDITS,
+
+                creditsTotal:
+                    FREE_SUBSCRIPTION.CREDITS,
+
+                lastCreditReset: null,
+
+                endDate: null,
+
+                isPro: false,
+            };
         }
 
         return {
@@ -37,6 +57,8 @@ export class GetCreditStatusUseCase implements IGetCreditStatusUseCase {
 
             endDate:
                 subscription.endDate,
+
+            isPro: true,    
         }
     }
 }

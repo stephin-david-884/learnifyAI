@@ -28,7 +28,7 @@ export const ROUTES = {
     GET_AVAILABLE_PLANS: "/plans",
     GET_ACTIVE_SUBSCRIPTION: "/active",
     GET_USER_PAYMENTS: "/payments",
-    GET_CREDIT_STATUS: "/credits",
+    GET_CREDIT_STATUS: "/credits/status",
   },
 
   ADMIN_SUBSCRIPTION: {

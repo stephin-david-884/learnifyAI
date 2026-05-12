@@ -1,6 +1,6 @@
 export interface CreditStatusDTO {
 
-    subscriptionId: string;
+    subscriptionId: string | null;
 
     status: string;
 
@@ -10,7 +10,9 @@ export interface CreditStatusDTO {
 
     creditsTotal: number;
 
-    lastCreditReset: Date;
+    lastCreditReset: Date | null;
 
-    endDate: Date;
+    endDate: Date | null;
+
+    isPro: boolean;
 }

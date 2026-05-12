@@ -20,7 +20,9 @@ import { useAdminAuth } from "./hooks/useAdminAuth";
 const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
 const VerifyForgotOtp = lazy(() => import('./presentation/pages/auth/VerifyForgotOtp'));
 const ResetPassword = lazy(() => import('./presentation/pages/auth/ResetPassword'));
-const AdminUsersPage = lazy(() => import('./presentation/pages/admin/AdminUsersPage'))
+const AdminUsersPage = lazy(() => import('./presentation/pages/admin/AdminUsersPage'));
+const SubscriptionPlansPage = lazy(() => import('./presentation/pages/subscription/SubscriptionPlansPage'));
+const PaymentHistoryPage = lazy(() => import('./presentation/pages/subscription/PaymentHistoryPage'));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -89,6 +91,8 @@ const App = () => {
 
           <Route element={<UserProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/subscription/plans" element={<SubscriptionPlansPage />} />
+            <Route path="/subscription/payments" element={<PaymentHistoryPage />}/>
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />

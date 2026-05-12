@@ -4,9 +4,9 @@ import Header from './Header';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logoutUser } from '../../../redux/features/auth/authSlice';
-import api from '../../../lib/axios';
 import AccountBlockedModal from '../../components/modals/AccountBlockedModal';
 import type { AppDispatch } from '../../../redux/store';
+import { useSubscription } from '../../../hooks/useSubscription';
 
 type Props = {
     children: React.ReactNode;
@@ -15,7 +15,8 @@ type Props = {
 const UserLayout: React.FC<Props> = ({ children }) => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [blocked, setBlocked] = useState(false);
+    const [blocked, _setBlocked] = useState(false);
+    const {fetchActiveSubscription, fetchCreditStatus} = useSubscription();
 
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
@@ -28,6 +29,11 @@ const UserLayout: React.FC<Props> = ({ children }) => {
         dispatch(logoutUser());
         navigate("/login");
     };
+
+    useEffect(() => {
+        fetchActiveSubscription();
+        fetchCreditStatus();
+    },[])
 
     // useEffect(() => {
     //     const interval = setInterval(async () => {

@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./features/auth/authSlice";
 import adminSlice from "./features/admin/adminSlice";
+import subscriptionSlice from "./features/subscription/subscriptionSlice";
 import userManagementSlice from "./features/admin/userManagementSlice";
 
 export const store = configureStore({
@@ -8,6 +9,7 @@ export const store = configureStore({
         auth: authSlice,
         admin: adminSlice,
         userManagement: userManagementSlice,
+        subscription: subscriptionSlice
     }
 })
 

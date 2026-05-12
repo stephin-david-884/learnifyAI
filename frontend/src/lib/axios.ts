@@ -9,10 +9,10 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
 }
 
 
-let logoutHandler: (() => void) | null = null;
+let _logoutHandler: (() => void) | null = null;
 
 export const setLogoutHandler = (handler: () => void) => {
-    logoutHandler = handler;
+    _logoutHandler = handler;
 };
 
 let blockedHandler: (() => void) | null = null;

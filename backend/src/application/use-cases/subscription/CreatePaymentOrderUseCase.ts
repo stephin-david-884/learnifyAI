@@ -59,7 +59,8 @@ export class CreatePaymentOrderUseCase implements ICreatePaymentOrderUseCase {
             orderId: razorpayOrder.orderId,
             amount: razorpayOrder.amount,
             currency: razorpayOrder.currency,
-            key: process.env.RAZORPAY_KEY_ID!
+            key: process.env.RAZORPAY_KEY_ID!,
+            planName: plan.name
         };
     }
 }
