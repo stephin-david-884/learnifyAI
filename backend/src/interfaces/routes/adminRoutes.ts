@@ -40,4 +40,10 @@ router.patch(ROUTES.ADMIN_SUBSCRIPTION.DEACTIVATE_PLAN,
     adminSubscriptionController.deactivateSubscriptionPlan
 );
 
+router.get(ROUTES.ADMIN_SUBSCRIPTION.GET_ALL_PLANS,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    adminSubscriptionController.getAllSubscriptionPlans
+)
+
 export default router;

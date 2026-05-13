@@ -151,3 +151,45 @@ export interface SubscriptionState {
 
     error: string | null;
 }
+
+export interface AdminSubscriptionState {
+    plans: SubscriptionPlan[];
+
+    loading: boolean;
+
+    error: string | null;
+}
+
+export interface CreateSubscriptionPlanPayload {
+    name: string;
+
+    price: number;
+
+    creditsPerMonth: number;
+
+    discount?: number;
+
+    features: {
+        maxDocuments: number;
+        interviewAccess: boolean;
+    };
+
+    billingCycle: BillingCycle;
+
+    durationInDays: number;
+
+    creditResetIntervalInDays: number;
+}
+
+export interface UpdateSubscriptionPlanPayload
+    extends CreateSubscriptionPlanPayload {}
+
+export interface AdminSubscriptionState {
+    plans: SubscriptionPlan[];
+
+    loading: boolean;
+
+    error: string | null;
+
+    successMessage: string | null;
+}

@@ -29,10 +29,9 @@ export const API_ROUTES = {
     },
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
-        UPDATE_PLAN: (planId: string) =>
-            `/admin/subscription/plans/${planId}`,
-
+        UPDATE_PLAN: "/admin/subscription/plans",
         DEACTIVATE_PLAN: (planId: string) =>
             `/admin/subscription/plans/${planId}/deactivate`,
+        GET_ALL_PLANS: "/admin/subscription/plans",
     }
 }

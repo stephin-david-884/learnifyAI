@@ -6,6 +6,7 @@ import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { subMessages } from "../../../application/constants/messages/subMessags";
+import { IGetAllSubscriptionPlansUseCase } from "../../../application/interfaces/usecases/subscription/IGetAllSubscriptionPlansUseCase";
 
 export class AdminSubscriptionController {
 
@@ -13,6 +14,7 @@ export class AdminSubscriptionController {
         private readonly _createSubscriptionPlanUseCase: ICreateSubscriptionPlanUseCase,
         private readonly _updateSubscriptionPlanUseCase: IUpdateSubscriptionPlanUseCase,
         private readonly _deactivateSubscriptionPlanUseCase: IDeactivateSubscriptionPlanUseCase,
+        private readonly _getAllSubscriptionPlansUseCase: IGetAllSubscriptionPlansUseCase,
     ) { }
 
     createSubscriptionPlan = asyncHandler(async (req: Request, res: Response) => {
@@ -80,4 +82,17 @@ export class AdminSubscriptionController {
             plan
         );
     })
+
+    getAllSubscriptionPlans = asyncHandler(async (req: Request, res: Response) => {
+
+        const plans =
+            await this._getAllSubscriptionPlansUseCase.execute();
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            subMessages.success.AVAILABLE_PLANS_FETCHED,
+            plans
+        );
+    });
 }

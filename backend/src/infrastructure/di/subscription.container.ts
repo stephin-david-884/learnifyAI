@@ -2,6 +2,7 @@ import { ICreatePaymentOrderUseCase } from "../../application/interfaces/usecase
 import { ICreateSubscriptionPlanUseCase } from "../../application/interfaces/usecases/subscription/ICreateSubscriptionPlanUseCase";
 import { IDeactivateSubscriptionPlanUseCase } from "../../application/interfaces/usecases/subscription/IDeactivateSubscriptionPlanUseCase";
 import { IGetActiveSubscriptionUseCase } from "../../application/interfaces/usecases/subscription/IGetActiveSubscriptionUseCase";
+import { IGetAllSubscriptionPlansUseCase } from "../../application/interfaces/usecases/subscription/IGetAllSubscriptionPlansUseCase";
 import { IGetAvailablePlansUseCase } from "../../application/interfaces/usecases/subscription/IGetAvailablePlansUseCase";
 import { IGetCreditStatusUseCase } from "../../application/interfaces/usecases/subscription/IGetCreditStatusUseCase";
 import { IGetUserPaymentsUseCase } from "../../application/interfaces/usecases/subscription/IGetUserPaymentsUseCase";
@@ -11,6 +12,7 @@ import { IUpdateSubscriptionPlanUseCase } from "../../application/interfaces/use
 import { IVerifyPaymentAndActivateSubscriptionUseCase } from "../../application/interfaces/usecases/subscription/IVerifyPaymentAndActivateSubscriptionUseCase";
 import { CreateSubscriptionPlanUseCase } from "../../application/use-cases/subscription/admin/CreateSubscriptionPlanUseCase";
 import { DeactivateSubscriptionPlanUseCase } from "../../application/use-cases/subscription/admin/DeactivateSubscriptionPlanUseCase";
+import { GetAllSubscriptionPlansUseCase } from "../../application/use-cases/subscription/admin/GetAllSubscriptionPlansUseCase";
 import { UpdateSubscriptionPlanUseCase } from "../../application/use-cases/subscription/admin/UpdateSubscriptionPlanUseCase";
 import { CreatePaymentOrderUseCase } from "../../application/use-cases/subscription/CreatePaymentOrderUseCase";
 import { GetActiveSubscriptionUseCase } from "../../application/use-cases/subscription/GetActiveSubscriptionUseCase";
@@ -108,6 +110,10 @@ const resetSubscriptionCreditsUseCase: IResetSubscriptionCreditsUseCase = new Re
     creditService
 )
 
+const getAllSubscriptionPlansUseCase: IGetAllSubscriptionPlansUseCase = new GetAllSubscriptionPlansUseCase(
+    subscriptionPlanRepository
+) 
+
 
 //controllers
 export const paymentController = new PaymentController(
@@ -124,7 +130,8 @@ export const subscriptionController = new SubscriptionController(
 export const adminSubscriptionController = new AdminSubscriptionController(
         createSubscriptionPlanUseCase,
         updateSubscriptionPlanUseCase,
-        deactivateSubscriptionPlanUseCase
+        deactivateSubscriptionPlanUseCase,
+        getAllSubscriptionPlansUseCase
 );
 
 export const creditController = new CreditController(

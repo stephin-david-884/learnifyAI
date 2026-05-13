@@ -1,0 +1,257 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { AdminSubscriptionState, CreateSubscriptionPlanPayload, SubscriptionPlan, UpdateSubscriptionPlanPayload } from "../../../types/subscription";
+import api from "../../../lib/axios";
+import { API_ROUTES } from "../../../constants/api.routes";
+import type { AxiosError } from "axios";
+
+const initialState: AdminSubscriptionState = {
+    plans: [],
+    loading: false,
+    error: null,
+    successMessage: null,
+};
+
+export const getAllPlans = createAsyncThunk<
+    SubscriptionPlan[],
+    void,
+    { rejectValue: string }
+>(
+    "adminSubscription/getAllPlans",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await api.get(
+                API_ROUTES.ADMIN_SUBSCRIPTION.GET_ALL_PLANS
+            );
+
+            return response.data.data;
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to fetch plans"
+            );
+        }
+    }
+);
+
+export const createPlan = createAsyncThunk<
+    SubscriptionPlan,
+    CreateSubscriptionPlanPayload,
+    { rejectValue: string }
+>(
+    "adminSubscription/createPlan",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.post(
+                API_ROUTES.ADMIN_SUBSCRIPTION.CREATE_PLAN,
+                data
+            );
+
+            return response.data.data;
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to create plan"
+            );
+        }
+    }
+);
+
+export const updatePlan = createAsyncThunk<
+    SubscriptionPlan,
+    UpdateSubscriptionPlanPayload,
+    { rejectValue: string }
+>(
+    "adminSubscription/updatePlan",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await api.put(
+                API_ROUTES.ADMIN_SUBSCRIPTION.UPDATE_PLAN,
+                data
+            );
+
+            return response.data.data;
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to update plan"
+            );
+        }
+    }
+);
+
+export const deactivatePlan = createAsyncThunk<
+    SubscriptionPlan,
+    string,
+    { rejectValue: string }
+>(
+    "adminSubscription/deactivatePlan",
+    async (planId, { rejectWithValue }) => {
+        try {
+            const response = await api.patch(
+                API_ROUTES.ADMIN_SUBSCRIPTION.DEACTIVATE_PLAN(
+                    planId
+                )
+            );
+
+            return response.data.data;
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to deactivate plan"
+            );
+        }
+    }
+);
+
+const adminSubscriptionSlice = createSlice({
+    name: "adminSubscription",
+
+    initialState,
+
+    reducers: {
+        clearAdminSubscriptionError: (
+            state
+        ) => {
+            state.error = null;
+        },
+
+        clearAdminSubscriptionSuccess: (
+            state
+        ) => {
+            state.successMessage = null;
+        },
+    },
+
+    extraReducers: (builder) => {
+        builder
+
+            // GET ALL
+            .addCase(getAllPlans.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(getAllPlans.fulfilled, (state, action) => {
+                state.loading = false;
+                state.plans = action.payload;
+            }
+            )
+
+            .addCase(getAllPlans.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to fetch plans";
+            }
+            )
+
+            // CREATE
+            .addCase(createPlan.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(createPlan.fulfilled, (state, action) => {
+                state.loading = false;
+
+                state.plans.unshift(
+                    action.payload
+                );
+
+                state.successMessage =
+                    "Plan created successfully";
+            }
+            )
+
+            .addCase(createPlan.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error =
+                    action.payload ||
+                    "Failed to create plan";
+            }
+            )
+
+            // UPDATE
+            .addCase(updatePlan.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(updatePlan.fulfilled, (state, action) => {
+                state.loading = false;
+
+                state.plans.unshift(
+                    action.payload
+                );
+
+                state.successMessage =
+                    "Plan updated successfully";
+            }
+            )
+
+            .addCase(updatePlan.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error =
+                    action.payload ||
+                    "Failed to update plan";
+            }
+            )
+
+            // DEACTIVATE
+            .addCase(deactivatePlan.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(deactivatePlan.fulfilled, (state, action) => {
+                state.loading = false;
+
+                state.plans = state.plans.map(
+                    (plan) =>
+                        plan.id ===
+                            action.payload.id
+                            ? action.payload
+                            : plan
+                );
+
+                state.successMessage = "Plan deactivated";
+            }
+            )
+
+            .addCase(deactivatePlan.rejected, (state, action) => {
+                state.loading = false;
+
+                state.error =
+                    action.payload ||
+                    "Failed to deactivate";
+            }
+            );
+    },
+})
+
+export const {
+    clearAdminSubscriptionError,
+    clearAdminSubscriptionSuccess,
+} = adminSubscriptionSlice.actions;
+
+export default adminSubscriptionSlice.reducer;

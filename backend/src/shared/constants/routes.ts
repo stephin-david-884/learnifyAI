@@ -32,6 +32,8 @@ export const ROUTES = {
   },
 
   ADMIN_SUBSCRIPTION: {
+    GET_ALL_PLANS: "/subscription/plans",
+
     CREATE_PLAN: "/subscription/plans",
 
     UPDATE_PLAN: "/subscription/plans",
