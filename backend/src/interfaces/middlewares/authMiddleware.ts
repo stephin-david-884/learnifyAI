@@ -14,6 +14,16 @@ export const authMiddleware = (tokenService: ITokenService) => {
     try {
       const payload = tokenService.verifyAccessToken(token);
 
+      if (payload.type !== "USER") {
+
+                return next(
+                    new AppError(
+                        "Forbidden",
+                        statusCode.FORBIDDEN
+                    )
+                );
+            }
+
       req.user = payload;
 
       next();

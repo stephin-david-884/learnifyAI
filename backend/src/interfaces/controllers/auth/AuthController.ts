@@ -9,7 +9,7 @@ import { IGetCurrentUsecase } from "../../../application/interfaces/usecases/aut
 import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { ILogoutUsecase } from "../../../application/interfaces/usecases/auth/ILogoutUsecase";
-import { cookieConfig } from "../../../config/cookie.config";
+import { userCookieConfig } from "../../../config/cookie.config";
 import { IGoogleAuthUsecase } from "../../../application/interfaces/usecases/auth/IGoogleAuthUsecase";
 import { ILoginUsecase } from "../../../application/interfaces/usecases/auth/ILoginUsecase";
 import { IForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IForgotPasswordUsecase";
@@ -57,11 +57,11 @@ export class AuthController {
             otp,
         });
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
+        res.cookie("accessToken", result.accessToken, userCookieConfig.accessToken);
 
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
+        res.cookie("refreshToken", result.refreshToken, userCookieConfig.refreshToken);
 
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, userCookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -98,9 +98,9 @@ export class AuthController {
             throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
         }
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("accessToken", result.accessToken, userCookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, userCookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, userCookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -138,9 +138,9 @@ export class AuthController {
             await this._logout.execute(refreshToken);
         }
 
-        res.clearCookie("accessToken", cookieConfig.accessToken);
-        res.clearCookie("refreshToken", cookieConfig.refreshToken);
-        res.clearCookie("XSRF-TOKEN", cookieConfig.csrfToken);
+        res.clearCookie("accessToken", userCookieConfig.accessToken);
+        res.clearCookie("refreshToken", userCookieConfig.refreshToken);
+        // res.clearCookie("XSRF-TOKEN", userCookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -155,9 +155,9 @@ export class AuthController {
 
         const result = await this._googleAuth.execute(idToken);
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("accessToken", result.accessToken, userCookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, userCookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, userCookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -175,9 +175,9 @@ export class AuthController {
             password,
         });
 
-        res.cookie("accessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("refreshToken", result.refreshToken, cookieConfig.refreshToken);
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("accessToken", result.accessToken, userCookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, userCookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, userCookieConfig.csrfToken);
 
         return sendSuccess(
             res,

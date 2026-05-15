@@ -4,6 +4,8 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL
     ? `${import.meta.env.VITE_BACKEND_URL}/api`
     : "http://localhost:5000/api";
 
+const CSRF_COOKIE = "XSRF-TOKEN";  
+
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
 }
@@ -21,12 +23,16 @@ export const setBlockedHandler = (handler: () => void) => {
     blockedHandler = handler;
 };
 
-const getCsrfToken = (): string | null => {
-    return document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("XSRF-TOKEN="))
-        ?.split("=")[1] || null;
-};
+function readCookie(name: string): string | null {
+    const prefix = `${name}=`;
+    const part = document.cookie.split("; ").find((row) => row.startsWith(prefix));
+    if (!part) return null;
+    return decodeURIComponent(part.slice(prefix.length));
+}
+
+function getCsrfTokenForRequest(): string | null {
+    return readCookie(CSRF_COOKIE);
+}
 
 const api = axios.create({
     baseURL: BASE_URL,
@@ -50,7 +56,7 @@ const processQueue = (error: unknown) => {
 
 //Request interceptor
 api.interceptors.request.use((config) => {
-    const csrfToken = getCsrfToken();
+    const csrfToken = getCsrfTokenForRequest();
 
     if (csrfToken) {
         config.headers["x-csrf-token"] = csrfToken;
@@ -80,11 +86,11 @@ api.interceptors.response.use(
         }
 
         const isAuthRoute =
-            originalRequest.url?.includes("/auth/refresh") ||
+            originalRequest.url?.includes("/user/auth/refresh") ||
             originalRequest.url?.includes("/admin/refresh") ||
-            originalRequest.url?.includes("/auth/register") ||
-            originalRequest.url?.includes("/auth/verify") ||
-            originalRequest.url?.includes("/auth/googleLogin") ||
+            originalRequest.url?.includes("/user/auth/register") ||
+            originalRequest.url?.includes("/user/auth/verify") ||
+            originalRequest.url?.includes("/user/auth/googleLogin") ||
             originalRequest.url?.includes("/admin/login") ||
             originalRequest.url?.includes("/admin/logout");
 
@@ -106,7 +112,7 @@ api.interceptors.response.use(
 
                 const refreshUrl = isAdminRoute
                     ? "/admin/refresh"
-                    : "/auth/refresh";
+                    : "/user/auth/refresh";
 
                 await api.post(refreshUrl);
 
@@ -115,10 +121,6 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (error) {
                 processQueue(error);
-
-                // if (logoutHandler) {
-                //     logoutHandler();
-                // }
 
                 return Promise.reject(error)
             } finally {

@@ -1,5 +1,5 @@
 import { IAdminLoginUsecase } from "../../../application/interfaces/usecases/admin/auth/IAdminLoginUsecase";
-import { cookieConfig } from "../../../config/cookie.config";
+import { adminCookieConfig } from "../../../config/cookie.config";
 import { asyncHandler } from "../../http/asyncHandler";
 import { Request, Response } from "express";
 import { sendSuccess } from "../../http/response";
@@ -21,9 +21,9 @@ export class AdminController {
     login = asyncHandler(async (req: Request, res: Response) => {
         const result = await this._loginUsecase.execute(req.body);
 
-        res.cookie("adminAccessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("adminRefreshToken", result.refreshToken, cookieConfig.refreshToken);
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("accessToken", result.accessToken, adminCookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, adminCookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, adminCookieConfig.csrfToken);
 
         return sendSuccess(
             res,
@@ -36,7 +36,7 @@ export class AdminController {
     });
 
     refreshToken = asyncHandler(async (req: Request, res: Response) => {
-        const refreshTokenFromCookie = req.cookies.adminRefreshToken;
+        const refreshTokenFromCookie = req.cookies.refreshToken;
 
         const result = await this._refreshToken.execute({ token: refreshTokenFromCookie });
 
@@ -44,9 +44,9 @@ export class AdminController {
             throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
         }
 
-        res.cookie("adminAccessToken", result.accessToken, cookieConfig.accessToken);
-        res.cookie("adminRefreshToken", result.refreshToken, cookieConfig.refreshToken);
-        res.cookie("XSRF-TOKEN", result.csrfToken, cookieConfig.csrfToken);
+        res.cookie("accessToken", result.accessToken, adminCookieConfig.accessToken);
+        res.cookie("refreshToken", result.refreshToken, adminCookieConfig.refreshToken);
+        res.cookie("XSRF-TOKEN", result.csrfToken, adminCookieConfig.csrfToken);
         return sendSuccess(
             res,
             statusCode.OK,
@@ -55,7 +55,7 @@ export class AdminController {
     })
 
     getCurrentAdmin = asyncHandler(async (req: Request, res: Response) => {
-        const accessToken = req.cookies.adminAccessToken;
+        const accessToken = req.cookies.accessToken;
 
         if (!accessToken) {
             throw new AppError("Unauthorized", statusCode.UNAUTHORIZED);
@@ -68,15 +68,14 @@ export class AdminController {
 
     logout = asyncHandler(async (req: Request, res: Response) => {
 
-        const refreshToken = req.cookies.adminRefreshToken;
+        const refreshToken = req.cookies.refreshToken;
 
         if (refreshToken) {
             await this._logout.execute(refreshToken);
         }
 
-        res.clearCookie("adminAccessToken", cookieConfig.accessToken);
-        res.clearCookie("adminRefreshToken", cookieConfig.refreshToken);
-        res.clearCookie("XSRF-TOKEN", cookieConfig.csrfToken);
+        res.clearCookie("accessToken", adminCookieConfig.accessToken);
+        res.clearCookie("refreshToken", adminCookieConfig.refreshToken);
 
         return sendSuccess(
             res,

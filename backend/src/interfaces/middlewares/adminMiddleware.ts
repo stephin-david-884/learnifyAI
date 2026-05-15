@@ -16,7 +16,7 @@ export const adminMiddleware = (
         next: NextFunction
     ) => {
 
-        const token = req.cookies.adminAccessToken;
+        const token = req.cookies.accessToken;
 
         if (!token) {
             return next(

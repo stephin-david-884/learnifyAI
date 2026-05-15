@@ -1,16 +1,16 @@
 export const API_ROUTES = {
     AUTH: {
-        REFRESH: "/auth/refresh",
-        REGISTER: "/auth/register",
-        VERIFY_OTP: "/auth/verify",
-        RESEND_OTP: "/auth/resendotp",
-        GET_ME: "/auth/me",
-        LOGOUT: "/auth/logout",
-        GOOGLE_LOGIN: "/auth/googleLogin",
-        LOGIN: "/auth/login",
-        FORGOT_PASSWORD: "/auth/forgotpassword",
-        VERIFY_FORGOT_PASSWORD: "/auth/verify-otp-forgotpassword",
-        RESET_PASSWORD: "/auth/resetpassword"
+        REFRESH: "/user/auth/refresh",
+        REGISTER: "/user/auth/register",
+        VERIFY_OTP: "/user/auth/verify",
+        RESEND_OTP: "/user/auth/resendotp",
+        GET_ME: "/user/auth/me",
+        LOGOUT: "/user/auth/logout",
+        GOOGLE_LOGIN: "/user/auth/googleLogin",
+        LOGIN: "/user/auth/login",
+        FORGOT_PASSWORD: "/user/auth/forgotpassword",
+        VERIFY_FORGOT_PASSWORD: "/user/auth/verify-otp-forgotpassword",
+        RESET_PASSWORD: "/user/auth/resetpassword"
     },
     ADMIN: {
         LOGIN: "/admin/login",
@@ -20,12 +20,12 @@ export const API_ROUTES = {
         BLOCK_USER: (userId: string) => `/admin/users/${userId}/block`
     },
     SUBSCRIPTION: {
-        GET_AVAILABLE_PLANS: "/subscription/plans",
-        CREATE_PAYMENT_ORDER: "/subscription/payment/order",
-        VERIFY_PAYMENT: "/subscription/payment/verify",
-        GET_ACTIVE_SUBSCRIPTION: "/subscription/active",
-        GET_USER_PAYMENTS: "/subscription/payments",
-        GET_CREDIT_STATUS: "/subscription/credits/status",
+        GET_AVAILABLE_PLANS: "/user/subscription/plans",
+        CREATE_PAYMENT_ORDER: "/user/subscription/payment/order",
+        VERIFY_PAYMENT: "/user/subscription/payment/verify",
+        GET_ACTIVE_SUBSCRIPTION: "/user/subscription/active",
+        GET_USER_PAYMENTS: "/user/subscription/payments",
+        GET_CREDIT_STATUS: "/user/subscription/credits/status",
     },
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
