@@ -54,6 +54,17 @@ export class UserSubscriptionRepository
         return docs.map(doc => this._toDomain(doc));
     }
 
+    async existsByPlan(planId: string, version: number): Promise<boolean> {
+        
+        const exists = await this._model.exists({
+            planId,
+            planVersion: version,
+            status: "ACTIVE",
+        });
+
+        return exists ? true : false;
+    }
+
     // async findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]> {
     //     const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
     //     const cutoff = new Date(Date.now() - THIRTY_DAYS);

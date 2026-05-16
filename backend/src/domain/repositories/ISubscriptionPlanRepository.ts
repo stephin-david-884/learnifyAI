@@ -11,7 +11,7 @@ export interface ISubscriptionPlanRepository extends IBaseRepository<Subscriptio
 
     findLatestVersionByName(name: string): Promise<SubscriptionPlan | null>;
 
-    findActivePlansByName(
-        name: string
-    ): Promise<SubscriptionPlan[]>;
+    findActivePlansByName( name: string ): Promise<SubscriptionPlan[]>;
+
+    // getAdminPlans(query: )
 }

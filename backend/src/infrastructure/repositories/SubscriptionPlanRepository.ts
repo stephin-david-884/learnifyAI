@@ -49,4 +49,6 @@ export class SubscriptionPlanRepository
 
         return docs.map(doc => this._toDomain(doc));
     }
+
+    
 }

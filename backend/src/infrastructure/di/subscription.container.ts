@@ -88,7 +88,8 @@ const createSubscriptionPlanUseCase: ICreateSubscriptionPlanUseCase = new Create
 
 const updateSubscriptionPlanUseCase: IUpdateSubscriptionPlanUseCase =
         new UpdateSubscriptionPlanUseCase(
-            subscriptionPlanRepository
+            subscriptionPlanRepository,
+            userSubscriptionRepository
         );
 
 const deactivateSubscriptionPlanUseCase: IDeactivateSubscriptionPlanUseCase =
