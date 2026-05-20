@@ -8,6 +8,8 @@ import { statusCode } from "../../../application/constants/enums/statusCode";
 import { subMessages } from "../../../application/constants/messages/subMessags";
 import { IGetAllSubscriptionPlansUseCase } from "../../../application/interfaces/usecases/subscription/IGetAllSubscriptionPlansUseCase";
 import { BillingCycle } from "../../../domain/entities/SubscriptionPlan.entity";
+import { IGetAdminPaymentsUsecase } from "../../../application/interfaces/usecases/subscription/IGetAdminPaymentsUseCase";
+import { mapToGetAllPaymentsDTO } from "../../../application/mappers/payment/GetAllPaymentsQueryMapper";
 
 export class AdminSubscriptionController {
 
@@ -16,6 +18,7 @@ export class AdminSubscriptionController {
         private readonly _updateSubscriptionPlanUseCase: IUpdateSubscriptionPlanUseCase,
         private readonly _deactivateSubscriptionPlanUseCase: IDeactivateSubscriptionPlanUseCase,
         private readonly _getAllSubscriptionPlansUseCase: IGetAllSubscriptionPlansUseCase,
+        private readonly _getAdminPaymentsUseCase: IGetAdminPaymentsUsecase,
     ) { }
 
     createSubscriptionPlan = asyncHandler(async (req: Request, res: Response) => {
@@ -106,4 +109,18 @@ export class AdminSubscriptionController {
             plans
         );
     });
+
+    getPayments = asyncHandler(async (req: Request, res: Response) => {
+
+        const query = mapToGetAllPaymentsDTO(req.query);
+
+        const payments = await this._getAdminPaymentsUseCase.execute(query);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            subMessages.success.PAYMENTS_FETCHED,
+            payments
+        )
+    })
 }

@@ -8,7 +8,8 @@ export const subMessages = {
         SUBSCRIPTION_PLAN_CREATED: "Subscription plan created",
         SUBSCRIPTION_PLAN_UPDATED: "Successfully updated subscription plan",
         SUBSCRIPTION_PLAN_DEACTIVATED: "Successfully deactivated subscription plan",
-        CREDITS_FETCHED: "Credits fetched",
+        CREDITS_FETCHED: "Credits fetched successfully",
+        PAYMENTS_FETCHED: "Payments fetched successfully",
     },
 
     error: {

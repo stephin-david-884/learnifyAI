@@ -1,3 +1,5 @@
+import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
+import { GetAllPaymentsDTO } from "../../application/dtos/payment/GetAllPaymentsDTO";
 import { toDomainPayment, toPersistencePayment } from "../../application/mappers/PaymentMapper";
 import { Payment } from "../../domain/entities/Payment.entity";
 import { IPaymentRepository } from "../../domain/repositories/IPaymentRepository";
@@ -39,5 +41,59 @@ export class PaymentRepository
         }).lean();
 
         return doc ? this._toDomain(doc) : null;
+    }
+
+    async getAdminPayments(query: GetAllPaymentsDTO): Promise<PaginatedResponseDTO<Payment>> {
+
+        const { page, limit, search, status, sortBy = "createdAt", sortOrder = "desc" } = query;
+
+        const skip = (page - 1) * limit;
+
+        const filter: Record<string, unknown> = {};
+
+        if (status) {
+            filter.status = status;
+        }
+
+        if (search?.trim()) {
+
+            filter.$or = [
+                {
+                    razorpayOrderId: {
+                        $regex: search.trim(),
+                        $options: "i",
+                    },
+                },
+                {
+                    razorpayPaymentId: {
+                        $regex: search.trim(),
+                        $options: "i",
+                    },
+                },
+            ];
+        }
+        
+        const sort: Record<string, 1 | -1> = {
+            [sortBy]: sortOrder === "asc" ? 1 : -1,
+        };
+
+        const [docs, total] = await Promise.all([
+            this._model
+                .find(filter)
+                .sort(sort)
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+
+            this._model.countDocuments(filter)    
+        ]);
+
+        return {
+            items: docs.map((doc) => this._toDomain(doc as PaymentLean)),
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total/limit)
+        }
     }
 }

@@ -46,4 +46,10 @@ router.get(ROUTES.ADMIN_SUBSCRIPTION.GET_ALL_PLANS,
     adminSubscriptionController.getAllSubscriptionPlans
 )
 
+router.get(ROUTES.ADMIN_SUBSCRIPTION.GET_PAYMENTS,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    adminSubscriptionController.getPayments
+)
+
 export default router;

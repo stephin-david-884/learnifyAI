@@ -40,5 +40,7 @@ export const ROUTES = {
 
     DEACTIVATE_PLAN:
       "/subscription/plans/:planId/deactivate",
+
+    GET_PAYMENTS: "/payments",  
   }
 };
