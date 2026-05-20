@@ -1,4 +1,4 @@
-import React, { useEffect,useState,} from "react";
+import React, { useEffect, useState, } from "react";
 
 import { X } from "lucide-react";
 
@@ -10,6 +10,8 @@ import type {
     BillingCycle,
     CreateSubscriptionPlanPayload,
 } from "../../../../types/subscription";
+import { subscriptionPlanSchema } from "../../../../lib/validation/subscriptionPlan.validation";
+import type { ZodIssue } from "zod";
 
 type Props = {
     open: boolean;
@@ -23,7 +25,7 @@ const initialState: CreateSubscriptionPlanPayload = {
     discount: 0,
 
     features: {
-        maxDocuments: 0,
+        maxDocuments: 1,
         interviewAccess: false,
     },
 
@@ -44,8 +46,9 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
         loading,
     } = useAdminSubscription();
 
-    const [formData, setFormData] =
-        useState(initialState);
+    const [formData, setFormData] = useState(initialState);
+
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     useEffect(() => {
 
@@ -77,6 +80,11 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                     ? Number(value)
                     : value,
         }));
+
+        setErrors((prev) => ({
+            ...prev,
+            [name]: "",
+        }));
     };
 
     const handleFeatureChange = (
@@ -102,6 +110,10 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                         : Number(value),
             },
         }));
+        setErrors((prev) => ({
+            ...prev,
+            [`features.${name}`]: "",
+        }));
     };
 
     const handleBillingCycleChange = (
@@ -125,11 +137,31 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
         }));
     };
 
+    const mapZodErrors = (issues: ZodIssue[]) => {
+        const fieldErrors: Record<string, string> = {};
+
+        issues.forEach((issue) => {
+            const path = issue.path.join(".");
+
+            fieldErrors[path] = issue.message;
+        });
+
+        return fieldErrors;
+    }
+
     const handleSubmit = async (
         e: React.FormEvent
     ) => {
 
         e.preventDefault();
+
+        const result = subscriptionPlanSchema.safeParse(formData);
+
+        if (!result.success) {
+            const formattedErrors = mapZodErrors(result.error.issues);
+            setErrors(formattedErrors)
+            return;
+        }
 
         try {
 
@@ -157,7 +189,7 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
             <div className="w-full max-w-2xl rounded-3xl bg-white shadow-2xl">
 
-                
+
                 <div className="flex items-center justify-between border-b border-slate-200 px-6 py-5">
 
                     <div>
@@ -181,7 +213,7 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                 </div>
 
-                
+
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-6 p-6"
@@ -189,7 +221,7 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -202,13 +234,23 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                                 value={formData.name}
                                 onChange={handleChange}
                                 placeholder="PRO"
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
-                                required
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.name
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`
+                                }
+                                
                             />
+                            {errors.name && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.name}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -236,7 +278,7 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -245,16 +287,26 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                             <input
                                 type="number"
+                                min={0}
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
-                                required
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.price
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`}
                             />
+
+                            {errors.price && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.price}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -268,13 +320,22 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                                     formData.creditsPerMonth
                                 }
                                 onChange={handleChange}
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
-                                required
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.creditsPerMonth
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`}
                             />
+
+                            {errors.creditsPerMonth && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.creditsPerMonth}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -288,12 +349,21 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                                     formData.discount
                                 }
                                 onChange={handleChange}
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.discount
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`}
                             />
+                            {errors.discount && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.discount}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -302,20 +372,27 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                             <input
                                 type="number"
+                                min={1}
                                 name="maxDocuments"
-                                value={
-                                    formData.features
-                                        .maxDocuments
+                                value={formData.features.maxDocuments}
+                                onChange={handleFeatureChange}
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors["features.maxDocuments"]
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`
                                 }
-                                onChange={
-                                    handleFeatureChange
-                                }
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
                             />
+
+                            {errors["features.maxDocuments"] && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors["features.maxDocuments"]}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -329,12 +406,22 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                                     formData.durationInDays
                                 }
                                 onChange={handleChange}
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.durationInDays
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`}
                             />
+
+                            {errors.durationInDays && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.durationInDays}
+                                </p>
+                            )}
 
                         </div>
 
-                        
+
                         <div>
 
                             <label className="mb-2 block text-sm font-semibold text-slate-700">
@@ -348,14 +435,23 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
                                     formData.creditResetIntervalInDays
                                 }
                                 onChange={handleChange}
-                                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-indigo-500"
+                                className={`w-full rounded-xl border px-4 py-3 outline-none transition
+                                ${errors.creditResetIntervalInDays
+                                        ? "border-red-500"
+                                        : "border-slate-300 focus:border-indigo-500"
+                                    }`}
                             />
+                            {errors.creditResetIntervalInDays && (
+                                <p className="mt-1 text-sm text-red-500">
+                                    {errors.creditResetIntervalInDays}
+                                </p>
+                            )}
 
                         </div>
 
                     </div>
 
-                    
+
                     <div className="flex items-center gap-3">
 
                         <input
@@ -377,7 +473,7 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
 
                     </div>
 
-                    
+
                     <div className="flex justify-end gap-3 pt-2">
 
                         <button

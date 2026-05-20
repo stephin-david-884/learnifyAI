@@ -1,3 +1,5 @@
+import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
+import { GetAllSubscriptionPlansDTO } from "../../application/dtos/subscription/get-all-subscription-plans.dto";
 import { SubscriptionPlan } from "../entities/SubscriptionPlan.entity";
 import { IBaseRepository } from "./IBaseRepository";
 
@@ -13,5 +15,5 @@ export interface ISubscriptionPlanRepository extends IBaseRepository<Subscriptio
 
     findActivePlansByName( name: string ): Promise<SubscriptionPlan[]>;
 
-    // getAdminPlans(query: )
+    getAdminPlans(query: GetAllSubscriptionPlansDTO): Promise<PaginatedResponseDTO<SubscriptionPlan>>;
 }

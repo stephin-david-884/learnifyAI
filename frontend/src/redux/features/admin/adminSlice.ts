@@ -36,7 +36,7 @@ export const adminLogin = createAsyncThunk<
             const res = await api.post(API_ROUTES.ADMIN.LOGIN, data);
 
             return {
-                admin: res.data.admin
+                admin: res.data.data.admin
             };
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;

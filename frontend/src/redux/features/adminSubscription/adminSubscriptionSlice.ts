@@ -1,26 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AdminSubscriptionState, CreateSubscriptionPlanPayload, SubscriptionPlan, UpdateSubscriptionPlanPayload } from "../../../types/subscription";
+import type { AdminSubscriptionState, CreateSubscriptionPlanPayload, GetSubscriptionPlansQuery, PaginatedSubscriptionPlansResponse, SubscriptionPlan, UpdateSubscriptionPlanPayload } from "../../../types/subscription";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
 
 const initialState: AdminSubscriptionState = {
     plans: [],
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
     loading: false,
     error: null,
     successMessage: null,
 };
 
 export const getAllPlans = createAsyncThunk<
-    SubscriptionPlan[],
-    void,
+    PaginatedSubscriptionPlansResponse,
+    GetSubscriptionPlansQuery | undefined,
     { rejectValue: string }
 >(
     "adminSubscription/getAllPlans",
-    async (_, { rejectWithValue }) => {
+    async (params, { rejectWithValue }) => {
         try {
             const response = await api.get(
-                API_ROUTES.ADMIN_SUBSCRIPTION.GET_ALL_PLANS
+                API_ROUTES.ADMIN_SUBSCRIPTION.GET_ALL_PLANS, { params }
             );
 
             return response.data.data;
@@ -150,7 +154,11 @@ const adminSubscriptionSlice = createSlice({
 
             .addCase(getAllPlans.fulfilled, (state, action) => {
                 state.loading = false;
-                state.plans = action.payload;
+                state.plans = action.payload.items;
+                state.total = action.payload.total;
+                state.page = action.payload.page;
+                state.limit = action.payload.limit;
+                state.totalPages = action.payload.totalPages;
             }
             )
 
@@ -198,9 +206,23 @@ const adminSubscriptionSlice = createSlice({
             .addCase(updatePlan.fulfilled, (state, action) => {
                 state.loading = false;
 
-                state.plans.unshift(
-                    action.payload
+                const updatedPlan = action.payload;
+
+                const existingIndex = state.plans.findIndex(
+                    (plan) => plan.id === updatedPlan.id
                 );
+
+                if (existingIndex !== -1) {
+
+                    // SAME PLAN UPDATED
+                    state.plans[existingIndex] =
+                        updatedPlan;
+
+                } else {
+
+                    // NEW VERSION CREATED
+                    state.plans.unshift(updatedPlan);
+                }
 
                 state.successMessage =
                     "Plan updated successfully";

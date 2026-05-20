@@ -6,6 +6,8 @@ import { verifyCsrf } from "../middlewares/csrfVerify";
 import { creditController, paymentController, subscriptionController } from "../../infrastructure/di/subscription.container";
 import { validate } from "../middlewares/validate";
 import { createPaymentOrderSchema, verifyPaymentSchema } from "../validators/subscription/subscription.validator";
+import { adminMiddleware } from "../middlewares/adminMiddleware";
+import { getAllSubscriptionPlansSchema } from "../validators/admin/get-all-subscription-plans.schema";
 
 const router = express.Router();
 
@@ -24,6 +26,7 @@ router.post(ROUTES.SUBSCRIPTION.VERIFY_PAYMENT,
         );
 
 router.get(ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS,
+            authMiddleware(tokenService),
             subscriptionController.getAvailablePlans
         );
         

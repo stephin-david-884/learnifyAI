@@ -1,5 +1,7 @@
 import { SubscriptionPlan } from "../../../../domain/entities/SubscriptionPlan.entity";
 import { ISubscriptionPlanRepository } from "../../../../domain/repositories/ISubscriptionPlanRepository";
+import { PaginatedResponseDTO } from "../../../dtos/common/paginated-response.dto";
+import { GetAllSubscriptionPlansDTO } from "../../../dtos/subscription/get-all-subscription-plans.dto";
 import { IGetAllSubscriptionPlansUseCase } from "../../../interfaces/usecases/subscription/IGetAllSubscriptionPlansUseCase";
 
 export class GetAllSubscriptionPlansUseCase implements IGetAllSubscriptionPlansUseCase {
@@ -8,18 +10,8 @@ export class GetAllSubscriptionPlansUseCase implements IGetAllSubscriptionPlansU
         private readonly _subscriptionPlanRepository: ISubscriptionPlanRepository
     ) { }
 
-    async execute(): Promise<SubscriptionPlan[]> {
-
-    const plans =
-        await this._subscriptionPlanRepository.findAll();
-
-    return plans.sort((a, b) => {
-
-        if(a.name === b.name) {
-            return b.version - a.version;
-        }
-
-        return a.name.localeCompare(b.name);
-    });
-}
+    async execute(query: GetAllSubscriptionPlansDTO): Promise<PaginatedResponseDTO<SubscriptionPlan>> {
+        
+        return await this._subscriptionPlanRepository.getAdminPlans(query);
+    }
 }

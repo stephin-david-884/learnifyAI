@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { clearAdminSubscriptionError, clearAdminSubscriptionSuccess, createPlan, deactivatePlan, getAllPlans, updatePlan } from "../redux/features/adminSubscription/adminSubscriptionSlice";
-import type { CreateSubscriptionPlanPayload, UpdateSubscriptionPlanPayload } from "../types/subscription";
+import type { CreateSubscriptionPlanPayload, GetSubscriptionPlansQuery, UpdateSubscriptionPlanPayload } from "../types/subscription";
 
 export const useAdminSubscription = () => {
 
@@ -9,14 +9,10 @@ export const useAdminSubscription = () => {
         useDispatch<AppDispatch>();
 
     const {
-        plans,
-        loading,
-        error,
-        successMessage,
-    } = useSelector((state: RootState) => state.adminSubscription);
+        plans, total, page, limit, totalPages, loading, error, successMessage} = useSelector((state: RootState) => state.adminSubscription);
 
-    const fetchPlans = async () => {
-        return dispatch(getAllPlans()).unwrap();
+    const fetchPlans = async (params?: GetSubscriptionPlansQuery) => {
+        return dispatch(getAllPlans(params)).unwrap();
     };
 
     const createSubscriptionPlan =
@@ -55,6 +51,10 @@ export const useAdminSubscription = () => {
         loading,
         error,
         successMessage,
+        total,
+        page,
+        limit,
+        totalPages,
         fetchPlans,
         createSubscriptionPlan,
         updateSubscriptionPlan,

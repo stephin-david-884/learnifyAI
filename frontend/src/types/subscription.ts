@@ -186,10 +186,27 @@ export interface UpdateSubscriptionPlanPayload
 
 export interface AdminSubscriptionState {
     plans: SubscriptionPlan[];
-
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
     loading: boolean;
-
     error: string | null;
-
     successMessage: string | null;
+}
+
+export interface GetSubscriptionPlansQuery {
+    page?: number;
+    limit?: number;
+    search?: string;
+    billingCycle?: BillingCycle | "";
+    isActive?: boolean | "";
+}
+
+export interface PaginatedSubscriptionPlansResponse {
+    items: SubscriptionPlan[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
 }

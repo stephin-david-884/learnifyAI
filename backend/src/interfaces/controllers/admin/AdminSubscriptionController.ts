@@ -7,6 +7,7 @@ import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { subMessages } from "../../../application/constants/messages/subMessags";
 import { IGetAllSubscriptionPlansUseCase } from "../../../application/interfaces/usecases/subscription/IGetAllSubscriptionPlansUseCase";
+import { BillingCycle } from "../../../domain/entities/SubscriptionPlan.entity";
 
 export class AdminSubscriptionController {
 
@@ -85,8 +86,18 @@ export class AdminSubscriptionController {
 
     getAllSubscriptionPlans = asyncHandler(async (req: Request, res: Response) => {
 
+        const query = {
+            page: Number(req.query.page) || 1,
+            limit: Number(req.query.limit) || 10,
+            search: req.query.search as string,
+            status: req.query.status as | "ACTIVE" | "EXPIRED" | "CANCELLED",
+            billingCycle: req.query.billingCycle as BillingCycle,
+            sortBy: req.query.sortBy as | "createdAt" | "price" | "name",
+            sortOrder: req.query.sortOrder as | "asc" | "desc",
+        }
+
         const plans =
-            await this._getAllSubscriptionPlansUseCase.execute();
+            await this._getAllSubscriptionPlansUseCase.execute(query);
 
         return sendSuccess(
             res,

@@ -1,3 +1,5 @@
+import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
+import { GetAllSubscriptionPlansDTO } from "../../application/dtos/subscription/get-all-subscription-plans.dto";
 import { toDomainSubscriptionPlan, toPersistenceSubscriptionPlan } from "../../application/mappers/SubscriptionPlanMapper";
 import { SubscriptionPlan } from "../../domain/entities/SubscriptionPlan.entity";
 import { ISubscriptionPlanRepository } from "../../domain/repositories/ISubscriptionPlanRepository";
@@ -38,7 +40,7 @@ export class SubscriptionPlanRepository
         return doc ? this._toDomain(doc) : null;
     }
 
-    async findActivePlansByName( name: string ): Promise<SubscriptionPlan[]> {
+    async findActivePlansByName(name: string): Promise<SubscriptionPlan[]> {
 
         const docs = await this._model
             .find({
@@ -50,5 +52,41 @@ export class SubscriptionPlanRepository
         return docs.map(doc => this._toDomain(doc));
     }
 
-    
+    async getAdminPlans(query: GetAllSubscriptionPlansDTO): Promise<PaginatedResponseDTO<SubscriptionPlan>> {
+
+        const { page, limit, search, isActive, billingCycle, sortBy = "createdAt", sortOrder = "desc" } = query;
+
+        const skip = (page - 1) * limit;
+
+        const filter: Record<string, unknown> = {};
+
+        if (search?.trim()) {
+            filter.name = { $regex: search.trim(), $options: "i" }
+        }
+
+        if (typeof isActive === "boolean") {
+            filter.isActive = isActive;
+        }
+
+        if (billingCycle) {
+            filter.billingCycle = billingCycle;
+        }
+
+        const sort: Record<string, 1 | -1> = {
+            [sortBy]: sortOrder === "asc" ? 1 : -1,
+        };
+
+        const [docs, total] = await Promise.all([
+            this._model.find(filter).sort(sort).skip(skip).limit(limit).lean(),
+            this._model.countDocuments(filter)
+        ]);
+
+        return {
+            items: docs.map((doc) => this._toDomain(doc)),
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
+    }
 }
