@@ -33,5 +33,6 @@ export const API_ROUTES = {
         DEACTIVATE_PLAN: (planId: string) =>
             `/admin/subscription/plans/${planId}/deactivate`,
         GET_ALL_PLANS: "/admin/subscription/plans",
+        GET_PAYMENTS: "/admin/payments",
     }
 }

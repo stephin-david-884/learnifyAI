@@ -1,4 +1,6 @@
-export type BillingCycle = "MONTHLY" | "YEARLY";
+import type { Payment } from "./admin/payment";
+
+export type BillingCycle = | "MONTHLY" | "YEARLY";
 
 export type PlanFeatures = {
     maxDocuments: number;
@@ -74,42 +76,6 @@ export interface UserSubscription {
     updatedAt?: string;
 }
 
-export type PaymentStatus =
-    | "CREATED"
-    | "SUCCESS"
-    | "FAILED";
-
-export interface Payment {
-    id: string;
-
-    userId: string;
-
-    planId: string;
-
-    planSnapshot: {
-        name: string;
-        price: number;
-        creditsPerMonth: number;
-        features: PlanFeatures;
-        billingCycle: BillingCycle;
-        durationInDays: number;
-        creditResetIntervalInDays: number;
-    };
-
-    razorpayOrderId: string;
-
-    razorpayPaymentId?: string;
-
-    razorpaySignature?: string;
-
-    amount: number;
-
-    status: PaymentStatus;
-
-    createdAt?: string;
-    updatedAt?: string;
-}
-
 export interface CreditStatus {
     subscriptionStatus: SubscriptionStatus;
 
@@ -152,14 +118,6 @@ export interface SubscriptionState {
     error: string | null;
 }
 
-export interface AdminSubscriptionState {
-    plans: SubscriptionPlan[];
-
-    loading: boolean;
-
-    error: string | null;
-}
-
 export interface CreateSubscriptionPlanPayload {
     name: string;
 
@@ -186,6 +144,7 @@ export interface UpdateSubscriptionPlanPayload
 
 export interface AdminSubscriptionState {
     plans: SubscriptionPlan[];
+    payments: Payment[];
     total: number;
     page: number;
     limit: number;

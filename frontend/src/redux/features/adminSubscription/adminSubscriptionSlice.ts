@@ -3,9 +3,11 @@ import type { AdminSubscriptionState, CreateSubscriptionPlanPayload, GetSubscrip
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
+import type { GetAdminPaymentsQuery, PaginatedPaymentsResponse } from "../../../types/admin/payment";
 
 const initialState: AdminSubscriptionState = {
     plans: [],
+    payments: [],
     total: 0,
     page: 1,
     limit: 10,
@@ -40,6 +42,30 @@ export const getAllPlans = createAsyncThunk<
         }
     }
 );
+
+export const getAdminPayments = createAsyncThunk<
+    PaginatedPaymentsResponse,
+    GetAdminPaymentsQuery | undefined,
+    { rejectValue: string }
+>(
+    "adminSubscription/getAdminPayments",
+    async (params, { rejectWithValue }) => {
+        try {
+            const response = await api.get(API_ROUTES.ADMIN_SUBSCRIPTION.GET_PAYMENTS, { params });
+
+            return response.data.data;
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message || 
+                "Failed to fetch payments"
+            );
+        }
+    }
+)
 
 export const createPlan = createAsyncThunk<
     SubscriptionPlan,
@@ -167,6 +193,26 @@ const adminSubscriptionSlice = createSlice({
                 state.error = action.payload || "Failed to fetch plans";
             }
             )
+
+            //PAYMENTS
+            .addCase(getAdminPayments.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(getAdminPayments.fulfilled, (state, action) => {
+                state.loading = false;
+                state.payments = action.payload.items;
+                state.total = action.payload.total;
+                state.page = action.payload.page;
+                state.limit = action.payload.limit;
+                state.totalPages = action.payload.totalPages;
+            })
+
+            .addCase(getAdminPayments.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to fetch payments"
+            })
 
             // CREATE
             .addCase(createPlan.pending, (state) => {

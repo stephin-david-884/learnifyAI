@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { CreatePaymentOrderResponse, CreditStatus, Payment, SubscriptionPlan, SubscriptionState, UserSubscription } from "../../../types/subscription";
+import type { CreatePaymentOrderResponse, CreditStatus, SubscriptionPlan, SubscriptionState, UserSubscription } from "../../../types/subscription";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
+import type { Payment } from "../../../types/admin/payment";
 
 const initialState: SubscriptionState = {
     plans: [],
