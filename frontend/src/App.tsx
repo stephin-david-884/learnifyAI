@@ -24,6 +24,7 @@ const AdminUsersPage = lazy(() => import('./presentation/pages/admin/AdminUsersP
 const SubscriptionPlansPage = lazy(() => import('./presentation/pages/subscription/SubscriptionPlansPage'));
 const PaymentHistoryPage = lazy(() => import('./presentation/pages/subscription/PaymentHistoryPage'));
 const AdminSubscriptionPlansPage = lazy(() => import('./presentation/pages/admin/AdminSubscriptionPlansPage'));
+const AdminPaymentsPage = lazy(() => import('./presentation/pages/admin/AdminPaymentsPage'))
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -102,6 +103,7 @@ const App = () => {
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/subscriptions" element={<AdminSubscriptionPlansPage />}/>
+            <Route path="/admin/payments" element={<AdminPaymentsPage />} />
           </Route>
         </Routes>
       </Suspense>
