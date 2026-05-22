@@ -6,6 +6,11 @@ export interface Payment {
     id: string;
 
     userId: string;
+    user?: {
+        id: string;
+        name: string;
+        email: string;
+    };
     planId: string;
 
     planSnapshot: {

@@ -2,7 +2,11 @@ import mongoose, { Schema, Document, Model, Types } from "mongoose";
 import { BillingCycle } from "../../../domain/entities/SubscriptionPlan.entity";
 
 export interface IPayment extends Document {
-  userId: Types.ObjectId;
+  userId: Types.ObjectId | {
+    _id: Types.ObjectId;
+    name: string;
+    email: string;
+  };
   planId: Types.ObjectId;
   planSnapshot: {
     name: string;
@@ -41,9 +45,9 @@ const paymentSchema = new Schema<IPayment>(
         maxDocuments: { type: Number, required: true },
         interviewAccess: { type: Boolean, required: true },
       },
-      billingCycle: { type: String, enum:["MONTHLY", "YEARLY"], required: true},
+      billingCycle: { type: String, enum: ["MONTHLY", "YEARLY"], required: true },
       durationInDays: { type: Number, required: true },
-      creditResetIntervalInDays: { type: Number, required: true,},
+      creditResetIntervalInDays: { type: Number, required: true, },
     },
 
     razorpayOrderId: { type: String, required: true, unique: true },

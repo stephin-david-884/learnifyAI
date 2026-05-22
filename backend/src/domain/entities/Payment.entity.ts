@@ -5,6 +5,7 @@ export type PaymentStatus = "CREATED" | "SUCCESS" | "FAILED";
 type PaymentProps = {
   id?: string;
   userId: string;
+  user?: PaymentUser;
   planId: string;
   planSnapshot: PlanSnapshot;
 
@@ -24,6 +25,7 @@ export class Payment {
   public readonly id?: string;
 
   public userId: string;
+  public user?: PaymentUser;
   public planId: string;
   public planSnapshot: PlanSnapshot;
 
@@ -41,6 +43,7 @@ export class Payment {
   constructor(props: PaymentProps) {
     this.id = props.id;
     this.userId = props.userId;
+    this.user = props.user;
     this.planId = props.planId;
     this.planSnapshot = props.planSnapshot;
 
@@ -99,3 +102,9 @@ type PlanSnapshot = {
   durationInDays: number;
   creditResetIntervalInDays: number;
 }
+
+type PaymentUser = {
+  id: string;
+  name: string;
+  email: string;
+};

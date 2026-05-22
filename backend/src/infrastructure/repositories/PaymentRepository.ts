@@ -80,6 +80,7 @@ export class PaymentRepository
         const [docs, total] = await Promise.all([
             this._model
                 .find(filter)
+                .populate("userId", "name email")
                 .sort(sort)
                 .skip(skip)
                 .limit(limit)

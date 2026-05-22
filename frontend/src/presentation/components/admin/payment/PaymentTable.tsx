@@ -32,9 +32,13 @@ const PaymentTable: React.FC<Props> = ({ payments, loading }) => {
                     {/*USER */}
                     <td className="px-6 py-5">
                         <div>
-                            <p className="font-medium text-slate-900">
-                                {payment.userId}
-                            </p>
+                            <p className="font-semibold text-slate-900">
+            {payment.user?.name || "Unknown User"}
+        </p>
+
+        <p className="mt-1 text-xs text-slate-500">
+            {payment.user?.email || payment.userId}
+        </p>
                         </div>
                     </td>
 
