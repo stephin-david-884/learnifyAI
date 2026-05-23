@@ -17,6 +17,7 @@ const SubscriptionPlansPage: React.FC = () => {
     fetchCreditStatus,
     fetchAvailablePlans,
     createOrder,
+    markSubscriptionPaymentFailed,
     loading,
     totalPages,
     error,
@@ -48,11 +49,13 @@ const SubscriptionPlansPage: React.FC = () => {
   const handleUpgrade = async (planId: string) => {
 
     try {
+
       setProcessingPlanId(planId);
 
       const loaded = await loadRazorpay();
 
       if (!loaded) {
+
         toast.error(
           "Failed to load payment gateway"
         );
@@ -61,6 +64,8 @@ const SubscriptionPlansPage: React.FC = () => {
       }
 
       const order = await createOrder(planId);
+
+      let paymentHandled = false;
 
       const razorpay = new window.Razorpay({
         key: order.key,
@@ -77,7 +82,6 @@ const SubscriptionPlansPage: React.FC = () => {
 
         prefill: {
           name: user?.name,
-
           email: user?.email,
         },
 
@@ -88,6 +92,8 @@ const SubscriptionPlansPage: React.FC = () => {
         handler: async (response) => {
 
           try {
+
+            paymentHandled = true;
 
             await verifySubscriptionPayment({
               razorpayOrderId:
@@ -100,7 +106,6 @@ const SubscriptionPlansPage: React.FC = () => {
                 response.razorpay_signature,
             });
 
-            //Refresh redux state
             await Promise.all([
               fetchActiveSubscription(),
               fetchCreditStatus(),
@@ -110,7 +115,6 @@ const SubscriptionPlansPage: React.FC = () => {
               "Subscription activated successfully"
             );
 
-            // 6. Redirect
             navigate("/dashboard");
 
           } catch (error) {
@@ -124,13 +128,58 @@ const SubscriptionPlansPage: React.FC = () => {
         },
 
         modal: {
-          ondismiss: () => {
-            toast("Payment cancelled");
+          ondismiss: async () => {
+
+            try {
+
+              if (!paymentHandled) {
+
+                paymentHandled = true;
+
+                await markSubscriptionPaymentFailed(
+                  order.orderId
+                );
+              }
+
+              toast("Payment cancelled");
+              navigate("/subscription/plans");
+
+            } catch (error) {
+
+              console.error(error);
+            }
           },
         },
       });
 
-      // 4. Open modal
+      // PAYMENT FAILURE EVENT
+      razorpay.on(
+        "payment.failed",
+
+        async () => {
+
+          try {
+
+            if (!paymentHandled) {
+
+              paymentHandled = true;
+
+              await markSubscriptionPaymentFailed(
+                order.orderId
+              );
+            }
+
+            toast.error(
+              "Payment failed"
+            );
+
+          } catch (error) {
+
+            console.error(error);
+          }
+        }
+      );
+
       razorpay.open();
 
     } catch (error) {

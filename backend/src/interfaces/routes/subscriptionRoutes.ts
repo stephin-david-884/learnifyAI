@@ -10,40 +10,46 @@ import { createPaymentOrderSchema, verifyPaymentSchema } from "../validators/sub
 const router = express.Router();
 
 router.post(ROUTES.SUBSCRIPTION.CREATE_PAYMENT_ORDER,
-            authMiddleware(tokenService),
-            verifyCsrf,
-            validate(createPaymentOrderSchema, "body"),
-            paymentController.createPaymentOrder
-        );
+    authMiddleware(tokenService),
+    verifyCsrf,
+    validate(createPaymentOrderSchema, "body"),
+    paymentController.createPaymentOrder
+);
 
 router.post(ROUTES.SUBSCRIPTION.VERIFY_PAYMENT,
-            authMiddleware(tokenService),
-            verifyCsrf,
-            validate(verifyPaymentSchema, "body"),
-            paymentController.verifyPaymentAndActivateSubscription
-        );
+    authMiddleware(tokenService),
+    verifyCsrf,
+    validate(verifyPaymentSchema, "body"),
+    paymentController.verifyPaymentAndActivateSubscription
+);
+
+router.patch(ROUTES.SUBSCRIPTION.MARK_PAYMENT_FAIL,
+    authMiddleware(tokenService),
+    verifyCsrf,
+    paymentController.markPaymentFailed
+);
 
 router.get(ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS,
-            authMiddleware(tokenService),
-            subscriptionController.getAvailablePlans
-        );
-        
+    authMiddleware(tokenService),
+    subscriptionController.getAvailablePlans
+);
+
 router.get(ROUTES.SUBSCRIPTION.GET_ACTIVE_SUBSCRIPTION,
-            authMiddleware(tokenService),
-            verifyCsrf,
-            subscriptionController.getActiveSubscription
-        );
-        
+    authMiddleware(tokenService),
+    verifyCsrf,
+    subscriptionController.getActiveSubscription
+);
+
 router.get(ROUTES.SUBSCRIPTION.GET_USER_PAYMENTS,
-            authMiddleware(tokenService),
-            verifyCsrf,
-            subscriptionController.getUserPayments
-        );
-        
+    authMiddleware(tokenService),
+    verifyCsrf,
+    paymentController.getUserPayments
+);
+
 router.get(ROUTES.SUBSCRIPTION.GET_CREDIT_STATUS,
-            authMiddleware(tokenService),
-            verifyCsrf,
-            creditController.getCreditStatus
-);        
+    authMiddleware(tokenService),
+    verifyCsrf,
+    creditController.getCreditStatus
+);
 
 export default router;        

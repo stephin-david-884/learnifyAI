@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { type AppDispatch, type RootState } from "../redux/store"
-import { clearPaymentOrder, clearSubscriptionError, createPaymentOrder, getActiveSubscription, getAvailablePlans, getCreditStatus, getUserPayments, verifyPayment } from "../redux/features/subscription/subscriptionSlice";
+import { clearPaymentOrder, clearSubscriptionError, createPaymentOrder, getActiveSubscription, getAvailablePlans, getCreditStatus, getUserPayments, markPaymentFailed, verifyPayment } from "../redux/features/subscription/subscriptionSlice";
 import type { GetAvailablePlansQuery } from "../types/subscription";
 
 export const useSubscription = () => {
@@ -63,6 +63,13 @@ export const useSubscription = () => {
         return dispatch(verifyPayment(data)).unwrap();
     };
 
+    const markSubscriptionPaymentFailed = async (
+        razorpayOrderId: string
+    ) => {
+        return dispatch(
+            markPaymentFailed({ razorpayOrderId,})).unwrap();
+    };
+
     return {
         plans,
         activeSubscription,
@@ -82,6 +89,7 @@ export const useSubscription = () => {
         fetchUserPayments,
         fetchCreditStatus,
         createOrder,
-        verifySubscriptionPayment
+        verifySubscriptionPayment,
+        markSubscriptionPaymentFailed
     };
 }

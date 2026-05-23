@@ -26,6 +26,7 @@ export const API_ROUTES = {
         GET_ACTIVE_SUBSCRIPTION: "/user/subscription/active",
         GET_USER_PAYMENTS: "/user/subscription/payments",
         GET_CREDIT_STATUS: "/user/subscription/credits/status",
+        MARK_PAYMENT_FAILED: "/user/subscription/payment/failure",
     },
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",

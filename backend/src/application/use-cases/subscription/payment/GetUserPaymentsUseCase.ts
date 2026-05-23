@@ -1,6 +1,7 @@
-import { Payment } from "../../../domain/entities/Payment.entity";
-import { IPaymentRepository } from "../../../domain/repositories/IPaymentRepository";
-import { IGetUserPaymentsUseCase } from "../../interfaces/usecases/subscription/IGetUserPaymentsUseCase";
+import { Payment } from "../../../../domain/entities/Payment.entity";
+import { IPaymentRepository } from "../../../../domain/repositories/IPaymentRepository";
+import { IGetUserPaymentsUseCase } from "../../../interfaces/usecases/subscription/IGetUserPaymentsUseCase";
+
 
 export class GetUserPaymentsUseCase implements IGetUserPaymentsUseCase {
 

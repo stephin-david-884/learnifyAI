@@ -182,3 +182,7 @@ export interface GetAvailablePlansQuery {
     page?: number;
     limit?: number;
 }
+
+export interface MarkPaymentFailedPayload {
+    razorpayOrderId: string;
+}

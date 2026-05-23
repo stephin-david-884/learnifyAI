@@ -16,14 +16,14 @@ import { DeactivateSubscriptionPlanUseCase } from "../../application/use-cases/s
 import { GetAdminPaymentsUsecase } from "../../application/use-cases/subscription/admin/GetAdminPaymentsUseCase";
 import { GetAllSubscriptionPlansUseCase } from "../../application/use-cases/subscription/admin/GetAllSubscriptionPlansUseCase";
 import { UpdateSubscriptionPlanUseCase } from "../../application/use-cases/subscription/admin/UpdateSubscriptionPlanUseCase";
-import { CreatePaymentOrderUseCase } from "../../application/use-cases/subscription/CreatePaymentOrderUseCase";
+import { CreatePaymentOrderUseCase } from "../../application/use-cases/subscription/payment/CreatePaymentOrderUseCase";
 import { GetActiveSubscriptionUseCase } from "../../application/use-cases/subscription/GetActiveSubscriptionUseCase";
 import { GetAvailablePlansUseCase } from "../../application/use-cases/subscription/GetAvailablePlansUseCase";
-import { GetUserPaymentsUseCase } from "../../application/use-cases/subscription/GetUserPaymentsUseCase";
+import { GetUserPaymentsUseCase } from "../../application/use-cases/subscription/payment/GetUserPaymentsUseCase";
 import { GetCreditStatusUseCase } from "../../application/use-cases/subscription/system/GetCreditStatusUseCase";
 import { ResetSubscriptionCreditsUseCase } from "../../application/use-cases/subscription/system/ResetSubscriptionCreditsUseCase";
 import { SyncExpiredSubscriptionsUseCase } from "../../application/use-cases/subscription/system/SyncExpiredSubscriptionsUseCase";
-import { VerifyPaymentAndActivateSubscriptionUseCase } from "../../application/use-cases/subscription/VerifyPaymentAndActivateSubscriptionUseCase";
+import { VerifyPaymentAndActivateSubscriptionUseCase } from "../../application/use-cases/subscription/payment/VerifyPaymentAndActivateSubscriptionUseCase";
 import { AdminSubscriptionController } from "../../interfaces/controllers/admin/AdminSubscriptionController";
 import { CreditController } from "../../interfaces/controllers/subscription/CreditController";
 import { PaymentController } from "../../interfaces/controllers/subscription/PaymentController";
@@ -35,6 +35,8 @@ import { UserSubscriptionRepository } from "../repositories/UserSubscriptionRepo
 import { CreditService } from "../services/subscription/CreditService";
 import { PaymentService } from "../services/subscription/PaymentService";
 import { SubscriptionService } from "../services/subscription/SubscriptionService";
+import { IMarkPaymentFailedUseCase } from "../../application/interfaces/usecases/subscription/IMarkPaymentFailedUseCase";
+import { MarkPaymentFailedUseCase } from "../../application/use-cases/subscription/payment/MarkPaymentFailedUseCase";
 
 //Instances
 const subscriptionPlanRepository = new SubscriptionPlanRepository();
@@ -121,16 +123,21 @@ const getAdminPaymentsUsecase: IGetAdminPaymentsUsecase = new GetAdminPaymentsUs
     paymentRepository
 )
 
+const markPaymentFailedUsecase: IMarkPaymentFailedUseCase = new MarkPaymentFailedUseCase(
+    paymentRepository
+)
+
 //controllers
 export const paymentController = new PaymentController(
     createPaymentOrderUseCase,
-    verifyPaymentAndActivateSubscription
+    verifyPaymentAndActivateSubscription,
+    getUserPaymentsUseCase,
+    markPaymentFailedUsecase
 )
 
 export const subscriptionController = new SubscriptionController(
     getAvailablePlansUseCase,
-    getActiveSubscriptionUseCase,
-    getUserPaymentsUseCase
+    getActiveSubscriptionUseCase,    
 )
 
 export const adminSubscriptionController = new AdminSubscriptionController(

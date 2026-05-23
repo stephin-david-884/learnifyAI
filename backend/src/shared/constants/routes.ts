@@ -29,6 +29,7 @@ export const ROUTES = {
     GET_ACTIVE_SUBSCRIPTION: "/active",
     GET_USER_PAYMENTS: "/payments",
     GET_CREDIT_STATUS: "/credits/status",
+    MARK_PAYMENT_FAIL: "/payment/failure"
   },
 
   ADMIN_SUBSCRIPTION: {

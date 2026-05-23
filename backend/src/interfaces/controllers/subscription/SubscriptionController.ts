@@ -13,7 +13,6 @@ export class SubscriptionController {
     constructor(
         private readonly _getAvailablePlansUseCase: IGetAvailablePlansUseCase,
         private readonly _getActiveSubscriptionUseCase: IGetActiveSubscriptionUseCase,
-        private readonly _getUserPaymentsUseCase: IGetUserPaymentsUseCase
     ) { }
 
     getAvailablePlans = asyncHandler(async(req: Request, res: Response) => {
@@ -43,16 +42,4 @@ export class SubscriptionController {
         );
     });
 
-    getUserPayments = asyncHandler(async(req: Request, res: Response) => {
-        const userId = req.user.userId;
-
-        const payments = await this._getUserPaymentsUseCase.execute(userId);
-
-        return sendSuccess(
-            res,
-            statusCode.OK,
-            subMessages.success.USER_PAYMENTS_FETCHED,
-            payments
-        )
-    })
 }

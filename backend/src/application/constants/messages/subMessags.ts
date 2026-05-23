@@ -10,6 +10,7 @@ export const subMessages = {
         SUBSCRIPTION_PLAN_DEACTIVATED: "Successfully deactivated subscription plan",
         CREDITS_FETCHED: "Credits fetched successfully",
         PAYMENTS_FETCHED: "Payments fetched successfully",
+        PAYMENT_MARKED_FAILED: "Payment failed",
     },
 
     error: {

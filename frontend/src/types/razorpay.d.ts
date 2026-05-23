@@ -1,4 +1,4 @@
-export {};
+export { };
 
 declare global {
 
@@ -10,6 +10,10 @@ declare global {
 
     interface RazorpayInstance {
         open(): void;
+        on(
+            event: string,
+            callback: (response: unknown) => void
+        ): void;
     }
 
     interface RazorpayResponse {

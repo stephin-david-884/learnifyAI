@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { CreatePaymentOrderResponse, CreditStatus, GetAvailablePlansQuery, PaginatedSubscriptionPlansResponse, SubscriptionState, UserSubscription } from "../../../types/subscription";
+import type { CreatePaymentOrderResponse, CreditStatus, GetAvailablePlansQuery, MarkPaymentFailedPayload, PaginatedSubscriptionPlansResponse, SubscriptionState, UserSubscription } from "../../../types/subscription";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -27,7 +27,7 @@ export const getAvailablePlans = createAsyncThunk<
     "subscription/getAvailablePlans",
     async (params, { rejectWithValue }) => {
         try {
-            const response = await api.get(API_ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS, {params});
+            const response = await api.get(API_ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS, { params });
 
             return response.data.data;
         } catch (error) {
@@ -158,6 +158,28 @@ export const verifyPayment = createAsyncThunk<
     }
 )
 
+export const markPaymentFailed = createAsyncThunk<
+    void,
+    MarkPaymentFailedPayload,
+    { rejectValue: string }
+>(
+    "subscription/markPaymentFailed",
+
+    async (data, { rejectWithValue }) => {
+        try {
+            await api.patch(API_ROUTES.SUBSCRIPTION.MARK_PAYMENT_FAILED, data);
+        } catch (error) {
+            const err = error as AxiosError<{
+                message: string;
+            }>;
+
+            return rejectWithValue(
+                err.response?.data?.message || "Failed to mark payment as failed"
+            );
+        }
+    }
+)
+
 const subscriptionSlice = createSlice({
     name: "subscription",
     initialState,
@@ -279,6 +301,21 @@ const subscriptionSlice = createSlice({
                 state.error =
                     action.payload ||
                     "Payment verification failed";
+            })
+
+            // MARK PAYMENT FAILED
+            .addCase(markPaymentFailed.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+
+            .addCase(markPaymentFailed.fulfilled, (state) => {
+                state.loading = false;
+            })
+
+            .addCase(markPaymentFailed.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload || "Failed to mark payment failed"
             })
     }
 });
