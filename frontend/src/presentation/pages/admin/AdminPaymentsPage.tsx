@@ -5,7 +5,7 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import toast from 'react-hot-toast';
 import { Search } from 'lucide-react';
 import PaymentTable from '../../components/admin/payment/PaymentTable';
-import AdminPagination from '../../components/common/table/AdminPagination';
+import Pagination from '../../components/common/pagination/Pagination';
 
 const AdminPaymentsPage: React.FC = () => {
 
@@ -117,7 +117,7 @@ const AdminPaymentsPage: React.FC = () => {
                 loading={loading}
             />
 
-            <AdminPagination 
+            <Pagination 
                 page={page}
                 totalPages={totalPages}
                 limit={rowsPerPage}

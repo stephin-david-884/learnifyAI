@@ -1,5 +1,7 @@
 import { SubscriptionPlan } from "../../../domain/entities/SubscriptionPlan.entity";
 import { ISubscriptionPlanRepository } from "../../../domain/repositories/ISubscriptionPlanRepository";
+import { PaginatedResponseDTO } from "../../dtos/common/paginated-response.dto";
+import { GetAvailablePlansDTO } from "../../dtos/subscription/get-available-plans.dto";
 import { IGetAvailablePlansUseCase } from "../../interfaces/usecases/subscription/IGetAvailablePlansUseCase";
 
 export class GetAvailablePlansUseCase implements IGetAvailablePlansUseCase {
@@ -8,10 +10,9 @@ export class GetAvailablePlansUseCase implements IGetAvailablePlansUseCase {
         private readonly _subscriptionPlanRepository: ISubscriptionPlanRepository
     ) {}
 
-    async execute(): Promise<SubscriptionPlan[]> {
+    async execute(query: GetAvailablePlansDTO): Promise<PaginatedResponseDTO<SubscriptionPlan>> {
         
-        const plans = await this._subscriptionPlanRepository.findActivePlans();
+        return await this._subscriptionPlanRepository.findActivePlans(query);
 
-        return plans.sort((a,b) => a.price - b.price);
     }
 }

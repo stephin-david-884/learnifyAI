@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import { type AppDispatch, type RootState } from "../redux/store"
 import { clearPaymentOrder, clearSubscriptionError, createPaymentOrder, getActiveSubscription, getAvailablePlans, getCreditStatus, getUserPayments, verifyPayment } from "../redux/features/subscription/subscriptionSlice";
+import type { GetAvailablePlansQuery } from "../types/subscription";
 
 export const useSubscription = () => {
 
@@ -13,6 +14,10 @@ export const useSubscription = () => {
         creditStatus,
         paymentOrder,
         loading,
+        total,
+        page,
+        limit,
+        totalPages,
         error,
     } = useSelector(
         (state: RootState) => state.subscription
@@ -26,8 +31,8 @@ export const useSubscription = () => {
         dispatch(clearPaymentOrder());
     };
 
-    const fetchAvailablePlans = async () => {
-        return dispatch(getAvailablePlans()).unwrap();
+    const fetchAvailablePlans = async (params?: GetAvailablePlansQuery) => {
+        return dispatch(getAvailablePlans(params)).unwrap();
     };
 
     const fetchActiveSubscription = async () => {
@@ -55,7 +60,7 @@ export const useSubscription = () => {
             razorpaySignature: string;
         }
     ) => {
-        return dispatch( verifyPayment(data)).unwrap();
+        return dispatch(verifyPayment(data)).unwrap();
     };
 
     return {
@@ -64,6 +69,10 @@ export const useSubscription = () => {
         payments,
         creditStatus,
         paymentOrder,
+        total,
+        page,
+        limit,
+        totalPages,
         loading,
         error,
         clearError,

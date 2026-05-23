@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks/useAuth";
 import loadRazorpay from "../../../utils/loadRazorpay";
+import Pagination from "../../components/common/pagination/Pagination";
 
 const SubscriptionPlansPage: React.FC = () => {
 
@@ -17,6 +18,7 @@ const SubscriptionPlansPage: React.FC = () => {
     fetchAvailablePlans,
     createOrder,
     loading,
+    totalPages,
     error,
   } = useSubscription();
 
@@ -26,9 +28,16 @@ const SubscriptionPlansPage: React.FC = () => {
 
   const [processingPlanId, setProcessingPlanId] = useState<string | null>(null);
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(3);
+
   useEffect(() => {
-    fetchAvailablePlans();
-  }, []);
+    fetchAvailablePlans({ page, limit });
+  }, [page, limit]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [limit]);
 
   useEffect(() => {
     if (error) {
@@ -155,25 +164,45 @@ const SubscriptionPlansPage: React.FC = () => {
         <div className="flex justify-center py-20">
           <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-red-500"></div>
         </div>
+      ) : plans.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200 bg-white py-16 text-center">
+          <p className="text-lg font-semibold text-slate-700">
+            No subscription plans available
+          </p>
+
+          <p className="mt-2 text-sm text-slate-500">
+            Please check back later.
+          </p>
+        </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {plans.map((plan) => {
+        <div className="space-y-8">
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {plans.map((plan) => {
 
-            const isCurrentPlan =
-              activeSubscription?.planId === plan.id;
+              const isCurrentPlan =
+                activeSubscription?.planId === plan.id;
 
-            return (
-              <SubscriptionPlanCard
-                key={plan.id}
-                plan={plan}
-                isCurrentPlan={isCurrentPlan}
-                onUpgrade={handleUpgrade}
-                loading={
-                  processingPlanId === plan.id
-                }
-              />
-            );
-          })}
+              return (
+                <SubscriptionPlanCard
+                  key={plan.id}
+                  plan={plan}
+                  isCurrentPlan={isCurrentPlan}
+                  onUpgrade={handleUpgrade}
+                  loading={
+                    processingPlanId === plan.id
+                  }
+                />
+              );
+            })}
+          </div>
+
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            limit={limit}
+            onPageChange={setPage}
+            onLimitChange={setLimit}
+          />
         </div>
       )}
     </div>

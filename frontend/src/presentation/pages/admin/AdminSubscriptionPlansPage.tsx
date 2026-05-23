@@ -5,9 +5,9 @@ import { useDebounce } from '../../../hooks/useDebounce';
 import toast from 'react-hot-toast';
 import EditSubscriptionPlanModal from '../../components/admin/subscription/EditSubscriptionPlanModal';
 import CreateSubscriptionPlanModal from '../../components/admin/subscription/CreateSubscriptionPlanModal';
-import AdminPagination from '../../components/common/table/AdminPagination';
 import SubscriptionPlanTable from '../../components/admin/subscription/SubscriptionPlanTable';
 import { Plus } from 'lucide-react';
+import Pagination from '../../components/common/pagination/Pagination';
 
 const AdminSubscriptionPlansPage: React.FC = () => {
 
@@ -210,7 +210,7 @@ const AdminSubscriptionPlansPage: React.FC = () => {
                     }
                 />
 
-                <AdminPagination
+                <Pagination
                     page={page}
                     totalPages={totalPages}
                     limit={rowsPerPage}

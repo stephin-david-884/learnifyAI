@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { CreatePaymentOrderResponse, CreditStatus, SubscriptionPlan, SubscriptionState, UserSubscription } from "../../../types/subscription";
+import type { CreatePaymentOrderResponse, CreditStatus, GetAvailablePlansQuery, PaginatedSubscriptionPlansResponse, SubscriptionState, UserSubscription } from "../../../types/subscription";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -7,6 +7,10 @@ import type { Payment } from "../../../types/admin/payment";
 
 const initialState: SubscriptionState = {
     plans: [],
+    total: 0,
+    page: 1,
+    limit: 6,
+    totalPages: 1,
     activeSubscription: null,
     payments: [],
     creditStatus: null,
@@ -16,14 +20,14 @@ const initialState: SubscriptionState = {
 }
 
 export const getAvailablePlans = createAsyncThunk<
-    SubscriptionPlan[],
-    void,
+    PaginatedSubscriptionPlansResponse,
+    GetAvailablePlansQuery | undefined,
     { rejectValue: string }
 >(
     "subscription/getAvailablePlans",
-    async (_, { rejectWithValue }) => {
+    async (params, { rejectWithValue }) => {
         try {
-            const response = await api.get(API_ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS);
+            const response = await api.get(API_ROUTES.SUBSCRIPTION.GET_AVAILABLE_PLANS, {params});
 
             return response.data.data;
         } catch (error) {
@@ -175,7 +179,11 @@ const subscriptionSlice = createSlice({
 
             .addCase(getAvailablePlans.fulfilled, (state, action) => {
                 state.loading = false;
-                state.plans = action.payload;
+                state.plans = action.payload.items;
+                state.total = action.payload.total;
+                state.page = action.payload.page;
+                state.limit = action.payload.limit;
+                state.totalPages = action.payload.totalPages;
             })
 
             .addCase(getAvailablePlans.rejected, (state, action) => {

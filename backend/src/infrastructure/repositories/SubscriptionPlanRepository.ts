@@ -1,5 +1,6 @@
 import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
 import { GetAllSubscriptionPlansDTO } from "../../application/dtos/subscription/get-all-subscription-plans.dto";
+import { GetAvailablePlansDTO } from "../../application/dtos/subscription/get-available-plans.dto";
 import { toDomainSubscriptionPlan, toPersistenceSubscriptionPlan } from "../../application/mappers/SubscriptionPlanMapper";
 import { SubscriptionPlan } from "../../domain/entities/SubscriptionPlan.entity";
 import { ISubscriptionPlanRepository } from "../../domain/repositories/ISubscriptionPlanRepository";
@@ -18,9 +19,31 @@ export class SubscriptionPlanRepository
         )
     }
 
-    async findActivePlans(): Promise<SubscriptionPlan[]> {
-        const docs = await this._model.find({ isActive: true }).lean();
-        return docs.map(doc => this._toDomain(doc));
+    async findActivePlans(query: GetAvailablePlansDTO): Promise<PaginatedResponseDTO<SubscriptionPlan>> {
+        const {page, limit} = query;
+
+        const skip = (page-1) * limit;
+
+        const filter = {isActive: true};
+
+        const [docs, total] = await Promise.all([
+            this._model
+                .find(filter)
+                .sort({price:1})
+                .skip(skip)
+                .limit(limit)
+                .lean(),
+
+            this._model.countDocuments(filter),
+        ]);
+
+        return {
+            items: docs.map((doc) => this._toDomain(doc)),
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total/limit),
+        };
     }
 
     async findByNameAndVersion(name: string, version: number): Promise<SubscriptionPlan | null> {

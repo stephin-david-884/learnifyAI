@@ -6,6 +6,7 @@ import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { subMessages } from "../../../application/constants/messages/subMessags";
+import { mapGetAvailablePlansQuery } from "../../../application/mappers/subscription/subscriptionQueryMapper";
 
 export class SubscriptionController {
 
@@ -16,7 +17,10 @@ export class SubscriptionController {
     ) { }
 
     getAvailablePlans = asyncHandler(async(req: Request, res: Response) => {
-        const plans = await this._getAvailablePlansUseCase.execute();
+
+        const query = mapGetAvailablePlansQuery(req.query);
+
+        const plans = await this._getAvailablePlansUseCase.execute(query);
 
         return sendSuccess(
             res,

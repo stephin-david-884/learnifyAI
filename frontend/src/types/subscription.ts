@@ -105,6 +105,14 @@ export interface CreatePaymentOrderResponse {
 export interface SubscriptionState {
     plans: SubscriptionPlan[];
 
+    total: number;
+
+    page: number;
+
+    limit: number;
+
+    totalPages: number;
+
     activeSubscription: UserSubscription | null;
 
     payments: Payment[];
@@ -168,4 +176,9 @@ export interface PaginatedSubscriptionPlansResponse {
     page: number;
     limit: number;
     totalPages: number;
+}
+
+export interface GetAvailablePlansQuery {
+    page?: number;
+    limit?: number;
 }

@@ -12,7 +12,7 @@ type Props = {
     ) => void;
 };
 
-const AdminPagination: React.FC<Props> = ({
+const Pagination: React.FC<Props> = ({
     page,
     totalPages,
     limit,
@@ -68,4 +68,4 @@ const AdminPagination: React.FC<Props> = ({
     )
 }
 
-export default AdminPagination
+export default Pagination
