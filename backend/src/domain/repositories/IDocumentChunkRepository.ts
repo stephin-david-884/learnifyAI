@@ -1,0 +1,11 @@
+import { DocumentChunk } from "../entities/DocumentChunk.entity";
+import { IBaseRepository } from "./IBaseRepository";
+
+export interface IDocumentChunkRepository extends IBaseRepository<DocumentChunk> {
+
+    createMany( chunks: DocumentChunk[] ): Promise<DocumentChunk[]>;
+
+    findByDocumentId( documentId: string): Promise<DocumentChunk[]>;
+
+    deleteByDocumentId(documentId: string): Promise<void>;
+}

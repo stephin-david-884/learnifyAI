@@ -8,9 +8,9 @@ export interface IDocument extends MongooseDocument {
     fileSize: number;
     s3Key: string;
     fileUrl: string;
-    totalPages?: number;
+    totalPages?: number | null;
     status: | "UPLOADING" | "PROCESSING" | "READY" | "FAILED";
-    processingError?: string;
+    processingError?: string | null;
 
     createdAt: Date;
     updatedAt: Date;
