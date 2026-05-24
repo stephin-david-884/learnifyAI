@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { IGetActiveSubscriptionUseCase } from "../../../application/interfaces/usecases/subscription/IGetActiveSubscriptionUseCase";
 import { IGetAvailablePlansUseCase } from "../../../application/interfaces/usecases/subscription/IGetAvailablePlansUseCase";
-import { IGetUserPaymentsUseCase } from "../../../application/interfaces/usecases/subscription/IGetUserPaymentsUseCase";
 import { asyncHandler } from "../../http/asyncHandler";
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
