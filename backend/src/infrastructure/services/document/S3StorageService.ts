@@ -1,0 +1,56 @@
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { IStorageService, UploadedFileResult, UploadFileDTO } from "../../../application/interfaces/services/document/IStorageService";
+
+export class S3StorageService implements IStorageService {
+
+    private readonly _client;
+    private readonly _bucket;
+
+    constructor() {
+        this._bucket = process.env.AWS_S3_BUCKET;
+
+        this._client = new S3Client({
+            region:
+                process.env.AWS_REGION,
+
+            credentials: {
+                accessKeyId:
+                    process.env.AWS_ACCESS_KEY_ID!,
+
+                secretAccessKey:
+                    process.env.AWS_SECRET_ACCESS_KEY!,
+            },
+        });
+    }
+
+    async uploadFile(data: UploadFileDTO): Promise<UploadedFileResult> {
+        
+        const key = `documents/${Date.now()}-${data.fileName}`;
+
+        await this._client.send(
+            new PutObjectCommand({
+                Bucket: this._bucket,
+                Key: key,
+                Body: data.buffer,
+                ContentType: data.mimeType,
+            })
+        );
+
+        const url = `https://${this._bucket}.s3.amazonaws.com/${key}`;
+
+        return {
+            key,
+            url
+        };
+    }
+
+    async deleteFile(key: string): Promise<void> {
+        
+        await this._client.send(
+            new DeleteObjectCommand({
+                Bucket: this._bucket,
+                Key: key,
+            })
+        );
+    }
+}
