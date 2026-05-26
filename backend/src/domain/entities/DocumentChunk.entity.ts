@@ -48,6 +48,19 @@ export class DocumentChunk {
             throw new Error("Embedding must be an array");
         }
 
+        if (this.embedding.length === 0) {
+            throw new Error("Embedding cannot be empty");
+        }
+
+        const invalidValue = this.embedding.some(
+            (value) => typeof value !== "number"
+        );
+
+        if (invalidValue) {
+            throw new Error(
+                "Embedding must contain numbers only"
+            );
+        }
     }
 
     getId(): string {

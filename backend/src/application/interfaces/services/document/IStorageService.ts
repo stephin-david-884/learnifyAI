@@ -13,4 +13,6 @@ export interface IStorageService {
     uploadFile(data: UploadFileDTO): Promise<UploadedFileResult>;
 
     deleteFile(key: string): Promise<void>;
+
+    downloadFile(key: string): Promise<Buffer>;
 }

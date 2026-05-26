@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { IStorageService, UploadedFileResult, UploadFileDTO } from "../../../application/interfaces/services/document/IStorageService";
 
 export class S3StorageService implements IStorageService {
@@ -52,5 +52,23 @@ export class S3StorageService implements IStorageService {
                 Key: key,
             })
         );
+    }
+
+    async downloadFile(key: string): Promise<Buffer> {
+        
+        const response = await this._client.send(
+            new GetObjectCommand({
+                Bucket: this._bucket,
+                Key: key,
+            })
+        );
+
+        const chunks: Uint8Array[] = [];
+
+        for await (const chunk of response.Body as any) {
+            chunks.push(chunk);
+        }
+
+        return Buffer.concat(chunks);
     }
 }

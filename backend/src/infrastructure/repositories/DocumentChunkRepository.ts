@@ -1,3 +1,4 @@
+import { PipelineStage, Types } from "mongoose";
 import { toDomainDocumentChunk, toPersistenceDocumentChunk } from "../../application/mappers/DocumentChunkMapper";
 import { DocumentChunk } from "../../domain/entities/DocumentChunk.entity";
 import { IDocumentChunkRepository } from "../../domain/repositories/IDocumentChunkRepository";
@@ -30,16 +31,44 @@ export class DocumentChunkRepository
     }
 
     async findByDocumentId(documentId: string): Promise<DocumentChunk[]> {
-        
+
         const docs = await this._model
-                        .find({documentId})
-                        .sort({"metadata.chunkIndex": 1,})
-                        .lean();
-        
-        return docs.map((doc) => this._toDomain(doc))                        
+            .find({ documentId })
+            .sort({ "metadata.chunkIndex": 1, })
+            .lean();
+
+        return docs.map((doc) => this._toDomain(doc))
     }
 
     async deleteByDocumentId(documentId: string): Promise<void> {
-        await this._model.deleteMany({documentId});
+        await this._model.deleteMany({ documentId });
+    }
+
+    async findSimilarChunks(embedding: number[], limit: number, documentId?: string): Promise<DocumentChunk[]> {
+
+        const vectorStage = {
+            $vectorSearch: {
+                index: "document_chunk_vector_index",
+                path: "embedding",
+                queryVector: embedding,
+                numCandidates: 100,
+                limit,
+                ...(documentId && {
+                    filter: {
+                        documentId: new Types.ObjectId(documentId),
+                    },
+                }),
+            },
+        }
+
+        const pipeline: PipelineStage[] = [
+            vectorStage,
+        ];
+
+        const docs = await this._model.aggregate(pipeline);
+
+        return docs.map(
+            (doc) => this._toDomain(doc as DocumentChunkLean)
+        );
     }
 }

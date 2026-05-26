@@ -1,5 +1,10 @@
-export type ParsedPdfResult = {
+export type ParsedPdfPage = {
+    pageNumber: number;
     text: string;
+};
+
+export type ParsedPdfResult = {
+    pages: ParsedPdfPage[];
     totalPages: number;
 };
 
