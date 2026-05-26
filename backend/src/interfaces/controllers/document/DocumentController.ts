@@ -4,11 +4,12 @@ import { IGetDocumentByIdUseCase } from "../../../application/interfaces/usecase
 import { IGetUserDocumentsUseCase } from "../../../application/interfaces/usecases/document/IGetUserDocumentsUseCase";
 import { IUploadDocumentUseCase } from "../../../application/interfaces/usecases/document/IUploadDocumentUseCase";
 import { asyncHandler } from "../../http/asyncHandler";
-import { AppError } from "../../../domain/errors/AppError";
 import { mapToUploadDocumentDTO } from "../../../application/mappers/document/DocumentDTOMapper";
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { docMessages } from "../../../application/constants/messages/docMessages";
+import { mapToGetUserDocumentsDTO } from "../../../application/mappers/document/mapToGetUserDocumentsDTO";
+import { mapToDocumentIdDTO } from "../../../application/mappers/document/mapToDocumentIdDTO";
 
 export class DocumentController {
 
@@ -35,4 +36,45 @@ export class DocumentController {
             document
         );
     });
+
+    getUserDocuments = asyncHandler(async(req: Request, res: Response) => {
+
+        const query = mapToGetUserDocumentsDTO(req);
+
+        const documents = await this._getUserDocumentsUseCase.execute(req.user.userId, query);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            docMessages.success.DOCUMENTS_FETCHED,
+            documents
+        );
+    });
+
+    getDocumentsById = asyncHandler(async( req: Request, res: Response) => {
+
+        const data = mapToDocumentIdDTO(req);
+
+        const document = await this._getDocumentByIdUseCase.execute(data.userId, data.documentId);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            docMessages.success.DOCUMENT_FETCHED,
+            document
+        );
+    });
+
+    deleteDocument = asyncHandler(async(req: Request, res: Response) => {
+
+        const data = mapToDocumentIdDTO(req);
+
+        await this._deleteDocumentUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            docMessages.success.DOCUMENT_DELETED,
+        )
+    })
 }

@@ -33,3 +33,11 @@ export const getUserDocumentsQuerySchema =
             "desc",
         ]).optional(),
     });
+
+export const documentIdParamSchema =
+    z.object({
+        documentId: z
+            .string()
+            .trim()
+            .min(1, "Document ID is required"),
+    });    

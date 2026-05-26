@@ -48,7 +48,7 @@ export const ROUTES = {
   DOCUMENT: {
     UPLOAD: "/upload",
     GET_USER_DOCUMENTS: "/",
-    GET_DOCUMENT_BY_ID: "/:id",
-    DELETE_DOCUMENT: "/:id",
+    GET_DOCUMENT_BY_ID: "/:documentId",
+    DELETE_DOCUMENT: "/:documentId",
   },
 };
