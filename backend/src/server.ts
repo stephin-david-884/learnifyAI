@@ -6,6 +6,7 @@ import { logger, pinoLogger } from "./infrastructure/services/log/logger";
 import { connectDB } from "./infrastructure/config/mongo.config";
 import authRouter from './interfaces/routes/authRoutes';
 import adminRouter from './interfaces/routes/adminRoutes';
+import documentRouter from './interfaces/routes/documentRoutes';
 import subscriptionRouter from './interfaces/routes/subscriptionRoutes';
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./interfaces/middlewares/errorHandler";
@@ -31,6 +32,7 @@ app.use(cookieParser());
 
 userApiRouter.use("/auth", authRouter);
 userApiRouter.use("/subscription", subscriptionRouter);
+userApiRouter.use("/documents",  documentRouter);
 app.use("/api/user", userApiRouter);
 app.use("/api/admin", adminRouter);
 
