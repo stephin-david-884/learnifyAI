@@ -1,6 +1,7 @@
 // import * as pdfParse from "pdf-parse";
 import * as pdfjsLib from "pdfjs-dist";
 import { IPdfParserService, ParsedPdfPage, ParsedPdfResult } from "../../../application/interfaces/services/document/IPdfParserService";
+import { TextItem } from "pdfjs-dist/types/src/display/api";
 
 // export class PdfParserService implements IPdfParserService {
 
@@ -31,7 +32,12 @@ export class PdfParserService implements IPdfParserService {
 
             const textContent = await page.getTextContent();
 
-            const text = textContent.items.map((item: any) => item.str).join(" ");
+            // const text = textContent.items.map((item: any) => item.str).join(" ");
+            const text =
+                textContent.items
+                    .filter((item): item is TextItem =>"str" in item)
+                    .map((item) => item.str)
+                    .join(" ");
 
             pages.push({
                 pageNumber,

@@ -1,5 +1,6 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { IStorageService, UploadedFileResult, UploadFileDTO } from "../../../application/interfaces/services/document/IStorageService";
+import { Readable } from "stream";
 
 export class S3StorageService implements IStorageService {
 
@@ -24,7 +25,7 @@ export class S3StorageService implements IStorageService {
     }
 
     async uploadFile(data: UploadFileDTO): Promise<UploadedFileResult> {
-        
+
         const key = `documents/${Date.now()}-${data.fileName}`;
 
         await this._client.send(
@@ -45,7 +46,7 @@ export class S3StorageService implements IStorageService {
     }
 
     async deleteFile(key: string): Promise<void> {
-        
+
         await this._client.send(
             new DeleteObjectCommand({
                 Bucket: this._bucket,
@@ -55,7 +56,7 @@ export class S3StorageService implements IStorageService {
     }
 
     async downloadFile(key: string): Promise<Buffer> {
-        
+
         const response = await this._client.send(
             new GetObjectCommand({
                 Bucket: this._bucket,
@@ -63,10 +64,16 @@ export class S3StorageService implements IStorageService {
             })
         );
 
-        const chunks: Uint8Array[] = [];
+        const stream = response.Body as Readable;
 
-        for await (const chunk of response.Body as any) {
-            chunks.push(chunk);
+        const chunks: Buffer[] = [];
+
+        for await (const chunk of stream) {
+            chunks.push(
+                Buffer.isBuffer(chunk)
+                    ? chunk
+                    : Buffer.from(chunk)
+            );
         }
 
         return Buffer.concat(chunks);
