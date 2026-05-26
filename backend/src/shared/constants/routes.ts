@@ -42,6 +42,13 @@ export const ROUTES = {
     DEACTIVATE_PLAN:
       "/subscription/plans/:planId/deactivate",
 
-    GET_PAYMENTS: "/payments",  
-  }
+    GET_PAYMENTS: "/payments",
+  },
+
+  DOCUMENT: {
+    UPLOAD: "/upload",
+    GET_USER_DOCUMENTS: "/",
+    GET_DOCUMENT_BY_ID: "/:id",
+    DELETE_DOCUMENT: "/:id",
+  },
 };
