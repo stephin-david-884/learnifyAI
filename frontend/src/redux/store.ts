@@ -3,6 +3,7 @@ import authSlice from "./features/auth/authSlice";
 import adminSlice from "./features/admin/adminSlice";
 import subscriptionSlice from "./features/subscription/subscriptionSlice";
 import userManagementSlice from "./features/admin/userManagementSlice";
+import documentSlice from "./features/document/documentSlice";
 import adminSubscriptionReducer from "./features/adminSubscription/adminSubscriptionSlice";
 
 export const store = configureStore({
@@ -11,7 +12,8 @@ export const store = configureStore({
         admin: adminSlice,
         userManagement: userManagementSlice,
         subscription: subscriptionSlice,
-        adminSubscription: adminSubscriptionReducer
+        adminSubscription: adminSubscriptionReducer,
+        document: documentSlice,
     }
 })
 

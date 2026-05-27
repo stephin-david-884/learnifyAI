@@ -28,6 +28,17 @@ export const API_ROUTES = {
         GET_CREDIT_STATUS: "/user/subscription/credits/status",
         MARK_PAYMENT_FAILED: "/user/subscription/payment/failure",
     },
+
+    DOCUMENT: {
+        UPLOAD_DOCUMENT: "/user/documents/upload",
+        GET_USER_DOCUMENTS: "/user/documents",
+        GET_DOCUMENT_BY_ID: (documentId: string) =>
+            `/user/documents/${documentId}`,
+
+        DELETE_DOCUMENT: (documentId: string) =>
+            `/user/documents/${documentId}`,
+    },
+
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
         UPDATE_PLAN: "/admin/subscription/plans",
