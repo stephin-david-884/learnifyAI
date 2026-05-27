@@ -5,9 +5,11 @@ import { DocumentChunkRepository } from "../repositories/DocumentChunkRepository
 import { S3StorageService } from "../services/document/S3StorageService";
 import { PdfParserService } from "../services/document/PdfParserService";
 import { TextChunkingService } from "../services/document/TextChunkingService";
-import { OpenAIEmbeddingService } from "../services/document/OpenAIEmbeddingService";
+// import { OpenAIEmbeddingService } from "../services/document/OpenAIEmbeddingService";
 import { logError, logger } from "../services/log/logger";
 import { DocumentChunk } from "../../domain/entities/DocumentChunk.entity";
+import { GoogleEmbeddingService } from "../services/document/GeminiEmbeddingService";
+
 
 const documentRepository =
     new DocumentRepository();
@@ -24,8 +26,11 @@ const pdfParserService =
 const textChunkingService =
     new TextChunkingService();
 
+// const embeddingService =
+//     new OpenAIEmbeddingService();
+
 const embeddingService =
-    new OpenAIEmbeddingService();
+    new GoogleEmbeddingService();
 
 export const documentProcessingWorker = new Worker(
     "document-processing",

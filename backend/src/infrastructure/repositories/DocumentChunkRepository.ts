@@ -24,7 +24,7 @@ export class DocumentChunkRepository
         );
 
         return docs.map((doc) => {
-            const plain = doc.toObject ? doc.toObject : doc;
+            const plain = doc.toObject ? doc.toObject() : doc;
 
             return this._toDomain(plain as DocumentChunkLean)
         });

@@ -1,7 +1,29 @@
+import "../config/env";
+import { connectDB } from "../infrastructure/config/mongo.config";
 import "../infrastructure/queues/documentProcessing.worker"
+import { logError, logger } from "../infrastructure/services/log/logger"
 
-// console.log(
-//   "Document processing worker started"
-// );
+// logger.info("Document processing worker started")
 
-// "worker:document": "tsx src/workers/document.worker.ts"
+const startWorker = async () => {
+
+    try {
+
+        await connectDB();
+
+        logger.info(
+            "Document processing worker started"
+        );
+
+    } catch (error) {
+
+        logError(
+            error,
+            "Failed to start document worker"
+        );
+
+        process.exit(1);
+    }
+};
+
+startWorker();

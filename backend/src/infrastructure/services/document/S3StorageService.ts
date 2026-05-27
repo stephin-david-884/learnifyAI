@@ -26,7 +26,8 @@ export class S3StorageService implements IStorageService {
 
     async uploadFile(data: UploadFileDTO): Promise<UploadedFileResult> {
 
-        const key = `documents/${Date.now()}-${data.fileName}`;
+        // const key = `documents/${Date.now()}-${data.fileName}`;
+        const key = data.fileName;
 
         await this._client.send(
             new PutObjectCommand({

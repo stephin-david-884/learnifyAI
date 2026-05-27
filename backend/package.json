@@ -9,7 +9,8 @@
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "worker:document": "tsx src/workers/document.worker.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,7 +18,9 @@
   "type": "module",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1053.0",
+    "@google/generative-ai": "^0.24.1",
     "@langchain/core": "^1.1.48",
+    "@langchain/google-genai": "^2.1.31",
     "@langchain/openai": "^1.4.7",
     "@langchain/textsplitters": "^1.0.1",
     "@types/cookie-parser": "^1.4.10",

@@ -32,4 +32,4 @@ export const uploadDocumentMiddleware = multer({
         fileSize: MAX_FILE_SIZE,
     },
     fileFilter,
-}).single("document")
+}).single("file")

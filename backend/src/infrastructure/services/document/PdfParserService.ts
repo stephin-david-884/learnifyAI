@@ -1,5 +1,5 @@
 // import * as pdfParse from "pdf-parse";
-import * as pdfjsLib from "pdfjs-dist";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { IPdfParserService, ParsedPdfPage, ParsedPdfResult } from "../../../application/interfaces/services/document/IPdfParserService";
 import { TextItem } from "pdfjs-dist/types/src/display/api";
 
