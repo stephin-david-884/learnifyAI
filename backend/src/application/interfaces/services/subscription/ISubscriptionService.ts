@@ -12,7 +12,7 @@ export interface ISubscriptionService {
 
     // canActivateNewSubscription( existingSubscription: UserSubscription | null): boolean;
 
-    validateNewSubscriptionActivation( existingSubscription: UserSubscription | null ): void;
+    // validateNewSubscriptionActivation( existingSubscription: UserSubscription | null ): void;
 
     syncUserSubscriptionState( userId: string ): Promise<void>;
 }

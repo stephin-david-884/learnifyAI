@@ -54,23 +54,32 @@ export class VerifyPaymentAndActivateSubscriptionUseCase implements IVerifyPayme
             throw new AppError(subMessages.error.INVALID_PAYMENT_SIGNATURE, statusCode.BAD_REQUEST);
         }
 
-        payment.markSuccess(data.razorpayPaymentId, data.razorpaySignature);
-
-        await this._paymentRepository.save(payment);
-
         const plan = await this._subscriptionPlanRepository.findById(payment.planId);
 
         if(!plan) {
+            payment.markFailed();
+
+            await this._paymentRepository.save(payment);
+
             throw new AppError(subMessages.error.PLAN_NOT_FOUND, statusCode.NOT_FOUND);
         }
 
-        return await this._subscriptionService
-            .createSubscription({
+        try {
+            payment.markSuccess( data.razorpayPaymentId, data.razorpaySignature);
+
+            await this._paymentRepository.save(payment);
+
+            return await this._subscriptionService.createSubscription({
                 userId: payment.userId,
-
                 plan,
-
                 paymentId: payment.getId()
-            })
+            });
+        } catch (error) {
+            payment.markFailed();
+
+            await this._paymentRepository.save(payment);
+
+            throw new AppError(subMessages.error.SUBSCRIPTION_ORDER_FAILED, statusCode.BAD_REQUEST)
+        }
     }
 }

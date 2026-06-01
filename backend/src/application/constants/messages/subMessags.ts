@@ -30,6 +30,6 @@ export const subMessages = {
         INVALID_PAYMENT_SIGNATURE: "Invalid payment signature",
         SUBSCRIPTION_PLAN_ALREADY_DEACTIVATED: "Subscription plan was already deactivated",
         CANNOT_DEACTIVATE_LAST_ACTIVE_PLAN: "Cannot deactivate last active plan",
-
+        SUBSCRIPTION_ORDER_FAILED: "Failed to purchase the susbscription",
     }
 }

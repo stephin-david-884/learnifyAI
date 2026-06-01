@@ -64,7 +64,8 @@ const creditService = new CreditService(
 const createPaymentOrderUseCase: ICreatePaymentOrderUseCase = new  CreatePaymentOrderUseCase(
     paymentService,
     paymentRepository,
-    subscriptionPlanRepository
+    subscriptionPlanRepository,
+    userSubscriptionRepository
 ) 
 
 const verifyPaymentAndActivateSubscription: IVerifyPaymentAndActivateSubscriptionUseCase = new VerifyPaymentAndActivateSubscriptionUseCase(

@@ -62,33 +62,53 @@ export const documentProcessingWorker = new Worker(
                 );
 
             // SPLIT TEXT
-            const chunks =
-                await textChunkingService.splitText(
-                    parsedPdf.pages
-                );
+            const rawChunks = await textChunkingService.splitText(parsedPdf.pages);
+
+            //Filter out chunks that are completely empty or just whitespace
+            const validChunks = rawChunks.filter(
+                (chunk) => chunk.content && chunk.content.trim().length > 0
+            );
+
+            if (validChunks.length === 0) {
+                throw new Error("No readable text found in this PDF.");
+            }
 
             // GENERATE EMBEDDINGS
-            const embeddings =
-                await embeddingService.generateEmbeddings(
-                    chunks.map(
-                        (chunk) => chunk.content
-                    )
-                );
+            const embeddings = await embeddingService.generateEmbeddings(
+                validChunks.map((chunk) => chunk.content)
+            );
+
+            console.log("Valid Chunks:", validChunks.length, "| Embeddings Received:", embeddings.length);
 
             // CREATE CHUNKS
-            const documentChunks = chunks.map((chunk, index) => {
+            const documentChunks: DocumentChunk[] = [];
 
-                return new DocumentChunk({
-                    documentId: document.getId(),
-                    userId: document.userId,
-                    content: chunk.content,
-                    embedding: embeddings[index],
-                    metadata: {
-                        chunkIndex: chunk.chunkIndex,
-                        pageNumber: chunk.pageNumber,
-                    },
-                });
+            validChunks.forEach((chunk, index) => {
+                const vector = embeddings[index];
+
+                //If Gemini returned an empty array
+                if (!vector || !Array.isArray(vector) || vector.length === 0) {
+                    logger.error(`⚠️ Skipping chunk ${chunk.chunkIndex} (Page ${chunk.pageNumber}) - Gemini returned an empty embedding.`);
+                    return; // Skip mapping this specific chunk, but keep processing the rest!
+                }
+
+                documentChunks.push(
+                    new DocumentChunk({
+                        documentId: document.getId(),
+                        userId: document.userId,
+                        content: chunk.content,
+                        embedding: vector,
+                        metadata: {
+                            chunkIndex: chunk.chunkIndex,
+                            pageNumber: chunk.pageNumber,
+                        },
+                    })
+                );
             });
+
+            if (documentChunks.length === 0) {
+                throw new Error("All chunks were blocked by safety filters or returned empty embeddings.");
+            }
 
             //BULK INSERT
             await documentChunkRepository.createMany(

@@ -3,6 +3,7 @@ import { FREE_SUBSCRIPTION } from "../../../application/constants/enums/subscrip
 import { subMessages } from "../../../application/constants/messages/subMessags";
 import { CreateSubscriptionDTO } from "../../../application/dtos/subscription/subscription.dto";
 import { ISubscriptionService } from "../../../application/interfaces/services/subscription/ISubscriptionService";
+import { BillingCycle } from "../../../domain/entities/SubscriptionPlan.entity";
 import { UserSubscription } from "../../../domain/entities/UserSubscription.entity";
 import { AppError } from "../../../domain/errors/AppError";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository";
@@ -19,7 +20,8 @@ export class SubscriptionService implements ISubscriptionService {
 
         const existingSubscription = await this._userSubscriptionRepository.findActiveByUserId(data.userId);
 
-        this.validateNewSubscriptionActivation(existingSubscription);
+        // this.validateNewSubscriptionActivation(existingSubscription);
+        await this.handleSubscriptionReplacement(existingSubscription, data.plan.billingCycle);
 
         const now = new Date();
         const endDate = new Date(
@@ -118,12 +120,12 @@ export class SubscriptionService implements ISubscriptionService {
         return updated;
     }
 
-    validateNewSubscriptionActivation(existingSubscription: UserSubscription | null): void {
+    // validateNewSubscriptionActivation(existingSubscription: UserSubscription | null): void {
 
-        if (existingSubscription && existingSubscription.status === "ACTIVE") {
-            throw new AppError(subMessages.error.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS, statusCode.BAD_REQUEST);
-        }
-    }
+    //     if (existingSubscription && existingSubscription.status === "ACTIVE") {
+    //         throw new AppError(subMessages.error.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS, statusCode.BAD_REQUEST);
+    //     }
+    // }
 
     async syncUserSubscriptionState(userId: string): Promise<void> {
         
@@ -159,4 +161,29 @@ export class SubscriptionService implements ISubscriptionService {
 
         await this._userRepository.save(user);
     }
+
+    private async handleSubscriptionReplacement(
+        existingSubscription: UserSubscription | null,
+        newBillingCycle: BillingCycle
+     ): Promise<void> {
+
+        if(!existingSubscription) { 
+            return;
+        }
+
+        const currentCycle = existingSubscription.planSnapshot.billingCycle;
+
+        if(currentCycle === "MONTHLY" &&
+            newBillingCycle === "YEARLY"
+        ) {
+            await this._userSubscriptionRepository.cancelActiveSubscription(
+                existingSubscription.userId
+            );
+
+            return;
+        }
+
+        throw new AppError(subMessages.error.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS, statusCode.BAD_REQUEST);
+
+     }
 }

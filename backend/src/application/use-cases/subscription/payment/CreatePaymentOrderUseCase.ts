@@ -7,13 +7,15 @@ import { AppError } from "../../../../domain/errors/AppError";
 import { subMessages } from "../../../constants/messages/subMessags";
 import { statusCode } from "../../../constants/enums/statusCode";
 import { Payment } from "../../../../domain/entities/Payment.entity";
+import { IUserSubscriptionRepository } from "../../../../domain/repositories/IUserSubscriptionRepository";
 
 export class CreatePaymentOrderUseCase implements ICreatePaymentOrderUseCase {
 
     constructor(
         private readonly _paymentService: IPaymentService,
         private readonly _paymentRepository: IPaymentRepository,
-        private readonly _subscriptionPlanRepository: ISubscriptionPlanRepository
+        private readonly _subscriptionPlanRepository: ISubscriptionPlanRepository,
+        private readonly _userSubscriptionRepository: IUserSubscriptionRepository
     ) {}
 
     async execute(data: CreatePaymentOrderUseCaseInputDTO): Promise<CreatePaymentOrderUseCaseOutputDTO> {
@@ -23,6 +25,24 @@ export class CreatePaymentOrderUseCase implements ICreatePaymentOrderUseCase {
 
         if(!plan || !plan.isActive) {
             throw new AppError(subMessages.error.PLAN_NOT_FOUND, statusCode.NOT_FOUND);
+        }
+
+        const activeSubscripiton = await this._userSubscriptionRepository.findActiveByUserId(data.userId);
+
+        if(activeSubscripiton) {
+            const currentCycle = activeSubscripiton.planSnapshot.billingCycle;
+
+            const requestedCycle = plan.billingCycle;
+
+            if(currentCycle === "YEARLY") {
+                throw new AppError(subMessages.error.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS, statusCode.BAD_REQUEST);
+            }
+
+            if( currentCycle === "MONTHLY" &&
+                requestedCycle === "MONTHLY"
+            ) {
+                throw new AppError(subMessages.error.ACTIVE_SUBSCRIPTION_ALREADY_EXISTS, statusCode.BAD_REQUEST);
+            }
         }
 
         //create razorpay order

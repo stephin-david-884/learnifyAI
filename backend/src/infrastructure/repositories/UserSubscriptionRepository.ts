@@ -65,6 +65,20 @@ export class UserSubscriptionRepository
         return exists ? true : false;
     }
 
+    async cancelActiveSubscription(userId: string): Promise<void> {
+        await this._model.updateMany(
+            {
+                userId,
+                status: "ACTIVE"
+            },
+            {
+                $set: {
+                    status: "CANCELLED"
+                }
+            }
+        );
+    }
+
     // async findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]> {
     //     const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
     //     const cutoff = new Date(Date.now() - THIRTY_DAYS);

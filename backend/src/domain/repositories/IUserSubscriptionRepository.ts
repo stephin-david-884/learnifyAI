@@ -13,5 +13,7 @@ export interface IUserSubscriptionRepository extends IBaseRepository<UserSubscri
 
     existsByPlan(planId: string, version: number): Promise<boolean>;
 
+    cancelActiveSubscription( userId: string ): Promise<void>;
+
     // findSubscriptionsNeedingCreditReset(): Promise<UserSubscription[]>;
 }
