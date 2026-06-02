@@ -35,6 +35,10 @@ export class Chat {
         this.updatedAt = props.updatedAt;
     }
 
+    addMessages(messages: ChatMessage[]) {
+        this.messages.push(...messages);
+    }
+
     addUserMessage(content: string): void {
         this.messages.push({
             role: "USER",
