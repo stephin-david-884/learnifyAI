@@ -8,9 +8,7 @@ import { GenerateAnswerDTO, GenerateAnswerResponseDTO } from "../../dtos/chat/Ge
 import { IAICreditService } from "../../interfaces/services/ai/IAICreditService";
 import { IAIService } from "../../interfaces/services/ai/IAIService";
 import { IEmbeddingService } from "../../interfaces/services/ai/IEmbeddingService";
-import { ICreditService } from "../../interfaces/services/subscription/ICreditService";
 import { IGenerateAnswerUseCase } from "../../interfaces/usecases/chat/IGenerateAnswerUseCase";
-import { IConsumeCreditsUseCase } from "../../interfaces/usecases/subscription/IConsumeCreditsUseCase";
 
 export class GenerateAnswerUseCase implements IGenerateAnswerUseCase {
 
@@ -37,7 +35,7 @@ export class GenerateAnswerUseCase implements IGenerateAnswerUseCase {
             throw new AppError(docMessages.error.DOCUMENT_NOT_READY, statusCode.BAD_REQUEST);
         }
 
-        await this._aiCreditService.consumeForAIUsage(data.userId, CREDIT_COSTS.CHAT);
+        await this._aiCreditService.validateCredits(data.userId, CREDIT_COSTS.CHAT);
 
         //Question to Embedding
         const questionEmbedding = await this._embeddingService.generateEmbedding(data.question);
@@ -58,6 +56,8 @@ export class GenerateAnswerUseCase implements IGenerateAnswerUseCase {
                             .join("\n\n");
 
         const answer = await this._aiService.generateAnswer(data.question, context);
+
+        await this._aiCreditService.consumeCredits(data.userId, CREDIT_COSTS.CHAT);
         
         return {
             answer,

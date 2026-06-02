@@ -1,4 +1,6 @@
 export interface IAICreditService {
 
-    consumeForAIUsage(userId: string, amount: number): Promise<void>;
+    validateCredits(userId: string, amount: number): Promise<void>;
+
+    consumeCredits(userId: string, amount: number): Promise<void>;
 }
