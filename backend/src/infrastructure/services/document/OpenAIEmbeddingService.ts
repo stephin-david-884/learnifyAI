@@ -1,5 +1,5 @@
 import { OpenAIEmbeddings} from "@langchain/openai";
-import { IEmbeddingService } from "../../../application/interfaces/services/document/IEmbeddingService";
+import { IEmbeddingService } from "../../../application/interfaces/services/ai/IEmbeddingService";
 
 export class OpenAIEmbeddingService implements IEmbeddingService {
     private readonly _embeddings;

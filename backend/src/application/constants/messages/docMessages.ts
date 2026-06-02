@@ -10,5 +10,6 @@ export const docMessages = {
         DOCUMENT_NOT_FOUND: "Document not found",
         DOCUMENT_NOT_ALLOWED: "Only PDFs are allowed",
         DOCUMENT_REQUIRED: "PDF document is required",
+        DOCUMENT_NOT_READY:  "Document is still processing",
     }
 }

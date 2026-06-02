@@ -8,7 +8,7 @@ import { TextChunkingService } from "../services/document/TextChunkingService";
 // import { OpenAIEmbeddingService } from "../services/document/OpenAIEmbeddingService";
 import { logError, logger } from "../services/log/logger";
 import { DocumentChunk } from "../../domain/entities/DocumentChunk.entity";
-import { GoogleEmbeddingService } from "../services/document/GeminiEmbeddingService";
+import { GoogleEmbeddingService } from "../services/ai/GeminiEmbeddingService";
 
 
 const documentRepository =
@@ -78,7 +78,7 @@ export const documentProcessingWorker = new Worker(
                 validChunks.map((chunk) => chunk.content)
             );
 
-            console.log("Valid Chunks:", validChunks.length, "| Embeddings Received:", embeddings.length);
+            logger.info(`Valid Chunks: ${validChunks.length} | Embeddings Received: ${embeddings.length}`);
 
             // CREATE CHUNKS
             const documentChunks: DocumentChunk[] = [];
@@ -89,7 +89,7 @@ export const documentProcessingWorker = new Worker(
                 //If Gemini returned an empty array
                 if (!vector || !Array.isArray(vector) || vector.length === 0) {
                     logger.error(`⚠️ Skipping chunk ${chunk.chunkIndex} (Page ${chunk.pageNumber}) - Gemini returned an empty embedding.`);
-                    return; // Skip mapping this specific chunk, but keep processing the rest!
+                    return; // Skip mapping this specific chunk
                 }
 
                 documentChunks.push(

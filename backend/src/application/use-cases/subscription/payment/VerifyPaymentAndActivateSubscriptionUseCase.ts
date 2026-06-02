@@ -74,7 +74,7 @@ export class VerifyPaymentAndActivateSubscriptionUseCase implements IVerifyPayme
                 plan,
                 paymentId: payment.getId()
             });
-        } catch (error) {
+        } catch {
             payment.markFailed();
 
             await this._paymentRepository.save(payment);
