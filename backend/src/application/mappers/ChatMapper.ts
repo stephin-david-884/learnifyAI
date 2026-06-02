@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { Chat } from "../../domain/entities/Chat.entity";
 import { ChatLean } from "../../infrastructure/database/models/Chat";
 
@@ -29,9 +30,9 @@ export const toPersistenceChat = (chat: Chat) => {
 
     return {
 
-        userId: chat.userId,
+        userId: new Types.ObjectId(chat.userId),
 
-        documentId: chat.documentId,
+        documentId: new Types.ObjectId(chat.documentId),
 
         title: chat.title,
 
