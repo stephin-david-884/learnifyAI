@@ -7,6 +7,7 @@ import DocumentTabs, {
 } from "../../components/document/DocumentTabs";
 
 import { useDocument } from "../../../hooks/useDocument";
+import DocumentOverview from "../../components/document/DocumentOverview";
 
 const DocumentDetailPage: React.FC = () => {
 
@@ -60,15 +61,9 @@ const DocumentDetailPage: React.FC = () => {
 
             case "OVERVIEW":
                 return (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <h3 className="font-semibold text-slate-900">
-                            Overview
-                        </h3>
-
-                        <p className="mt-2 text-sm text-slate-500">
-                            Overview tab coming next.
-                        </p>
-                    </div>
+                    <DocumentOverview 
+                        document={selectedDocument}
+                    />
                 );
 
             case "READER":

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { useDocument } from '../../../hooks/useDocument'
 import toast from 'react-hot-toast';
 import UploadDocumentModal from '../../components/document/UploadDocumentModal';
@@ -13,6 +14,8 @@ const DocumentListPage: React.FC = () => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(3);
     const [modalOpen, setModalOpen] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUserDocuments({ page, limit });
@@ -110,7 +113,7 @@ const DocumentListPage: React.FC = () => {
                                 document={document}
                                 onDelete={handleDelete}
                                 onOpen={(id) =>
-                                    console.log(id)
+                                    navigate(`/documents/${id}`)
                                 }
                             />
                         ))}
