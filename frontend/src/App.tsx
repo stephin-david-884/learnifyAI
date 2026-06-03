@@ -1,6 +1,6 @@
 import { lazy, Suspense, useEffect } from "react";
 import { useAuth } from "./hooks/useAuth";
-import {  Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Home from "./presentation/pages/Home";
 import { Toaster } from 'react-hot-toast';
 import PublicRoute from "./components/auth/PublicRoute";
@@ -25,7 +25,8 @@ const SubscriptionPlansPage = lazy(() => import('./presentation/pages/subscripti
 const PaymentHistoryPage = lazy(() => import('./presentation/pages/subscription/PaymentHistoryPage'));
 const AdminSubscriptionPlansPage = lazy(() => import('./presentation/pages/admin/AdminSubscriptionPlansPage'));
 const AdminPaymentsPage = lazy(() => import('./presentation/pages/admin/AdminPaymentsPage'));
-const DocumentListPage  = lazy(() => import('./presentation/pages/document/DocumentListPage'));
+const DocumentListPage = lazy(() => import('./presentation/pages/document/DocumentListPage'));
+const DocumentDetailPage = lazy(() => import("./presentation/pages/document/DocumentDetailPage"));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -40,7 +41,7 @@ const App = () => {
     } else {
       checkAuth();
     }
-  }, [isAdminRoute]); 
+  }, [isAdminRoute]);
 
   useEffect(() => {
     setLogoutHandler(() => {
@@ -95,8 +96,9 @@ const App = () => {
           <Route element={<UserProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/subscription/plans" element={<SubscriptionPlansPage />} />
-            <Route path="/subscription/payments" element={<PaymentHistoryPage />}/>
-            <Route path="/documents" element={<DocumentListPage/>}/>
+            <Route path="/subscription/payments" element={<PaymentHistoryPage />} />
+            <Route path="/documents" element={<DocumentListPage />} />
+            <Route path="/documents/:documentId" element={<DocumentDetailPage />}/>
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -104,7 +106,7 @@ const App = () => {
           <Route element={<AdminProtectedRoute />}>
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
-            <Route path="/admin/subscriptions" element={<AdminSubscriptionPlansPage />}/>
+            <Route path="/admin/subscriptions" element={<AdminSubscriptionPlansPage />} />
             <Route path="/admin/payments" element={<AdminPaymentsPage />} />
           </Route>
         </Routes>
