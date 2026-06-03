@@ -39,6 +39,15 @@ export const API_ROUTES = {
             `/user/documents/${documentId}`,
     },
 
+    AI: {
+
+        GET_CHAT_HISTORY: (documentId: string) =>
+            `/user/ai/chat/${documentId}`,
+
+        GENERATE_ANSWER:
+            "/user/ai/chat/answer",
+    },
+
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
         UPDATE_PLAN: "/admin/subscription/plans",

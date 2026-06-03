@@ -16,14 +16,21 @@ export class GetChatHistoryUseCase implements IGetChatHistoryUseCase {
         }[];
 
         totalMessages: number;
-
+        page: number;
+        limit: number;
         hasMore: boolean;
     }> {
-        return await this._chatRepository.getMessages(
+        const result = await this._chatRepository.getMessages(
             data.userId,
             data.documentId,
             data.page,
             data.limit
-        )
+        );
+
+        return {
+            ...result,
+            page: data.page,
+            limit: data.limit
+        }
     }
 }

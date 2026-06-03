@@ -5,6 +5,7 @@ import subscriptionSlice from "./features/subscription/subscriptionSlice";
 import userManagementSlice from "./features/admin/userManagementSlice";
 import documentSlice from "./features/document/documentSlice";
 import adminSubscriptionReducer from "./features/adminSubscription/adminSubscriptionSlice";
+import chatReducer from "./features/chat/chatSlice";
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
         subscription: subscriptionSlice,
         adminSubscription: adminSubscriptionReducer,
         document: documentSlice,
+        chat: chatReducer,
     }
 })
 
