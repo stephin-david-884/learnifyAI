@@ -14,7 +14,7 @@ export class ChatController {
         private readonly _generateAnswerUseCase: IGenerateAnswerUseCase,
     ) { }
 
-    askQuestion = asyncHandler(async (req: Request, res: Response) => {
+    generateAnswer = asyncHandler(async (req: Request, res: Response) => {
 
         const data = mapToGenerateAnswerDTO(req);
 

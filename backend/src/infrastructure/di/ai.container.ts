@@ -69,7 +69,6 @@ const generateAnswerUseCase: IGenerateAnswerUseCase =
 
 
 // CONTROLLER
-
 export const chatController =
     new ChatController(
         getChatHistoryUseCase,

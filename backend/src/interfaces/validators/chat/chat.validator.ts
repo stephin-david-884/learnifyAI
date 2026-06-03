@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const askQuestionSchema =
+export const generateAnswerSchema  =
     z.object({
 
         documentId: z
@@ -11,5 +11,5 @@ export const askQuestionSchema =
             .string()
             .trim()
             .min(2)
-            .max(1000),
+            .max(2000),
     });
