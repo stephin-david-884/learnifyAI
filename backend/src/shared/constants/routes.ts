@@ -51,4 +51,9 @@ export const ROUTES = {
     GET_DOCUMENT_BY_ID: "/:documentId",
     DELETE_DOCUMENT: "/:documentId",
   },
+
+  CHAT: {
+    GET_CHAT: "/chat/:documentId",
+    
+  },
 };
