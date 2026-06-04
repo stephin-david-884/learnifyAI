@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useChat } from "../../../hooks/useChat";
 
 import ChatHeader from "./ChatHeader";
@@ -23,6 +23,8 @@ const ChatContainer: React.FC<Props> = ({
         resetChat,
     } = useChat();
 
+    const [localMessages, setLocalMessages] = useState(messages);
+
     useEffect(() => {
 
         resetChat();
@@ -39,14 +41,94 @@ const ChatContainer: React.FC<Props> = ({
 
     }, [documentId]);
 
+    useEffect(() => {
+        setLocalMessages(messages);
+    }, [messages]);
+
     const handleSend = async (
         question: string
     ) => {
 
-        await askQuestion(
-            documentId,
-            question
-        );
+        const tempUserId =
+            `user-${Date.now()}`;
+
+        const tempAssistantId =
+            `assistant-${Date.now()}`;
+
+        setLocalMessages((prev) => [
+            ...prev,
+
+            {
+                role: "USER",
+                content: question,
+                createdAt:
+                    new Date().toISOString(),
+
+                tempId: tempUserId,
+            },
+
+            {
+                role: "ASSISTANT",
+                content: "",
+                createdAt:
+                    new Date().toISOString(),
+
+                tempId: tempAssistantId,
+
+                pending: true,
+            },
+        ]);
+
+        try {
+
+            const response =
+                await askQuestion(
+                    documentId,
+                    question
+                );
+
+            setLocalMessages((prev) =>
+                prev.map((message) => {
+
+                    if (
+                        message.tempId ===
+                        tempAssistantId
+                    ) {
+                        return {
+                            ...message,
+                            content:
+                                response.answer,
+
+                            pending: false,
+                        };
+                    }
+
+                    return message;
+                })
+            );
+
+        } catch {
+
+            setLocalMessages((prev) =>
+                prev.map((message) => {
+
+                    if (
+                        message.tempId ===
+                        tempAssistantId
+                    ) {
+                        return {
+                            ...message,
+                            content:
+                                "Something went wrong.",
+
+                            pending: false,
+                        };
+                    }
+
+                    return message;
+                })
+            );
+        }
     };
 
     return (
@@ -58,17 +140,17 @@ const ChatContainer: React.FC<Props> = ({
                     <div>
                         Loading...
                     </div>
-                ) : messages.length === 0 ? (
+                ) : localMessages.length === 0 ? (
                     <ChatEmptyState />
                 ) : (
                     <div className="space-y-4">
-                        {messages.map(
+                        {localMessages.map(
                             (
-                                message,
-                                index
+                                message
                             ) => (
                                 <ChatMessage
-                                    key={index}
+                                    key={message.tempId ??
+                                        `${message.role}-${message.createdAt}`}
                                     message={
                                         message
                                     }

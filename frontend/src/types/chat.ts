@@ -6,6 +6,8 @@ export interface ChatMessageItem {
     role: ChatRole;
     content: string;
     createdAt: string;
+    tempId?: string;
+    pending?: boolean;
 }
 
 export interface ChatHistoryResponse {
