@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useChat } from "../../../hooks/useChat";
 
 import ChatHeader from "./ChatHeader";
@@ -18,12 +18,26 @@ const ChatContainer: React.FC<Props> = ({
         messages,
         loading,
         sending,
+        page,
+        limit,
+        hasMore,
         fetchChatHistory,
         askQuestion,
         resetChat,
     } = useChat();
 
     const [localMessages, setLocalMessages] = useState(messages);
+
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+        });
+
+    }, [localMessages]);
 
     useEffect(() => {
 
@@ -131,11 +145,35 @@ const ChatContainer: React.FC<Props> = ({
         }
     };
 
+    const handleScroll = () => {
+
+        if (
+            !containerRef.current || loading || !hasMore
+        ) {
+            return;
+        }
+
+        if (
+            containerRef.current.scrollTop < 50
+        ) {
+
+            fetchChatHistory(
+                documentId,
+                page + 1,
+                limit
+            );
+        }
+    };
+
     return (
         <div className="flex h-[750px] flex-col overflow-hidden rounded-3xl border border-slate-200 bg-slate-50">
             <ChatHeader />
 
-            <div className="flex-1 overflow-y-auto p-5">
+            <div
+                ref={containerRef}
+                onScroll={handleScroll}
+                className="flex-1 overflow-y-auto p-5"
+            >
                 {loading ? (
                     <div>
                         Loading...
@@ -157,6 +195,7 @@ const ChatContainer: React.FC<Props> = ({
                                 />
                             )
                         )}
+                        <div ref={messagesEndRef} />
                     </div>
                 )}
             </div>
