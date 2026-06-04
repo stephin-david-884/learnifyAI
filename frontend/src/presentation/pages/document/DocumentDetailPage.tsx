@@ -9,6 +9,7 @@ import DocumentTabs, {
 import { useDocument } from "../../../hooks/useDocument";
 import DocumentOverview from "../../components/document/DocumentOverview";
 import DocumentReader from "../../components/document/document-reader/DocumentReader";
+import ChatContainer from "../../components/chat/ChatContainer";
 
 const DocumentDetailPage: React.FC = () => {
 
@@ -76,15 +77,9 @@ const DocumentDetailPage: React.FC = () => {
 
             case "CHAT":
                 return (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <h3 className="font-semibold text-slate-900">
-                            Chat
-                        </h3>
-
-                        <p className="mt-2 text-sm text-slate-500">
-                            Chat interface coming next.
-                        </p>
-                    </div>
+                    <ChatContainer
+                        documentId={selectedDocument.id}
+                    />
                 );
 
             case "LEARN_HUB":

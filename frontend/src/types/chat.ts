@@ -1,25 +1,23 @@
-export interface ChatMessage {
-    role: "USER" | "ASSISTANT";
+export type ChatRole =
+    | "USER"
+    | "ASSISTANT";
+
+export interface ChatMessageItem {
+    role: ChatRole;
     content: string;
     createdAt: string;
 }
 
-export interface Chat {
-    id: string;
-    userId: string;
-    documentId: string;
-    title: string;
-    messages: ChatMessage[];
-    createdAt: string;
-    updatedAt: string;
-}
-
 export interface ChatHistoryResponse {
-    messages: ChatMessage[];
-    page: number;
-    limit: number;
+    messages: ChatMessageItem[];
+
     totalMessages: number;
+
     hasMore: boolean;
+
+    page: number;
+
+    limit: number;
 }
 
 export interface GenerateAnswerPayload {
@@ -37,7 +35,7 @@ export interface GenerateAnswerResponse {
 }
 
 export interface ChatState {
-    messages: ChatMessage[];
+    messages: ChatMessageItem[];
 
     loading: boolean;
     sending: boolean;
@@ -48,4 +46,14 @@ export interface ChatState {
     hasMore: boolean;
 
     error: string | null;
+}
+
+export interface Chat {
+    id: string;
+    userId: string;
+    documentId: string;
+    title: string;
+    messages: ChatMessageItem[];
+    createdAt: string;
+    updatedAt: string;
 }
