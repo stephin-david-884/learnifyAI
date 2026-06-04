@@ -7,6 +7,8 @@ import type { AxiosError } from "axios";
 const initialState: DocumentState = {
     documents: [],
     selectedDocument: null,
+    viewerUrl: null,
+    viewerLoading: false,
     total: 0,
     page: 1,
     limit: 10,
@@ -90,6 +92,41 @@ export const getDocumentById = createAsyncThunk<
     }
 );
 
+export const getDocumentViewerUrl = createAsyncThunk<
+    string,
+    string,
+    { rejectValue: string }
+>(
+    "document/getDocumentViewerUrl",
+
+    async (documentId, { rejectWithValue }) => {
+
+        try {
+
+            const response =
+                await api.get(
+                    API_ROUTES.DOCUMENT.GET_DOCUMENT_VIEWER_URL(
+                        documentId
+                    )
+                );
+
+            return response.data.data.url;
+
+        } catch (error) {
+
+            const err =
+                error as AxiosError<{
+                    message: string;
+                }>;
+
+            return rejectWithValue(
+                err.response?.data?.message ||
+                "Failed to fetch document viewer url"
+            );
+        }
+    }
+);
+
 export const deleteDocument = createAsyncThunk<
     string,
     string,
@@ -124,6 +161,10 @@ const documentSlice = createSlice({
 
         clearSelectedDocument: (state) => {
             state.selectedDocument = null;
+        },
+
+        clearViewerUrl: (state) => {
+            state.viewerUrl = null;
         },
     },
 
@@ -187,16 +228,37 @@ const documentSlice = createSlice({
 
             .addCase(deleteDocument.fulfilled, (state, action) => {
                 state.deleting = false;
-                state.documents = state.documents.filter( (doc) => doc.id !== action.payload);
+                state.documents = state.documents.filter((doc) => doc.id !== action.payload);
             })
 
             .addCase(deleteDocument.rejected, (state, action) => {
                 state.deleting = false;
-                state.error = action.payload ||  "Failed to delete document";
+                state.error = action.payload || "Failed to delete document";
             })
+
+            .addCase(getDocumentViewerUrl.pending, (state) => {
+
+                state.viewerLoading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(getDocumentViewerUrl.fulfilled, (state, action) => {
+
+                state.viewerLoading = false;
+                state.viewerUrl = action.payload;
+            }
+            )
+
+            .addCase(getDocumentViewerUrl.rejected, (state, action) => {
+
+                state.viewerLoading = false;
+                state.error = action.payload || "Failed to fetch viewer url";
+            }
+            )
     }
 });
 
-export const { clearDocumentError, clearSelectedDocument } = documentSlice.actions;
+export const { clearDocumentError, clearSelectedDocument, clearViewerUrl, } = documentSlice.actions;
 
 export default documentSlice.reducer;

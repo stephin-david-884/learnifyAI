@@ -10,6 +10,7 @@ import { statusCode } from "../../../application/constants/enums/statusCode";
 import { docMessages } from "../../../application/constants/messages/docMessages";
 import { mapToGetUserDocumentsDTO } from "../../../application/mappers/document/mapToGetUserDocumentsDTO";
 import { mapToDocumentIdDTO } from "../../../application/mappers/document/mapToDocumentIdDTO";
+import { IGetDocumentViewerUrlUseCase } from "../../../application/interfaces/usecases/document/IGetDocumentViewerUrlUseCase";
 
 export class DocumentController {
 
@@ -21,9 +22,11 @@ export class DocumentController {
         private readonly _getDocumentByIdUseCase: IGetDocumentByIdUseCase,
 
         private readonly _deleteDocumentUseCase: IDeleteDocumentUseCase,
+
+        private readonly _getDocumentViewerUrlUseCase: IGetDocumentViewerUrlUseCase,
     ) { }
-    
-    uploadDocument = asyncHandler(async( req: Request, res: Response) => {
+
+    uploadDocument = asyncHandler(async (req: Request, res: Response) => {
 
         const data = mapToUploadDocumentDTO(req);
 
@@ -37,7 +40,7 @@ export class DocumentController {
         );
     });
 
-    getUserDocuments = asyncHandler(async(req: Request, res: Response) => {
+    getUserDocuments = asyncHandler(async (req: Request, res: Response) => {
 
         const query = mapToGetUserDocumentsDTO(req);
 
@@ -51,7 +54,7 @@ export class DocumentController {
         );
     });
 
-    getDocumentsById = asyncHandler(async( req: Request, res: Response) => {
+    getDocumentsById = asyncHandler(async (req: Request, res: Response) => {
 
         const data = mapToDocumentIdDTO(req);
 
@@ -65,7 +68,7 @@ export class DocumentController {
         );
     });
 
-    deleteDocument = asyncHandler(async(req: Request, res: Response) => {
+    deleteDocument = asyncHandler(async (req: Request, res: Response) => {
 
         const data = mapToDocumentIdDTO(req);
 
@@ -75,6 +78,23 @@ export class DocumentController {
             res,
             statusCode.OK,
             docMessages.success.DOCUMENT_DELETED,
+        )
+    });
+
+    getDocumentViewerUrl = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToDocumentIdDTO(req);
+
+        const url = await this._getDocumentViewerUrlUseCase.execute(
+            data.userId,
+            data.documentId
+        );
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            docMessages.success.DOCUMENTS_URL_FETCHED,
+            {url}
         )
     })
 }

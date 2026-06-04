@@ -65,6 +65,9 @@ export interface DocumentState {
 
     selectedDocument: DocumentItem | null;
 
+    viewerUrl: string | null;
+    viewerLoading: boolean;
+
     total: number;
 
     page: number;
@@ -80,4 +83,8 @@ export interface DocumentState {
     deleting: boolean;
 
     error: string | null;
+}
+
+export interface DocumentViewerResponse {
+    url: string;
 }

@@ -50,6 +50,7 @@ export const ROUTES = {
     GET_USER_DOCUMENTS: "/",
     GET_DOCUMENT_BY_ID: "/:documentId",
     DELETE_DOCUMENT: "/:documentId",
+    DOCUMENT_VIEWER: "/:documentId/viewer-url",
   },
 
   CHAT: {

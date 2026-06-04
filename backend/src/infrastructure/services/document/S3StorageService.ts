@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { IStorageService, UploadedFileResult, UploadFileDTO } from "../../../application/interfaces/services/document/IStorageService";
 import { Readable } from "stream";
+import  { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 export class S3StorageService implements IStorageService {
 
@@ -78,5 +79,20 @@ export class S3StorageService implements IStorageService {
         }
 
         return Buffer.concat(chunks);
+    }
+
+    async generatePresignedUrl(key: string): Promise<string> {
+        const command = new GetObjectCommand({
+            Bucket: this._bucket,
+            Key: key
+        });
+
+        return await getSignedUrl(
+            this._client,
+            command,
+            {
+                expiresIn: 60 * 15,
+            }
+        );
     }
 }

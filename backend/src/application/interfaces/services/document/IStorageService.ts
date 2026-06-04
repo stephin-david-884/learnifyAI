@@ -15,4 +15,6 @@ export interface IStorageService {
     deleteFile(key: string): Promise<void>;
 
     downloadFile(key: string): Promise<Buffer>;
+
+    generatePresignedUrl(key: string): Promise<string>;
 }

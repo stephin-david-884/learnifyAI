@@ -1,6 +1,6 @@
-import React, {useEffect,useState,} from "react";
-import { ArrowLeft, FileText,} from "lucide-react";
-import {Link, useParams,} from "react-router-dom";
+import React, { useEffect, useState, } from "react";
+import { ArrowLeft, FileText, } from "lucide-react";
+import { Link, useParams, } from "react-router-dom";
 import Spinner from "../../components/common/Spinner";
 import DocumentTabs, {
     type DocumentTab,
@@ -8,6 +8,7 @@ import DocumentTabs, {
 
 import { useDocument } from "../../../hooks/useDocument";
 import DocumentOverview from "../../components/document/DocumentOverview";
+import DocumentReader from "../../components/document/document-reader/DocumentReader";
 
 const DocumentDetailPage: React.FC = () => {
 
@@ -61,22 +62,16 @@ const DocumentDetailPage: React.FC = () => {
 
             case "OVERVIEW":
                 return (
-                    <DocumentOverview 
+                    <DocumentOverview
                         document={selectedDocument}
                     />
                 );
 
             case "READER":
                 return (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <h3 className="font-semibold text-slate-900">
-                            Reader
-                        </h3>
-
-                        <p className="mt-2 text-sm text-slate-500">
-                            Reader tab coming next.
-                        </p>
-                    </div>
+                    <DocumentReader
+                        documentId={selectedDocument.id}
+                    />
                 );
 
             case "CHAT":

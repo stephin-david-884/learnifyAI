@@ -37,4 +37,9 @@ router.delete(ROUTES.DOCUMENT.DELETE_DOCUMENT,
     documentController.deleteDocument
 );
 
+router.get(ROUTES.DOCUMENT.DOCUMENT_VIEWER,
+    authMiddleware(tokenService),
+    documentController.getDocumentViewerUrl
+);
+
 export default router;

@@ -4,6 +4,7 @@ export const docMessages = {
         DOCUMENT_UPLOADED: "Document uploaded successfully",
         DOCUMENTS_FETCHED: "Documents fetched successfully",
         DOCUMENT_DELETED: "Documents deleted successfully",
+        DOCUMENTS_URL_FETCHED: "Document URL fetched",
     },
 
     error: {

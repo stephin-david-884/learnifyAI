@@ -37,6 +37,8 @@ export const API_ROUTES = {
 
         DELETE_DOCUMENT: (documentId: string) =>
             `/user/documents/${documentId}`,
+        GET_DOCUMENT_VIEWER_URL: (documentId: string) =>
+            `/user/documents/${documentId}/viewer-url`,
     },
 
     AI: {
