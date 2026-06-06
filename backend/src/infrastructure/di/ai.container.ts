@@ -63,6 +63,7 @@ const generateAnswerUseCase: IGenerateAnswerUseCase =
         documentChunkRepository,
         embeddingService,
         aiService,
+        chatRepository,
         aiCreditService,
         saveChatHistoryUseCase
     );

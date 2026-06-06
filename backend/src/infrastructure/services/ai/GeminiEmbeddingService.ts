@@ -40,7 +40,6 @@ implements IEmbeddingService {
     async generateEmbeddings(texts: string[]): Promise<number[][]> {
         if (!texts || texts.length === 0) return [];
 
-        // 50 is the optimal safe zone for Google's free tier token limits
         const batchSize = 50; 
         const allEmbeddings: number[][] = [];
 
@@ -63,7 +62,7 @@ implements IEmbeddingService {
                     attempts++;
                     logger.info(`[Quota Hit] Gemini rate limit reached at chunk ${i}. Waiting 15s to retry (Attempt ${attempts}/3)...`);
                     
-                    // Wait 15 seconds delay for Google's Tokens-Per-Minute quota to cool down
+                    // Delay for Google's Tokens quota to cool down
                     await delay(15000); 
                 }
             }

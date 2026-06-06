@@ -1,4 +1,4 @@
-import { Chat } from "../entities/Chat.entity";
+import { Chat, ChatMessage } from "../entities/Chat.entity";
 import { IBaseRepository } from "./IBaseRepository";
 
 export interface IChatRepository extends IBaseRepository<Chat> {
@@ -15,4 +15,10 @@ export interface IChatRepository extends IBaseRepository<Chat> {
         totalMessages: number;
         hasMore: boolean;
     }>;
+
+    getRecentMessages(
+        userId: string,
+        documentId: string,
+        limit: number
+    ): Promise<ChatMessage[]>;
 }

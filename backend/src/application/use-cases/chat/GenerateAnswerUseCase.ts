@@ -1,4 +1,5 @@
 import { AppError } from "../../../domain/errors/AppError";
+import { IChatRepository } from "../../../domain/repositories/IChatRepository";
 import { IDocumentChunkRepository } from "../../../domain/repositories/IDocumentChunkRepository";
 import { IDocumentRepository } from "../../../domain/repositories/IDocumentRepository";
 import { CREDIT_COSTS } from "../../constants/enums/creditCost";
@@ -18,7 +19,7 @@ export class GenerateAnswerUseCase implements IGenerateAnswerUseCase {
         private readonly _documentChunkRepository: IDocumentChunkRepository,
         private readonly _embeddingService: IEmbeddingService,
         private readonly _aiService: IAIService,
-
+        private readonly _chatRepository: IChatRepository,
         private readonly _aiCreditService: IAICreditService,
         private readonly _saveChatHistoryUseCase: ISaveChatHistoryUseCase,
 
@@ -39,8 +40,12 @@ export class GenerateAnswerUseCase implements IGenerateAnswerUseCase {
 
         await this._aiCreditService.validateCredits(data.userId, CREDIT_COSTS.CHAT);
 
+        const history = await this._chatRepository.getRecentMessages(data.userId, data.documentId,6);
+
+        const standaloneQuestion = await this._aiService.rewriteQuestion(data.question, history);
+
         //Question to Embedding
-        const questionEmbedding = await this._embeddingService.generateEmbedding(data.question);
+        const questionEmbedding = await this._embeddingService.generateEmbedding(standaloneQuestion);
 
         //Vector search
         const chunks = await this._documentChunkRepository

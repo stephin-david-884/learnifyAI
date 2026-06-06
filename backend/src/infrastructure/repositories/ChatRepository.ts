@@ -1,5 +1,5 @@
 import { toDomainChat, toPersistenceChat } from "../../application/mappers/ChatMapper";
-import { Chat } from "../../domain/entities/Chat.entity";
+import { Chat, ChatMessage } from "../../domain/entities/Chat.entity";
 import { IChatRepository } from "../../domain/repositories/IChatRepository";
 import { ChatLean, ChatModel } from "../database/models/Chat";
 import { BaseRepository } from "./BaseRepository";
@@ -42,19 +42,19 @@ export class ChatRepository
             })
             .lean();
 
-        if(!chat) {
+        if (!chat) {
             return {
                 messages: [],
                 totalMessages: 0,
                 hasMore: false
             }
         }
-        
+
         const totalMessages = chat.messages.length;
 
         const start = Math.max(totalMessages - page * limit, 0);
 
-        const end = totalMessages - (page-1) * limit;
+        const end = totalMessages - (page - 1) * limit;
 
         const messages = chat.messages.slice(start, end);
 
@@ -63,5 +63,21 @@ export class ChatRepository
             totalMessages,
             hasMore: start > 0
         };
+    }
+
+    async getRecentMessages(userId: string, documentId: string, limit: number): Promise<ChatMessage[]> {
+
+        const chat = await this._model
+            .findOne({
+                userId,
+                documentId
+            })
+            .lean();
+
+        if(!chat) {
+            return [];
+        }
+
+        return chat.messages.slice(-limit);
     }
 }
