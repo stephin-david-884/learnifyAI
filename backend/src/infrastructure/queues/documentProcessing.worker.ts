@@ -49,17 +49,29 @@ export const documentProcessingWorker = new Worker(
                 throw new Error("Document not found");
             }
 
+            document.updateProcessingProgress(10, "Downloading PDF");
+
+            await documentRepository.save(document);
+
             // DOWNLOAD PDF
             const fileBuffer =
                 await storageService.downloadFile(
                     document.s3Key
                 );
 
+            document.updateProcessingProgress(30, "Extracting Text");
+
+            await documentRepository.save(document);
+
             // PARSE PDF
             const parsedPdf =
                 await pdfParserService.parse(
                     fileBuffer
                 );
+
+            document.updateProcessingProgress(50, "Splitting Content");
+
+            await documentRepository.save(document);
 
             // SPLIT TEXT
             const rawChunks = await textChunkingService.splitText(parsedPdf.pages);
@@ -73,12 +85,20 @@ export const documentProcessingWorker = new Worker(
                 throw new Error("No readable text found in this PDF.");
             }
 
+            document.updateProcessingProgress(70, "Generating Embeddings");
+
+            await documentRepository.save(document);
+
             // GENERATE EMBEDDINGS
             const embeddings = await embeddingService.generateEmbeddings(
                 validChunks.map((chunk) => chunk.content)
             );
 
             logger.info(`Valid Chunks: ${validChunks.length} | Embeddings Received: ${embeddings.length}`);
+
+            document.updateProcessingProgress(90,"Saving Chunks");
+
+            await documentRepository.save(document);
 
             // CREATE CHUNKS
             const documentChunks: DocumentChunk[] = [];
