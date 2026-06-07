@@ -15,6 +15,9 @@ type DocumentProps = {
     fileUrl: string;
     totalPages?: number;
     status?: DocumentStatus;
+    processingProgress?: number;
+    processingStage?: string;
+    topics?: string[];
     processingError?: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -31,6 +34,9 @@ export class Document {
     public fileUrl: string;
     public totalPages?: number;
     public status: DocumentStatus;
+    public processingProgress: number;
+    public processingStage?: string;
+    public topics: string[];
     public processingError?: string;
     public readonly createdAt?: Date;
     public readonly updatedAt?: Date;
@@ -46,6 +52,9 @@ export class Document {
         this.fileUrl = props.fileUrl;
         this.totalPages = props.totalPages;
         this.status = props.status ?? "UPLOADING";
+        this.processingProgress = props.processingProgress ?? 0;
+        this.processingStage = props.processingStage;
+        this.topics = props.topics ?? [];
         this.processingError = props.processingError;
         this.createdAt = props.createdAt;
         this.updatedAt = props.updatedAt;
@@ -63,24 +72,34 @@ export class Document {
         }
     }
 
-    markProcessing() {
+    markProcessing(progress = 0, stage = "Processing document") {
         this.status = "PROCESSING";
+        this.processingProgress = progress;
+        this.processingStage = stage;
         this.processingError = undefined;
+    }
+
+    updateProcessingProgress(progress: number, stage: string) {
+        this.processingProgress = progress;
+        this.processingStage = stage;
     }
 
     markReady(totalPages: number) {
         this.status = "READY";
         this.totalPages = totalPages;
+        this.processingProgress = 100;
+        this.processingStage = "Completed"
         this.processingError = undefined;
     }
 
     markFailed(error: string) {
         this.status = "FAILED";
         this.processingError = error;
+        this.processingStage = "Failed";
     }
 
     getId(): string {
-        if(!this.id) {
+        if (!this.id) {
             throw new Error("Document ID is not set")
         }
 

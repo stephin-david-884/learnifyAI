@@ -3,8 +3,6 @@ import { connectDB } from "../infrastructure/config/mongo.config";
 import "../infrastructure/queues/documentProcessing.worker"
 import { logError, logger } from "../infrastructure/services/log/logger"
 
-// logger.info("Document processing worker started")
-
 const startWorker = async () => {
 
     try {

@@ -14,6 +14,9 @@ export const toDomainDocument = (db: DocumentLean): Document => {
         fileUrl: db.fileUrl,
         totalPages: db.totalPages ?? undefined,
         status: db.status,
+        processingProgress: db.processingProgress,
+        processingStage: db.processingStage ?? undefined,
+        topics: db.topics ?? [],
         processingError: db.processingError ?? undefined,
 
         createdAt: db.createdAt,
@@ -36,6 +39,9 @@ export const toPersistenceDocument = (
         fileUrl: entity.fileUrl,
         totalPages: entity.totalPages ?? null,
         status: entity.status,
+        processingProgress: entity.processingProgress,
+        processingStage: entity.processingStage ?? null,
+        topics: entity.topics,
         processingError: entity.processingError ?? null,
     };
 };

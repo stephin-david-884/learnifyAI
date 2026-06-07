@@ -12,10 +12,10 @@ export class UploadDocumentUseCase implements IUploadDocumentUseCase {
         private readonly _documentRepository: IDocumentRepository,
 
         private readonly _storageService: IStorageService
-    ) {}
+    ) { }
 
     async execute(data: UploadDocumentDTO): Promise<Document> {
-        
+
         const fileKey = `documents/${data.userId}/${crypto.randomUUID()}.pdf`;
 
         const uploadedFile = await this._storageService.uploadFile({
@@ -33,6 +33,9 @@ export class UploadDocumentUseCase implements IUploadDocumentUseCase {
             s3Key: uploadedFile.key,
             fileUrl: uploadedFile.url,
             status: "PROCESSING",
+            processingProgress: 0,
+            processingStage: "Queued for processing",
+            topics: [],
         });
 
         const savedDocument = await this._documentRepository.save(document);
