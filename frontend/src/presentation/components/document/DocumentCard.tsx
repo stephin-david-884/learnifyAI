@@ -27,7 +27,7 @@ const DocumentCard: React.FC<Props> = ({ document, onDelete, onOpen }) => {
                     }
                     className="rounded-xl p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-500"
                 >
-                    <Trash2 className='h-5 w-5'/>
+                    <Trash2 className='h-5 w-5' />
                 </button>
             </div>
 
@@ -40,8 +40,42 @@ const DocumentCard: React.FC<Props> = ({ document, onDelete, onOpen }) => {
                 </p>
             </div>
 
-            <div className="mt-4">
-                <DocumentStatusBadge status={document.status}/>
+            <div className="mt-4 space-y-3">
+
+                <DocumentStatusBadge
+                    status={document.status}
+                />
+
+                {isProcessing && (
+                    <div>
+
+                        <div className="mb-2 flex items-center justify-between text-xs text-slate-500">
+
+                            <span>
+                                {document.processingStage ??
+                                    "Processing"}
+                            </span>
+
+                            <span>
+                                {document.processingProgress}%
+                            </span>
+
+                        </div>
+
+                        <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+
+                            <div
+                                className="h-full rounded-full bg-amber-500 transition-all duration-500"
+                                style={{
+                                    width: `${document.processingProgress}%`,
+                                }}
+                            />
+
+                        </div>
+
+                    </div>
+                )}
+
             </div>
 
             <div className="mt-6">
@@ -53,7 +87,7 @@ const DocumentCard: React.FC<Props> = ({ document, onDelete, onOpen }) => {
                     >
                         <Loader2 className="h-4 w-4 animate-spin" />
 
-                        Processing...
+                        {document.processingStage ?? "Processing..."}
                     </button>
                 ) : isFailed ? (
                     <button

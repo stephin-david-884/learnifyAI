@@ -34,7 +34,7 @@ const DocumentListPage: React.FC = () => {
 
         const interval = setInterval(() => {
             fetchUserDocuments({ page, limit })
-        }, 5000)
+        }, 3000)
 
         return () => clearInterval(interval)
 

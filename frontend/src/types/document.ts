@@ -1,5 +1,10 @@
 export type DocumentStatus = | "UPLOADING" | "PROCESSING" | "READY" | "FAILED";
 
+export type DocumentTopic = {
+    name: string;
+    score: number;
+}
+
 export interface DocumentItem {
     id: string;
 
@@ -20,6 +25,12 @@ export interface DocumentItem {
     totalPages?: number;
 
     status: DocumentStatus;
+
+    processingProgress: number;
+
+    processingStage?: string;
+
+    topics: DocumentTopic[];
 
     processingError?: string;
 
