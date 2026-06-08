@@ -12,7 +12,10 @@ export interface IDocument extends MongooseDocument {
     status: | "UPLOADING" | "PROCESSING" | "READY" | "FAILED";
     processingProgress: number;
     processingStage?: string | null;
-    topics: string[];
+    topics: {
+        name: string;
+        score: number;
+    }[];
     processingError?: string | null;
 
     createdAt: Date;
@@ -87,7 +90,20 @@ const documentSchema = new Schema<IDocument>(
         },
 
         topics: {
-            type: [String],
+            type: [
+                {
+                    name: {
+                        type: String,
+                        required: true,
+                    },
+
+                    score: {
+                        type: Number,
+                        required: true,
+                    },
+                },
+            ],
+
             default: [],
         },
 

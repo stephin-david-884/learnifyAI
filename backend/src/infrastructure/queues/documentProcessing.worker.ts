@@ -9,6 +9,8 @@ import { TextChunkingService } from "../services/document/TextChunkingService";
 import { logError, logger } from "../services/log/logger";
 import { DocumentChunk } from "../../domain/entities/DocumentChunk.entity";
 import { GoogleEmbeddingService } from "../services/ai/GeminiEmbeddingService";
+import { TopicExtractionOrchestrator } from "../services/document/TopicExtractionOrchestrator";
+import { GroqContentGenerationService } from "../services/ai/GroqContentGenerationService";
 
 
 const documentRepository =
@@ -31,6 +33,14 @@ const textChunkingService =
 
 const embeddingService =
     new GoogleEmbeddingService();
+
+const topicExtractionService =
+    new GroqContentGenerationService();
+
+const topicExtractionOrchestrator =
+    new TopicExtractionOrchestrator(
+        topicExtractionService
+    );
 
 export const documentProcessingWorker = new Worker(
     "document-processing",
@@ -85,6 +95,22 @@ export const documentProcessingWorker = new Worker(
                 throw new Error("No readable text found in this PDF.");
             }
 
+            document.updateProcessingProgress(60, "Extracting Topics");
+
+            await documentRepository.save(document);
+
+            const topics = await topicExtractionOrchestrator.extractTopicsFromChunks(validChunks);
+
+            if (topics.length === 0) {
+                logger.info(
+                    `No topics extracted for document ${documentId}`
+                );
+            }
+
+            document.topics = topics;
+
+            await documentRepository.save(document);
+
             document.updateProcessingProgress(70, "Generating Embeddings");
 
             await documentRepository.save(document);
@@ -96,7 +122,7 @@ export const documentProcessingWorker = new Worker(
 
             logger.info(`Valid Chunks: ${validChunks.length} | Embeddings Received: ${embeddings.length}`);
 
-            document.updateProcessingProgress(90,"Saving Chunks");
+            document.updateProcessingProgress(90, "Saving Chunks");
 
             await documentRepository.save(document);
 

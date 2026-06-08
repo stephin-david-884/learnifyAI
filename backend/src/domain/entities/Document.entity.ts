@@ -4,6 +4,11 @@ export type DocumentStatus =
     | "READY"
     | "FAILED";
 
+export type DocumentTopic = {
+    name: string;
+    score: number;
+};
+
 type DocumentProps = {
     id?: string;
     userId: string;
@@ -17,7 +22,7 @@ type DocumentProps = {
     status?: DocumentStatus;
     processingProgress?: number;
     processingStage?: string;
-    topics?: string[];
+    topics?: DocumentTopic[];
     processingError?: string;
     createdAt?: Date;
     updatedAt?: Date;
@@ -36,7 +41,7 @@ export class Document {
     public status: DocumentStatus;
     public processingProgress: number;
     public processingStage?: string;
-    public topics: string[];
+    public topics: DocumentTopic[];
     public processingError?: string;
     public readonly createdAt?: Date;
     public readonly updatedAt?: Date;
