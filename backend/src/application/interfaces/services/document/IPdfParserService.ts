@@ -1,6 +1,9 @@
 export type ParsedPdfPage = {
     pageNumber: number;
     text: string;
+
+    hasImages: boolean;
+    imageCount: number;
 };
 
 export type ParsedPdfResult = {

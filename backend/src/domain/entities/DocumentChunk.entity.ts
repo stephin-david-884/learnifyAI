@@ -1,6 +1,11 @@
+export type ChunkType =
+    | "TEXT"
+    | "IMAGE";
+
 type ChunkMetadata = {
     pageNumber?: number;
-    chunkIndex: number
+    chunkIndex: number;
+    chunkType: ChunkType;
 };
 
 type DocumentChunkProps = {

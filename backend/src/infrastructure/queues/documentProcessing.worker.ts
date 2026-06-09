@@ -147,6 +147,7 @@ export const documentProcessingWorker = new Worker(
                         metadata: {
                             chunkIndex: chunk.chunkIndex,
                             pageNumber: chunk.pageNumber,
+                            chunkType: "TEXT",
                         },
                     })
                 );

@@ -42,6 +42,7 @@
     "nodemailer": "^8.0.4",
     "openai": "^6.39.0",
     "pdf-parse": "^2.4.5",
+    "pdf-to-img": "^6.1.0",
     "pdfjs-dist": "^5.7.284",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0",

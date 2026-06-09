@@ -13,6 +13,7 @@ export interface IDocumentChunk extends MongooseDocument {
     metadata: {
         pageNumber?: number;
         chunkIndex: number;
+        chunkType: "TEXT" | "IMAGE";
     };
 
     createdAt: Date;
@@ -52,6 +53,12 @@ const documentChunkSchema = new Schema<IDocumentChunk>(
 
             chunkIndex: {
                 type: Number,
+                required: true,
+            },
+
+            chunkType: {
+                type: String,
+                enum: ["TEXT", "IMAGE"],
                 required: true,
             },
         },

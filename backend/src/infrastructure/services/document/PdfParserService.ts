@@ -2,11 +2,12 @@
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import { IPdfParserService, ParsedPdfPage, ParsedPdfResult } from "../../../application/interfaces/services/document/IPdfParserService";
 import { TextItem } from "pdfjs-dist/types/src/display/api";
+import { logger } from "../log/logger";
 
 // export class PdfParserService implements IPdfParserService {
 
 //     async parse(buffer: Buffer): Promise<ParsedPdfResult> {
-        
+
 //         const result = await (pdfParse as any)(buffer);
 
 //         return {
@@ -18,7 +19,7 @@ import { TextItem } from "pdfjs-dist/types/src/display/api";
 
 export class PdfParserService implements IPdfParserService {
 
-    async parse( buffer: Buffer): Promise<ParsedPdfResult> {
+    async parse(buffer: Buffer): Promise<ParsedPdfResult> {
 
         const pdf = await pdfjsLib.getDocument({
             data: new Uint8Array(buffer),
@@ -26,7 +27,7 @@ export class PdfParserService implements IPdfParserService {
 
         const pages: ParsedPdfPage[] = [];
 
-        for(let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++){
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
 
             const page = await pdf.getPage(pageNumber);
 
@@ -35,14 +36,33 @@ export class PdfParserService implements IPdfParserService {
             // const text = textContent.items.map((item: any) => item.str).join(" ");
             const text =
                 textContent.items
-                    .filter((item): item is TextItem =>"str" in item)
+                    .filter((item): item is TextItem => "str" in item)
                     .map((item) => item.str)
                     .join(" ");
 
+            const operatorList = await page.getOperatorList();
+
+            let imageCount = 0;
+
+            operatorList.fnArray.forEach((fn) => {
+                if (
+                    fn === pdfjsLib.OPS.paintImageXObject ||
+                    fn === pdfjsLib.OPS.paintInlineImageXObject ||
+                    fn === pdfjsLib.OPS.paintImageMaskXObject
+                ) {
+                    imageCount++;
+                }
+            });
+
+            logger.info(`Page ${pageNumber} | Images: ${imageCount}`);
+
             pages.push({
                 pageNumber,
-                text
-            })
+                text,
+
+                hasImages: imageCount > 0,
+                imageCount,
+            });
         }
 
         return {
