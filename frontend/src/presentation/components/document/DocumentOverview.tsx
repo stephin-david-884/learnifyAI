@@ -4,6 +4,7 @@ import {
     FileText,
     Clock,
     CheckCircle,
+    Brain,
 } from "lucide-react";
 
 import type {
@@ -104,12 +105,7 @@ const DocumentOverview: React.FC<Props> = ({
             </div>
 
             <div
-                className="
-                    grid
-                    gap-4
-                    sm:grid-cols-2
-                    xl:grid-cols-4
-                "
+                className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
             >
                 {cards.map((card) => {
 
@@ -119,13 +115,7 @@ const DocumentOverview: React.FC<Props> = ({
                     return (
                         <div
                             key={card.title}
-                            className="
-                                rounded-3xl
-                                border
-                                border-slate-200
-                                bg-white
-                                p-5
-                            "
+                            className="rounded-3xl border border-slate-200 bg-whitep-5"
                         >
                             <div className="flex items-center justify-between">
 
@@ -166,6 +156,68 @@ const DocumentOverview: React.FC<Props> = ({
                     chunked, embedded and indexed for
                     AI retrieval.
                 </p>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6">
+
+                <div className="flex items-center gap-2">
+
+                    <Brain
+                        size={18}
+                        className="text-red-500"
+                    />
+
+                    <h3 className="font-semibold text-slate-900">
+                        Key Topics
+                    </h3>
+
+                </div>
+
+                {document.topics.length === 0 ? (
+
+                    <p className="mt-3 text-sm text-slate-500">
+                        No topics extracted yet.
+                    </p>
+
+                ) : (
+
+                    <div className="mt-6 space-y-4">
+
+                        {document.topics.map((topic) => (
+
+                            <div key={topic.name}>
+
+                                <div className="mb-2 flex items-center justify-between">
+
+                                    <span className="text-sm font-medium text-slate-900">
+                                        {topic.name}
+                                    </span>
+
+                                    <span className="text-xs font-semibold text-slate-500">
+                                        {topic.score}
+                                    </span>
+
+                                </div>
+
+                                <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+
+                                    <div
+                                        className="h-full rounded-full bg-red-500 transition-all duration-500"
+                                        style={{
+                                            width: `${topic.score}%`,
+                                        }}
+                                    />
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )}
+
             </div>
 
         </div>

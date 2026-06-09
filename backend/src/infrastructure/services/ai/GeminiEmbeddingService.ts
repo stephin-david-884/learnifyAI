@@ -51,25 +51,36 @@ implements IEmbeddingService {
             let success = false;
 
             while (attempts < 3 && !success) {
-                batchResults = await this._embeddings.embedDocuments(batch);
+                try {
+                    batchResults = await this._embeddings.embedDocuments(batch);
 
-                const isRateLimited = batchResults.length === 0 || batchResults.every(arr => !arr || arr.length === 0);
-                
+                    const isRateLimited = !batchResults || batchResults.length === 0 || batchResults.every(arr => !arr || arr.length === 0);
 
-                if (!isRateLimited) {
-                    success = true;
-                } else {
+                    if (!isRateLimited) {
+                        success = true;
+                    } else {
+                        attempts++;
+                        // Attempt 1: Wait 30s | Attempt 2: Wait 60s to let the 1-minute rolling token window clear
+                        const backoffDelay = attempts === 1 ? 30000 : 60000;
+                        logger.info(`[Quota Hit] Gemini TPM/RPM limit reached at chunk index ${i}. Waiting ${backoffDelay / 1000}s to retry (Attempt ${attempts}/3)...`);
+                        await delay(backoffDelay); 
+                    }
+                } catch (error) {
                     attempts++;
-                    logger.info(`[Quota Hit] Gemini rate limit reached at chunk ${i}. Waiting 15s to retry (Attempt ${attempts}/3)...`);
-                    
-                    // Delay for Google's Tokens quota to cool down
-                    await delay(15000); 
+                    const backoffDelay = attempts === 1 ? 30000 : 60000;
+                    logger.error(`[API Error] Error during embedding generation at chunk index ${i}: ${error instanceof Error ? error.message : error}. Retrying in ${backoffDelay / 1000}s...`);
+                    await delay(backoffDelay);
                 }
             }
 
+
             if (!success) {
-                logger.info(`Failed to fetch valid embeddings for batch starting at ${i} after 3 attempts.`);
+                throw new Error(`Failed to generate embeddings for batch starting at index ${i} after ${attempts} attempts due to persistent rate limits.`);
             }
+
+            // if (!success) {
+            //     logger.info(`Failed to fetch valid embeddings for batch starting at ${i} after 3 attempts.`);
+            // }
 
             allEmbeddings.push(...batchResults);
 
