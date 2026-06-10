@@ -48,6 +48,18 @@ export const API_ROUTES = {
 
         GENERATE_ANSWER:
             "/user/ai/chat/answer",
+
+        GET_USER_QUIZZES:
+            "/user/ai/quiz",
+
+        GET_QUIZ: (quizId: string) =>
+            `/user/ai/quiz/${quizId}`,
+
+        GENERATE_QUIZ:
+            "/user/ai/quiz",
+
+        SUBMIT_QUIZ: (quizId: string) =>
+            `/user/ai/quiz/${quizId}/submit`,
     },
 
     ADMIN_SUBSCRIPTION: {

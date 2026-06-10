@@ -6,6 +6,7 @@ import userManagementSlice from "./features/admin/userManagementSlice";
 import documentSlice from "./features/document/documentSlice";
 import adminSubscriptionReducer from "./features/adminSubscription/adminSubscriptionSlice";
 import chatReducer from "./features/chat/chatSlice";
+import quizReducer from "./features/quiz/quizSlice";
 
 export const store = configureStore({
     reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
         adminSubscription: adminSubscriptionReducer,
         document: documentSlice,
         chat: chatReducer,
+        quiz: quizReducer,
     }
 })
 
