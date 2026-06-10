@@ -1,19 +1,33 @@
+import {
+    QuizDifficulty,
+} from "../../../domain/entities/Quiz.entity";
+
 export interface QuizReviewItemDTO {
-    questionIndex: number;
+    question: string;
+
+    options: string[];
 
     selectedAnswer: string;
 
     correctAnswer: string;
 
+    explanation: string;
+
     isCorrect: boolean;
 
-    explanation: string;
+    difficulty: QuizDifficulty;
 }
 
 export interface SubmitQuizResponseDTO {
+    quizId: string;
+
     score: number;
 
     totalQuestions: number;
+
+    correctAnswers: number;
+
+    percentage: number;
 
     review: QuizReviewItemDTO[];
 }
