@@ -71,4 +71,30 @@ export class DocumentChunkRepository
             (doc) => this._toDomain(doc as DocumentChunkLean)
         );
     }
+
+    async findByDocumentAndTopics(documentId: string, topics: string[]): Promise<DocumentChunk[]> {
+
+        const regexConditions = topics.map((topic) => ({
+            content: {
+                $regex: topic,
+                $options: "i",
+            },
+        })
+        );
+
+        const docs = await this._model
+            .find({
+                documentId,
+                $or: regexConditions,
+            })
+            .sort({
+                "metadata.chunkIndex": 1,
+            })
+            .lean();
+
+        return docs.map(
+            (doc) => this._toDomain(doc)
+        );
+
+    }
 }
