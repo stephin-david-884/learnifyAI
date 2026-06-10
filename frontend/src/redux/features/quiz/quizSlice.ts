@@ -277,6 +277,8 @@ const quizSlice = createSlice({
                     state.loading = true;
 
                     state.error = null;
+
+                    state.quizResult = null;
                 }
             )
 
@@ -314,6 +316,8 @@ const quizSlice = createSlice({
                 (state) => {
 
                     state.loading = true;
+
+                    state.currentQuiz = null;
 
                     state.error = null;
                 }
