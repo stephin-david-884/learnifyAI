@@ -57,4 +57,8 @@ export const ROUTES = {
     GET_CHAT: "/chat/:documentId",
     GENERATE_ANSWER: "/chat/answer",
   },
+
+  QUIZ: {
+    GENERATE_QUIZ: "/quiz",
+},
 };

@@ -3,6 +3,7 @@ export const quizMessages = {
         QUIZ_FETCHED: "Quiz fetched successfully",
         QUIZ_UPLOADED: "Quiz uploaded successfully",
         QUIZ_DELETED: "Quiz deleted successfully",
+        QUIZ_GENERATED: "Quiz generated successfully",
     },
 
     error: {
