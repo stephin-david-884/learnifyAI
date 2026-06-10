@@ -10,6 +10,7 @@ import { useDocument } from "../../../hooks/useDocument";
 import DocumentOverview from "../../components/document/DocumentOverview";
 import DocumentReader from "../../components/document/document-reader/DocumentReader";
 import ChatContainer from "../../components/chat/ChatContainer";
+import LearnHubTab from "../../components/document/learn-hub/LearnHubTab";
 
 const DocumentDetailPage: React.FC = () => {
 
@@ -84,15 +85,9 @@ const DocumentDetailPage: React.FC = () => {
 
             case "LEARN_HUB":
                 return (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-                        <h3 className="font-semibold text-slate-900">
-                            Learn Hub
-                        </h3>
-
-                        <p className="mt-2 text-sm text-slate-500">
-                            Flashcards, quizzes and summaries coming soon.
-                        </p>
-                    </div>
+                    <LearnHubTab
+                        document={selectedDocument}
+                    />
                 );
 
             default:

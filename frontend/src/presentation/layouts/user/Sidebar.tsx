@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../../hooks/useAuth';
-import { LayoutDashboard, FileText, User, LogOut, BrainCircuit, BookOpen, X, Crown, CreditCard } from 'lucide-react';
+import { LayoutDashboard, FileText, User, LogOut, BrainCircuit, BookOpen, X, Crown, CreditCard, ClipboardList } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import SubscriptionStatusCard from '../../components/subscription/SubscriptionStatusCard';
 
@@ -22,6 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, toggleSidebar }) => {
   const navLinks = [
     { to: '/dashboard', icon: LayoutDashboard, text: 'Dashboard' },
     { to: '/documents', icon: FileText, text: 'Documents' },
+    { to: "/quizzes", icon: ClipboardList, text: "Quizzes"},
     { to: '/flashcards', icon: BookOpen, text: 'Flashcards' },
     { to: '/profile', icon: User, text: 'Profile' },
     { to: '/subscription/plans', icon: Crown, text: 'Subscription' },
