@@ -29,6 +29,7 @@ const DocumentListPage = lazy(() => import('./presentation/pages/document/Docume
 const DocumentDetailPage = lazy(() => import("./presentation/pages/document/DocumentDetailPage"));
 const QuizListPage = lazy(() => import("./presentation/pages/quiz/QuizListPage"));
 const QuizAttemptPage = lazy(() => import("./presentation/pages/quiz/QuizAttemptPage"));
+const QuizResultPage = lazy(() => import("./presentation/pages/quiz/QuizResultPage"));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -103,6 +104,7 @@ const App = () => {
             <Route path="/documents/:documentId" element={<DocumentDetailPage />}/>
             <Route path="/quizzes" element={<QuizListPage />}/>
             <Route path="/quizzes/:quizId" element={<QuizAttemptPage />}/>
+            <Route path="/quizzes/:quizId/result" element={<QuizResultPage />}/>
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
