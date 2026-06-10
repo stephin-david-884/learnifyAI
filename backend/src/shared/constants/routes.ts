@@ -60,5 +60,7 @@ export const ROUTES = {
 
   QUIZ: {
     GENERATE_QUIZ: "/quiz",
+    GET_ONE: "/quiz/:quizId",
+    GET_ALL: "/quizzes",
 },
 };

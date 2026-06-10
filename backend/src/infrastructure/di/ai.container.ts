@@ -2,11 +2,15 @@ import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/ch
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
+import { IGetQuizUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizUseCase";
+import { IGetUserQuizzesUseCase } from "../../application/interfaces/usecases/quiz/IGetUserQuizzesUseCase";
 import { IConsumeCreditsUseCase } from "../../application/interfaces/usecases/subscription/IConsumeCreditsUseCase";
 import { GenerateAnswerUseCase } from "../../application/use-cases/chat/GenerateAnswerUseCase";
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
+import { GetQuizUseCase } from "../../application/use-cases/quiz/GetQuizUseCase";
+import { GetUserQuizzesUseCase } from "../../application/use-cases/quiz/GetUserQuizzesUseCase";
 import { ConsumeCreditsUseCase } from "../../application/use-cases/subscription/ConsumeCreditsUseCase";
 import { ChatController } from "../../interfaces/controllers/ai/ChatController";
 import { QuizController } from "../../interfaces/controllers/ai/QuizController";
@@ -83,6 +87,16 @@ const generateQuizUseCase: IGenerateQuizUseCase =
         documentChunkRepository,
         quizGenerationService,
         aiCreditService
+    );
+    
+const getQuizUseCase: IGetQuizUseCase =
+    new GetQuizUseCase(
+        quizRepository
+    );
+
+const getUserQuizzesUseCase: IGetUserQuizzesUseCase =
+    new GetUserQuizzesUseCase(
+        quizRepository
     );    
 
 // CONTROLLER
@@ -94,5 +108,7 @@ export const chatController =
 
 export const quizController =
     new QuizController(
-        generateQuizUseCase
+        generateQuizUseCase,
+        getQuizUseCase,
+        getUserQuizzesUseCase
     );

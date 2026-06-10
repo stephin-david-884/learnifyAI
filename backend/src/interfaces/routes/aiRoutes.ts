@@ -18,12 +18,22 @@ router.post(ROUTES.CHAT.GENERATE_ANSWER,
     validate(generateAnswerSchema, "body"),
     authMiddleware(tokenService),
     chatController.generateAnswer
-)
+);
 
 router.post(ROUTES.QUIZ.GENERATE_QUIZ,
     validate(generateQuizSchema, "body"),
     authMiddleware(tokenService),
     quizController.generateQuiz
-)
+);
+
+router.get(ROUTES.QUIZ.GET_ALL,
+    authMiddleware(tokenService),
+    quizController.getUserQuizzes
+);
+
+router.get(ROUTES.QUIZ.GET_ONE,
+    authMiddleware(tokenService),
+    quizController.getQuiz
+);
 
 export default router;
