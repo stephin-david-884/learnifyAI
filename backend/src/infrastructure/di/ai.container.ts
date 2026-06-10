@@ -4,6 +4,7 @@ import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/c
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { IGetQuizUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizUseCase";
 import { IGetUserQuizzesUseCase } from "../../application/interfaces/usecases/quiz/IGetUserQuizzesUseCase";
+import { ISubmitQuizUseCase } from "../../application/interfaces/usecases/quiz/ISubmitQuizUseCase";
 import { IConsumeCreditsUseCase } from "../../application/interfaces/usecases/subscription/IConsumeCreditsUseCase";
 import { GenerateAnswerUseCase } from "../../application/use-cases/chat/GenerateAnswerUseCase";
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
@@ -11,6 +12,7 @@ import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveCha
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
 import { GetQuizUseCase } from "../../application/use-cases/quiz/GetQuizUseCase";
 import { GetUserQuizzesUseCase } from "../../application/use-cases/quiz/GetUserQuizzesUseCase";
+import { SubmitQuizUseCase } from "../../application/use-cases/quiz/SubmitQuizUseCase";
 import { ConsumeCreditsUseCase } from "../../application/use-cases/subscription/ConsumeCreditsUseCase";
 import { ChatController } from "../../interfaces/controllers/ai/ChatController";
 import { QuizController } from "../../interfaces/controllers/ai/QuizController";
@@ -97,6 +99,11 @@ const getQuizUseCase: IGetQuizUseCase =
 const getUserQuizzesUseCase: IGetUserQuizzesUseCase =
     new GetUserQuizzesUseCase(
         quizRepository
+    );
+    
+const submitQuizUseCase: ISubmitQuizUseCase =
+    new SubmitQuizUseCase(
+        quizRepository
     );    
 
 // CONTROLLER
@@ -110,5 +117,6 @@ export const quizController =
     new QuizController(
         generateQuizUseCase,
         getQuizUseCase,
-        getUserQuizzesUseCase
+        getUserQuizzesUseCase,
+        submitQuizUseCase
     );

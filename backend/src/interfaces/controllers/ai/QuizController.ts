@@ -11,6 +11,8 @@ import { IGetUserQuizzesUseCase } from "../../../application/interfaces/usecases
 import { IGetQuizUseCase } from "../../../application/interfaces/usecases/quiz/IGetQuizUseCase";
 import { mapToGetQuizDTO } from "../../../application/mappers/quiz/GetQuizMapper";
 import { mapToGetUserQuizzesDTO } from "../../../application/mappers/quiz/GetUserQuizzesMapper";
+import { ISubmitQuizUseCase } from "../../../application/interfaces/usecases/quiz/ISubmitQuizUseCase";
+import { mapToSubmitQuizDTO } from "../../../application/mappers/quiz/SubmitQuizMapper";
 
 export class QuizController {
 
@@ -18,6 +20,7 @@ export class QuizController {
         private readonly _generateQuizUseCase: IGenerateQuizUseCase,
         private readonly _getQuizUseCase: IGetQuizUseCase,
         private readonly _getUserQuizzesUseCase: IGetUserQuizzesUseCase,
+        private readonly _submitQuizUseCase: ISubmitQuizUseCase,
     ) { }
 
     generateQuiz = asyncHandler(async (req: Request, res: Response) => {
@@ -61,6 +64,21 @@ export class QuizController {
             statusCode.OK,
             "Quizzes fetched successfully",
             quizzes
+        );
+    }
+    );
+
+    submitQuiz = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToSubmitQuizDTO(req);
+
+        const result = await this._submitQuizUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            "Quiz submitted successfully",
+            result
         );
     }
     );

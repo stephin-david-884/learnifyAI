@@ -6,6 +6,7 @@ import { chatController, quizController } from "../../infrastructure/di/ai.conta
 import { validate } from "../middlewares/validate";
 import { generateAnswerSchema } from "../validators/chat/chat.validator";
 import { generateQuizSchema } from "../validators/quiz/generateQuiz.validator";
+import { submitQuizSchema } from "../validators/quiz/submitQuiz.validator";
 
 const router = express.Router();
 
@@ -34,6 +35,12 @@ router.get(ROUTES.QUIZ.GET_ALL,
 router.get(ROUTES.QUIZ.GET_ONE,
     authMiddleware(tokenService),
     quizController.getQuiz
+);
+
+router.post(ROUTES.QUIZ.SUBMIT,
+    validate(submitQuizSchema,"body"),
+    authMiddleware(tokenService),
+    quizController.submitQuiz
 );
 
 export default router;
