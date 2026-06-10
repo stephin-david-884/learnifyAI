@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { ITopicExtractionService } from "../../../application/interfaces/services/ai/ITopicExtractionService";
+import { logError } from "../log/logger";
 
 export class TopicExtractionService implements ITopicExtractionService {
     private readonly _model;
@@ -55,6 +56,7 @@ export class TopicExtractionService implements ITopicExtractionService {
             return JSON.parse(cleaned);
         } catch (error) {
             return [];
+            logError(error);
         }
     }
 }
