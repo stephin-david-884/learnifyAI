@@ -12,33 +12,19 @@ import { IDocumentChunkRepository }
 import { Quiz }
     from "../../../domain/entities/Quiz.entity";
 
-import {
-    CREDIT_COSTS,
-} from "../../constants/enums/creditCost";
+import { CREDIT_COSTS } from "../../constants/enums/creditCost";
 
-import {
-    statusCode,
-} from "../../constants/enums/statusCode";
+import { statusCode, } from "../../constants/enums/statusCode";
 
-import {
-    GenerateQuizDTO,
-} from "../../dtos/quiz/GenerateQuizDTO";
+import { GenerateQuizDTO, } from "../../dtos/quiz/GenerateQuizDTO";
 
-import {
-    GenerateQuizResponseDTO,
-} from "../../dtos/quiz/GenerateQuizResponseDTO";
+import { GenerateQuizResponseDTO, } from "../../dtos/quiz/GenerateQuizResponseDTO";
 
-import {
-    IAICreditService,
-} from "../../interfaces/services/ai/IAICreditService";
+import { IAICreditService, } from "../../interfaces/services/ai/IAICreditService";
 
-import {
-    IQuizGenerationService,
-} from "../../interfaces/services/ai/IQuizGenerationService";
+import { IQuizGenerationService, } from "../../interfaces/services/ai/IQuizGenerationService";
 
-import {
-    IGenerateQuizUseCase,
-} from "../../interfaces/usecases/quiz/IGenerateQuizUseCase";
+import { IGenerateQuizUseCase, } from "../../interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { docMessages } from "../../constants/messages/docMessages";
 
 export class GenerateQuizUseCase
@@ -102,8 +88,8 @@ export class GenerateQuizUseCase
             throw new AppError("Invalid topics selected", statusCode.BAD_REQUEST);
         }
 
-        if ( data.questionCount < data.topics.length) {
-            throw new AppError( "Question count must be greater than or equal to selected topics count", statusCode.BAD_REQUEST);
+        if (data.questionCount < data.topics.length) {
+            throw new AppError("Question count must be greater than or equal to selected topics count", statusCode.BAD_REQUEST);
         }
 
         const chunks =
