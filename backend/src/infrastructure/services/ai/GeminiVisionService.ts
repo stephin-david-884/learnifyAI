@@ -10,12 +10,12 @@ export class GeminiVisionService implements IImageAnalysisService {
         this._model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     }
 
-    // Helper utility to handle retries with exponential backoff
+    
     private async executeWithRetry<T>(fn: () => Promise<T>, retries = 3, delay = 2000): Promise<T> {
         try {
             return await fn();
         } catch (error: unknown) {
-            // Check for transient server errors or rate limits
+            
             const status = (error as { status?: number })?.status;
             const message = error instanceof Error ? error.message : String(error);
             const isTransientError = status === 503 || status === 429 || message.includes("503") || message.includes("429");
@@ -26,7 +26,7 @@ export class GeminiVisionService implements IImageAnalysisService {
                 await new Promise((resolve) => setTimeout(resolve, backoffDelay));
                 return this.executeWithRetry(fn, retries - 1, backoffDelay * 2); // Double the wait time next time
             }
-            throw error; // Permanent error or out of retries
+            throw error; 
         }
     }
 
@@ -40,7 +40,7 @@ export class GeminiVisionService implements IImageAnalysisService {
             If no meaningful educational visual content exists, return exactly: NO_RELEVANT_VISUAL_CONTENT
         `;
 
-        // Execute inside the retry wrapper
+        
         const result = await this.executeWithRetry(() => 
             this._model.generateContent([
                 prompt,
@@ -59,7 +59,7 @@ export class GeminiVisionService implements IImageAnalysisService {
             return null;
         }
 
-        // Enforce 15 RPM limit for Gemini Free Tier (1 request per 4 seconds)
+        
         await new Promise((resolve) => setTimeout(resolve, 4000));
 
         return response;

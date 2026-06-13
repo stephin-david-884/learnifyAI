@@ -50,7 +50,7 @@ export const API_ROUTES = {
             "/user/ai/chat/answer",
 
         GET_USER_QUIZZES:
-            "/user/ai/quiz",
+            "/user/ai/quizzes",
 
         GET_QUIZ: (quizId: string) =>
             `/user/ai/quiz/${quizId}`,

@@ -2,6 +2,8 @@ import React, { useMemo, useState } from "react";
 import { X, ClipboardList } from "lucide-react";
 import type { DocumentTopic } from "../../../types/document";
 import type { GenerateQuizResponse } from "../../../types/quiz";
+import { validateQuizGeneration } from "../../../lib/validation/quizValidation";
+import Swal from "sweetalert2";
 
 type Props = {
     open: boolean;
@@ -86,6 +88,24 @@ const GenerateQuizModal: React.FC<Props> = ({
     };
 
     const handleGenerate = async () => {
+
+        const error =
+        validateQuizGeneration(
+            title,
+            selectedTopics,
+            questionCount
+        );
+
+    if (error) {
+
+        await Swal.fire({
+            icon: "warning",
+            title: "Validation Error",
+            text: error,
+        });
+
+        return;
+    }
 
         if (!canGenerate) {
             return;
@@ -187,7 +207,7 @@ const GenerateQuizModal: React.FC<Props> = ({
                                 {remaining} remaining
                             </span>
                         </div>
-
+                        <div className="max-h-64 overflow-y-auto pr-2">    
                         <div className="grid gap-3 sm:grid-cols-2">
 
                             {topics.map((topic) => {
@@ -205,23 +225,24 @@ const GenerateQuizModal: React.FC<Props> = ({
                                             toggleTopic(topic.name)
                                         }
                                         className={`
-                                            rounded-2xl border p-3 text-left transition
+                                            rounded-xl border p-2.5 text-left transition
                                             
                                             ${active
                                                 ? "border-red-500 bg-red-50 text-red-700"
                                                 : "border-slate-200 bg-white hover:border-red-300"}
                                         `}
                                     >
-                                        <div className="font-medium">
+                                        <div className="font-medium text-sm">
                                             {topic.name}
                                         </div>
 
-                                        <div className="mt-1 text-xs text-slate-500">
+                                        <div className="mt-1 text-[11px] text-slate-500">
                                             Importance Score: {topic.score}
                                         </div>
                                     </button>
                                 );
                             })}
+                        </div>
                         </div>
                     </div>
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUserManagement } from "../../../hooks/useUserManagement";
 import { useDebounce } from "../../../hooks/useDebounce";
 import type { AdminUser } from "../../../types/admin/user";
+import Swal from "sweetalert2";
 
 const AdminUsersPage = () => {
   const { users, loading, total, getUsers, toggleBlockUser } = useUserManagement();
@@ -23,10 +24,44 @@ const AdminUsersPage = () => {
   const totalPages = Math.ceil(total / pageSize);
 
   const handleToggleBlock = async (user: AdminUser) => {
-    await toggleBlockUser({
-      userId: user.id,
-      action: user.isBlocked ? "UNBLOCK" : "BLOCK",
+    const isBlocking = !user.isBlocked;
+
+    const result = await Swal.fire({
+      title: isBlocking ? "Block User?" : "Unblock User?",
+      text: isBlocking
+        ? `Are you sure you want to block ${user.name}?`
+        : `Are you sure you want to unblock ${user.name}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: isBlocking ? "#dc2626" : "#16a34a",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: isBlocking ? "Yes, Block" : "Yes, Unblock",
     });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await toggleBlockUser({
+        userId: user.id,
+        action: user.isBlocked ? "UNBLOCK" : "BLOCK",
+      });
+
+      await Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: isBlocking
+          ? "User has been blocked successfully."
+          : "User has been unblocked successfully.",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    } catch (error) {
+      await Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Something went wrong. Please try again.",
+      });
+    }
   };
 
   return (
@@ -107,8 +142,8 @@ const AdminUsersPage = () => {
                     <button
                       onClick={() => handleToggleBlock(user)}
                       className={`px-3 py-1 rounded text-xs font-medium transition ${user.isBlocked
-                          ? "bg-green-100 text-green-600 hover:bg-green-200"
-                          : "bg-red-100 text-red-600 hover:bg-red-200"
+                        ? "bg-green-100 text-green-600 hover:bg-green-200"
+                        : "bg-red-100 text-red-600 hover:bg-red-200"
                         }`}
                     >
                       {user.isBlocked ? "Unblock" : "Block"}

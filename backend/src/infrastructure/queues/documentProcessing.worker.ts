@@ -99,7 +99,6 @@ export const documentProcessingWorker = new Worker(
             // SPLIT TEXT FIRST
             const rawChunks = await textChunkingService.splitText(parsedPdf.pages);
 
-            //Filter out chunks that are completely empty or just whitespace
             const validChunks = rawChunks.filter(
                 (chunk) => chunk.content && chunk.content.trim().length > 0
             );
@@ -123,9 +122,7 @@ export const documentProcessingWorker = new Worker(
             const topics = await topicExtractionOrchestrator.extractTopicsFromChunks(textChunks);
 
             if (topics.length === 0) {
-                logger.info(
-                    `No topics extracted for document ${documentId}`
-                );
+                logger.info(`No topics extracted for document ${documentId}`);
             }
 
             document.topics = topics;

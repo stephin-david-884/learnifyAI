@@ -215,8 +215,6 @@ const QuizAttemptPage: React.FC = () => {
     return (
         <div className="mx-auto max-w-4xl space-y-6">
 
-            {/* Header */}
-
             <div className="rounded-3xl border border-slate-200 bg-white p-6">
 
                 <h1 className="text-2xl font-bold text-slate-900">
@@ -247,8 +245,6 @@ const QuizAttemptPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Question */}
-
             {currentQuestion && (
 
                 <QuizQuestionCard
@@ -273,7 +269,6 @@ const QuizAttemptPage: React.FC = () => {
 
             )}
 
-            {/* Footer */}
 
             <div className="flex items-center justify-between">
 
@@ -282,14 +277,7 @@ const QuizAttemptPage: React.FC = () => {
                     disabled={
                         currentQuestionIndex === 0
                     }
-                    className="
-                        flex items-center gap-2
-                        rounded-2xl
-                        border border-slate-200
-                        px-5 py-3
-                        font-medium
-                        disabled:opacity-40
-                    "
+                    className="flex items-center gap-2 rounded-2xl border border-slate-200 px-5 py-3 font-medium disabled:opacity-40"
                 >
                     <ChevronLeft size={18} />
 
@@ -301,16 +289,7 @@ const QuizAttemptPage: React.FC = () => {
 
                     <button
                         onClick={goNext}
-                        className="
-                            flex items-center gap-2
-                            rounded-2xl
-                            bg-gradient-to-r
-                            from-red-500
-                            to-rose-600
-                            px-5 py-3
-                            font-semibold
-                            text-white
-                        "
+                        className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-5 py-3 font-semibold text-white"
                     >
                         Next
 
@@ -326,16 +305,7 @@ const QuizAttemptPage: React.FC = () => {
                             handleSubmitQuiz
                         }
                         disabled={submitting}
-                        className="
-                            rounded-2xl
-                            bg-gradient-to-r
-                            from-red-500
-                            to-rose-600
-                            px-6 py-3
-                            font-semibold
-                            text-white
-                            disabled:opacity-50
-                        "
+                        className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-6 py-3 font-semibold text-white disabled:opacity-50"
                     >
                         {submitting
                             ? "Submitting..."

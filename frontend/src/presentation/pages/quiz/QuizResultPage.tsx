@@ -1,22 +1,12 @@
-import React, {
-    useEffect,
-} from "react";
+import React, { useEffect,} from "react";
 
-import {
-    Trophy,
-    ArrowLeft,
-} from "lucide-react";
+import { Trophy, ArrowLeft,} from "lucide-react";
 
-import {
-    Link,
-    useNavigate,
-} from "react-router-dom";
+import { Link, useNavigate,} from "react-router-dom";
 
-import QuizReviewCard
-from "../../components/quiz/QuizReviewCard";
+import QuizReviewCard from "../../components/quiz/QuizReviewCard";
 
-import { useQuiz }
-from "../../../hooks/useQuiz";
+import { useQuiz } from "../../../hooks/useQuiz";
 
 const QuizResultPage: React.FC = () => {
 
