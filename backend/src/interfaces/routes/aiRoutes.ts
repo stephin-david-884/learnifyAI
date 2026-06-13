@@ -43,4 +43,9 @@ router.post(ROUTES.QUIZ.SUBMIT,
     quizController.submitQuiz
 );
 
+router.get(ROUTES.QUIZ.GET_QUIZ_RESULT,
+    authMiddleware(tokenService),
+    quizController.getQuizResult
+);
+
 export default router;

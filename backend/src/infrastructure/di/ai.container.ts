@@ -2,6 +2,7 @@ import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/ch
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
+import { IGetQuizResultUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizResultUseCase";
 import { IGetQuizUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizUseCase";
 import { IGetUserQuizzesUseCase } from "../../application/interfaces/usecases/quiz/IGetUserQuizzesUseCase";
 import { ISubmitQuizUseCase } from "../../application/interfaces/usecases/quiz/ISubmitQuizUseCase";
@@ -10,6 +11,7 @@ import { GenerateAnswerUseCase } from "../../application/use-cases/chat/Generate
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
+import { GetQuizResultUseCase } from "../../application/use-cases/quiz/GetQuizResultUseCase";
 import { GetQuizUseCase } from "../../application/use-cases/quiz/GetQuizUseCase";
 import { GetUserQuizzesUseCase } from "../../application/use-cases/quiz/GetUserQuizzesUseCase";
 import { SubmitQuizUseCase } from "../../application/use-cases/quiz/SubmitQuizUseCase";
@@ -104,7 +106,12 @@ const getUserQuizzesUseCase: IGetUserQuizzesUseCase =
 const submitQuizUseCase: ISubmitQuizUseCase =
     new SubmitQuizUseCase(
         quizRepository
-    );    
+    );
+    
+const getQuizResultUseCase: IGetQuizResultUseCase =
+    new GetQuizResultUseCase(
+        quizRepository
+    )    
 
 // CONTROLLER
 export const chatController =
@@ -118,5 +125,6 @@ export const quizController =
         generateQuizUseCase,
         getQuizUseCase,
         getUserQuizzesUseCase,
-        submitQuizUseCase
+        submitQuizUseCase,
+        getQuizResultUseCase
     );

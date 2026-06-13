@@ -13,6 +13,8 @@ import { mapToGetQuizDTO } from "../../../application/mappers/quiz/GetQuizMapper
 import { mapToGetUserQuizzesDTO } from "../../../application/mappers/quiz/GetUserQuizzesMapper";
 import { ISubmitQuizUseCase } from "../../../application/interfaces/usecases/quiz/ISubmitQuizUseCase";
 import { mapToSubmitQuizDTO } from "../../../application/mappers/quiz/SubmitQuizMapper";
+import { IGetQuizResultUseCase } from "../../../application/interfaces/usecases/quiz/IGetQuizResultUseCase";
+import { mapToGetQuizResultDTO } from "../../../application/mappers/quiz/mapToGetQuizResultDTO";
 
 export class QuizController {
 
@@ -21,6 +23,7 @@ export class QuizController {
         private readonly _getQuizUseCase: IGetQuizUseCase,
         private readonly _getUserQuizzesUseCase: IGetUserQuizzesUseCase,
         private readonly _submitQuizUseCase: ISubmitQuizUseCase,
+        private readonly _getQuizResultUseCase: IGetQuizResultUseCase,
     ) { }
 
     generateQuiz = asyncHandler(async (req: Request, res: Response) => {
@@ -47,7 +50,7 @@ export class QuizController {
         return sendSuccess(
             res,
             statusCode.OK,
-            "Quiz fetched successfully",
+            quizMessages.success.QUIZ_FETCHED,
             quiz
         );
     }
@@ -62,7 +65,7 @@ export class QuizController {
         return sendSuccess(
             res,
             statusCode.OK,
-            "Quizzes fetched successfully",
+            quizMessages.success.QUIZ_FETCHED,
             quizzes
         );
     }
@@ -77,9 +80,22 @@ export class QuizController {
         return sendSuccess(
             res,
             statusCode.OK,
-            "Quiz submitted successfully",
+            quizMessages.success.QUIZ_SUBMITTED,
             result
         );
     }
     );
+
+    getQuizResult = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToGetQuizResultDTO(req);
+
+        const result = await this._getQuizResultUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            quizMessages.success.QUIZ_RESULT_FETCHED
+        )
+    })
 }
