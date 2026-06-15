@@ -143,3 +143,6 @@ export interface QuizState {
 
     total: number;
 }
+
+export type GetQuizResultResponse =
+    SubmitQuizResponse;

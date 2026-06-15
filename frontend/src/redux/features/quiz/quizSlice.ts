@@ -6,6 +6,7 @@ import {
 import type {
     GenerateQuizPayload,
     GenerateQuizResponse,
+    GetQuizResultResponse,
     GetUserQuizzesResponse,
     Quiz,
     QuizState,
@@ -118,6 +119,34 @@ export const getQuiz =
             }
         }
     );
+
+export const getQuizResult =
+    createAsyncThunk<
+        GetQuizResultResponse,
+        string,
+        { rejectValue: string }
+    >(
+        "quiz/getQuizResult",
+
+        async (
+            quizId,
+            { rejectWithValue }
+        ) => {
+
+            try {
+                const response = await api.get(API_ROUTES.AI.GET_QUIZ_RESULT(quizId));
+
+                return response.data.data;
+
+            } catch (error) {
+                const err = error as AxiosError<{
+                    message: string
+                }>;
+
+                return rejectWithValue(err.response?.data?.message ?? "Failed to fetch quiz result");
+            }
+        }
+    )
 
 export const getUserQuizzes =
     createAsyncThunk<
@@ -310,6 +339,22 @@ const quizSlice = createSlice({
                         "Failed to fetch quiz";
                 }
             )
+
+            .addCase(getQuizResult.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            }
+            )
+
+            .addCase(getQuizResult.fulfilled, (state, action) => {
+                state.loading = false;
+                state.quizResult = action.payload;
+            })
+
+            .addCase(getQuizResult.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ?? "Failed to fetch quiz result";
+            })
 
             .addCase(
                 getUserQuizzes.pending,

@@ -60,6 +60,9 @@ export const API_ROUTES = {
 
         SUBMIT_QUIZ: (quizId: string) =>
             `/user/ai/quiz/${quizId}/submit`,
+
+        GET_QUIZ_RESULT: (quizId: string) =>
+            `/user/ai/quiz/${quizId}/result`,
     },
 
     ADMIN_SUBSCRIPTION: {

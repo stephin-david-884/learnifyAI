@@ -8,6 +8,7 @@ import {
     clearQuizResult,
     generateQuiz,
     getQuiz,
+    getQuizResult,
     getUserQuizzes,
     submitQuiz,
 } from "../redux/features/quiz/quizSlice";
@@ -54,6 +55,11 @@ export const useQuiz = () => {
             getQuiz(quizId)
         ).unwrap();
 
+    const fetchQuizResult = (
+        quizId: string
+    ) => 
+        dispatch(getQuizResult(quizId)).unwrap();
+
     const fetchUserQuizzes = (
         page = 1,
         limit = 10
@@ -80,6 +86,7 @@ export const useQuiz = () => {
 
         createQuiz,
         fetchQuiz,
+        fetchQuizResult,
         fetchUserQuizzes,
         submitQuizAnswers,
     };

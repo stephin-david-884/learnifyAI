@@ -22,11 +22,11 @@ export class GetQuizResultUseCase implements IGetQuizResultUseCase {
         }
 
         if(quiz.userId !== data.userId){
-            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.UNAUTHORIZED)
+            throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.UNAUTHORIZED);
         }
 
         if(quiz.status !== "COMPLETED"){
-            throw new AppError(quizMessages.error.QUIZ_NOT_COMPLETED, statusCode.BAD_REQUEST)
+            throw new AppError(quizMessages.error.QUIZ_NOT_COMPLETED, statusCode.BAD_REQUEST);
         }
 
         const review = quiz.questions.map((question, index) => {
