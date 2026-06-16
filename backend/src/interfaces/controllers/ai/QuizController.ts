@@ -95,7 +95,8 @@ export class QuizController {
         return sendSuccess(
             res,
             statusCode.OK,
-            quizMessages.success.QUIZ_RESULT_FETCHED
+            quizMessages.success.QUIZ_RESULT_FETCHED,
+            result
         )
     })
 }

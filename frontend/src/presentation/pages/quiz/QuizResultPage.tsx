@@ -1,8 +1,8 @@
-import React, { useEffect,} from "react";
+import React, { useEffect, } from "react";
 
-import { Trophy, ArrowLeft,} from "lucide-react";
+import { Trophy, ArrowLeft, } from "lucide-react";
 
-import { Link, useNavigate,} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import QuizReviewCard from "../../components/quiz/QuizReviewCard";
 
@@ -10,25 +10,47 @@ import { useQuiz } from "../../../hooks/useQuiz";
 
 const QuizResultPage: React.FC = () => {
 
-    const navigate =
-        useNavigate();
+    const { quizId } = useParams();
 
-    const {
-        quizResult,
-    } = useQuiz();
+    const { quizResult, loading, fetchQuizResult } = useQuiz();
 
     useEffect(() => {
-
-        if (!quizResult) {
-
-            navigate("/quizzes");
+        if (!quizId) {
+            return;
         }
 
-    }, [quizResult]);
+        fetchQuizResult(quizId);
+    }, [quizId, fetchQuizResult])
+
+    if (loading) {
+        return (
+            <div className="flex h-[60vh] items-center justify-center">
+                <p className="text-slate-500">
+                    Loading quiz result...
+                </p>
+            </div>
+        )
+    }
 
     if (!quizResult) {
-        return null;
+        return (
+            <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
+
+                <h2 className="text-xl font-semibold text-slate-900">
+                    Quiz Result Not Found
+                </h2>
+
+                <Link
+                    to="/quizzes"
+                    className="rounded-xl bg-red-600 px-5 py-2 text-white"
+                >
+                    Back To Quizzes
+                </Link>
+
+            </div>
+        );
     }
+
 
     const percentage =
         quizResult.percentage;
@@ -59,30 +81,8 @@ const QuizResultPage: React.FC = () => {
                 Back To Quizzes
             </Link>
 
-            {/* Score Card */}
-
-            <div
-                className="
-                    rounded-3xl
-                    border
-                    border-slate-200
-                    bg-white
-                    p-8
-                    text-center
-                "
-            >
-                <div
-                    className="
-                        mx-auto
-                        flex
-                        h-20
-                        w-20
-                        items-center
-                        justify-center
-                        rounded-full
-                        bg-red-50
-                    "
-                >
+            <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-red-50">
                     <Trophy
                         size={40}
                         className="text-red-600"
@@ -147,15 +147,10 @@ const QuizResultPage: React.FC = () => {
                 </div>
             </div>
 
-            {/* Review */}
-
             <div className="space-y-5">
 
                 {quizResult.review.map(
-                    (
-                        review,
-                        index
-                    ) => (
+                    (review, index) => (
 
                         <QuizReviewCard
                             key={index}

@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useCallback } from "react";
 
-import type {AppDispatch,RootState,} from "../redux/store";
+import type { AppDispatch, RootState, } from "../redux/store";
 
 import {
     clearCurrentQuiz,
@@ -55,10 +56,11 @@ export const useQuiz = () => {
             getQuiz(quizId)
         ).unwrap();
 
-    const fetchQuizResult = (
-        quizId: string
-    ) => 
-        dispatch(getQuizResult(quizId)).unwrap();
+    const fetchQuizResult = useCallback(
+        (quizId: string) =>
+            dispatch(getQuizResult(quizId)).unwrap(),
+        [dispatch]
+    );
 
     const fetchUserQuizzes = (
         page = 1,
