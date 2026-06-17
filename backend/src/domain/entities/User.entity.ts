@@ -76,6 +76,14 @@ export class User {
   setRefreshTokens(tokens: string[]) {
     this.refreshTokens = tokens;
   }
+
+  hasPassword():boolean {
+    return !!this.password;
+  }
+
+  getAccountType(): "GOOGLE" | "EMAIL" {
+    return this.googleId ? "GOOGLE" : "EMAIL";
+  }
 }
 
 type UserProps = {

@@ -64,5 +64,9 @@ export const ROUTES = {
     GET_ALL: "/quizzes",
     SUBMIT: "/quiz/:quizId/submit",
     GET_QUIZ_RESULT: "/quiz/:quizId/result",
-},
+  },
+
+  PROFILE: {
+    GET_PROFILE: "/profile",
+  }
 };
