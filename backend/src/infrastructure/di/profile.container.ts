@@ -1,5 +1,6 @@
 import { IGetProfileUseCase } from "../../application/interfaces/usecases/profile/IGetProfileUseCase";
 import { GetProfileUseCase } from "../../application/use-cases/profile/GetProfileUseCase";
+import { UpdateProfileUseCase } from "../../application/use-cases/profile/UpdateProfileUseCase";
 import { ProfileController } from "../../interfaces/controllers/profile/ProfileController";
 import { UserRepository } from "../repositories/UserRepository";
 import { UserSubscriptionRepository } from "../repositories/UserSubscriptionRepository";
@@ -13,7 +14,12 @@ const getProfileUseCase: IGetProfileUseCase =
         userSubscriptionRepository
     );
 
+const updateProfileUseCase = new UpdateProfileUseCase(
+    userRepository
+);
+
 export const profileController =
     new ProfileController(
-        getProfileUseCase
+        getProfileUseCase,
+        updateProfileUseCase
     );    

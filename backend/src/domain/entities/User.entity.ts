@@ -84,6 +84,10 @@ export class User {
   getAccountType(): "GOOGLE" | "EMAIL" {
     return this.googleId ? "GOOGLE" : "EMAIL";
   }
+
+  updateName(name: string) {
+    this.name = name.trim();
+  }
 }
 
 type UserProps = {

@@ -4,8 +4,6 @@ import { IQuizRepository } from "../../domain/repositories/IQuizRepository";
 import { QuizLean, QuizModel } from "../database/models/Quiz";
 import { BaseRepository } from "./BaseRepository";
 import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
-import { AppError } from "../../domain/errors/AppError";
-import { statusCode } from "../../application/constants/enums/statusCode";
 
 export class QuizRepository
     extends BaseRepository<Quiz, QuizLean>
