@@ -6,6 +6,7 @@ import { verifyCsrf } from "../middlewares/csrfVerify";
 import { profileController } from "../../infrastructure/di/profile.container";
 import { validate } from "../middlewares/validate";
 import { updateProfileSchema } from "../validators/profile/profile.validator";
+import { changePasswordSchema } from "../validators/profile/password.validator";
 
 const router = express.Router();
 
@@ -20,6 +21,13 @@ router.patch(ROUTES.PROFILE.UPDATE_PROFILE,
     verifyCsrf,
     validate(updateProfileSchema, "body"),
     profileController.updateProfile
+);
+
+router.patch(ROUTES.PROFILE.CHANGE_PASSWORD,
+    authMiddleware(tokenService),
+    verifyCsrf,
+    validate(changePasswordSchema, "body"),
+    profileController.changePassword
 );
 
 export default router;

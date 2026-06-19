@@ -6,12 +6,15 @@ import { statusCode } from "../../../application/constants/enums/statusCode";
 import { profileMessages } from "../../../application/constants/messages/profileMessages";
 import { IUpdateProfileUseCase } from "../../../application/interfaces/usecases/profile/IUpdateProfileUseCase";
 import { mapUpdateProfileRequest } from "../../../application/mappers/profile/mapUpdateProfileRequestDTO";
+import { IChangePasswordUseCase } from "../../../application/interfaces/usecases/profile/IChangePasswordUseCase";
+import { mapChangePasswordRequest } from "../../../application/mappers/profile/mapChangePasswordRequestDTO";
 
 export class ProfileController {
 
     constructor(
         private readonly _getProfileUseCase: IGetProfileUseCase,
         private readonly _updateProfileUseCase: IUpdateProfileUseCase,
+        private readonly _changePasswordUseCase: IChangePasswordUseCase,
     ) {}
 
     getProfile = asyncHandler(async(req: Request, res: Response) => {
@@ -38,5 +41,18 @@ export class ProfileController {
             profileMessages.success.PROFILE_UPDATED,
             profile
         );
+    })
+
+    changePassword = asyncHandler(async(req: Request, res: Response) => {
+
+        const dto = mapChangePasswordRequest(req.user.userId, req.body);
+
+        await this._changePasswordUseCase.execute(dto);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            profileMessages.success.PASSWORD_CHANGED
+        )
     })
 }

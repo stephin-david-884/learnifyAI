@@ -69,5 +69,6 @@ export const ROUTES = {
   PROFILE: {
     GET_PROFILE: "/profile",
     UPDATE_PROFILE: "/profile",
+    CHANGE_PASSWORD: "/profile/password",
   }
 };
