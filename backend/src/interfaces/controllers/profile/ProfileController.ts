@@ -8,6 +8,9 @@ import { IUpdateProfileUseCase } from "../../../application/interfaces/usecases/
 import { mapUpdateProfileRequest } from "../../../application/mappers/profile/mapUpdateProfileRequestDTO";
 import { IChangePasswordUseCase } from "../../../application/interfaces/usecases/profile/IChangePasswordUseCase";
 import { mapChangePasswordRequest } from "../../../application/mappers/profile/mapChangePasswordRequestDTO";
+import { ICancelSubscriptionUseCase } from "../../../application/interfaces/usecases/subscription/ICancelSubscriptionUseCase";
+import { mapCancelSubscriptionRequest } from "../../../application/mappers/profile/mapCancelSubscriptionRequestDTO";
+import { subMessages } from "../../../application/constants/messages/subMessags";
 
 export class ProfileController {
 
@@ -15,6 +18,7 @@ export class ProfileController {
         private readonly _getProfileUseCase: IGetProfileUseCase,
         private readonly _updateProfileUseCase: IUpdateProfileUseCase,
         private readonly _changePasswordUseCase: IChangePasswordUseCase,
+        private readonly _cancelSubscriptionUseCase: ICancelSubscriptionUseCase,
     ) {}
 
     getProfile = asyncHandler(async(req: Request, res: Response) => {
@@ -53,6 +57,19 @@ export class ProfileController {
             res,
             statusCode.OK,
             profileMessages.success.PASSWORD_CHANGED
+        )
+    })
+
+    cancelSubscripiton = asyncHandler(async(req: Request, res: Response) => {
+
+        const dto = mapCancelSubscriptionRequest(req.user.userId);
+
+        await this._cancelSubscriptionUseCase.execute(dto);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            subMessages.success.SUBSCRIPTION_PLAN_DEACTIVATED
         )
     })
 }

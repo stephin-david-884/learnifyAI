@@ -70,5 +70,6 @@ export const ROUTES = {
     GET_PROFILE: "/profile",
     UPDATE_PROFILE: "/profile",
     CHANGE_PASSWORD: "/profile/password",
+    CANCEL_SUBSCRIPTION: "/profile/subscription/cancel",
   }
 };

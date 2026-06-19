@@ -2,6 +2,7 @@ import { IGetProfileUseCase } from "../../application/interfaces/usecases/profil
 import { ChangePasswordUseCase } from "../../application/use-cases/profile/ChangePasswordUseCase";
 import { GetProfileUseCase } from "../../application/use-cases/profile/GetProfileUseCase";
 import { UpdateProfileUseCase } from "../../application/use-cases/profile/UpdateProfileUseCase";
+import { CancelSubscriptionUseCase } from "../../application/use-cases/subscription/CancelSubscriptionUseCase";
 import { ProfileController } from "../../interfaces/controllers/profile/ProfileController";
 import { UserRepository } from "../repositories/UserRepository";
 import { UserSubscriptionRepository } from "../repositories/UserSubscriptionRepository";
@@ -27,9 +28,15 @@ const changePasswordUseCase = new ChangePasswordUseCase(
     hashService
 )
 
+const cancelSubscripitonUseCase = new CancelSubscriptionUseCase(
+    userRepository,
+    userSubscriptionRepository
+)
+
 export const profileController =
     new ProfileController(
         getProfileUseCase,
         updateProfileUseCase,
-        changePasswordUseCase
+        changePasswordUseCase,
+        cancelSubscripitonUseCase   
     );    

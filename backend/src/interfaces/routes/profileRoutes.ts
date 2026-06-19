@@ -30,4 +30,10 @@ router.patch(ROUTES.PROFILE.CHANGE_PASSWORD,
     profileController.changePassword
 );
 
+router.patch(ROUTES.PROFILE.CANCEL_SUBSCRIPTION,
+    authMiddleware(tokenService),
+    verifyCsrf,
+    profileController.cancelSubscripiton
+)
+
 export default router;
