@@ -65,6 +65,13 @@ export const API_ROUTES = {
             `/user/ai/quiz/${quizId}/result`,
     },
 
+    PROFILE: {
+        GET_PROFILE: "/user/profile",
+        UPDATE_PROFILE: "/user/profile",
+        CHANGE_PASSWORD: "/user/profile/password",
+        CANCEL_SUBSCRIPTION: "/user/profile/subscription/cancel",
+    },
+
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
         UPDATE_PLAN: "/admin/subscription/plans",
@@ -72,5 +79,6 @@ export const API_ROUTES = {
             `/admin/subscription/plans/${planId}/deactivate`,
         GET_ALL_PLANS: "/admin/subscription/plans",
         GET_PAYMENTS: "/admin/payments",
-    }
+    },
+
 }
