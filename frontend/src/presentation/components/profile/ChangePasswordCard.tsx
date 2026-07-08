@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { ProfileState } from '../../../types/profile';
+import type { UserProfile } from '../../../types/profile';
 import { useProfile } from '../../../hooks/useProfile';
 import { useForm } from 'react-hook-form';
 import { type ChangePasswordFormValues, changePasswordSchema } from '../../../lib/validation/profileValidation';
@@ -10,7 +10,7 @@ import SectionCard from '../common/card/SectionCard';
 
 
 type Props = {
-    profile: ProfileState
+    profile: UserProfile
 };
 
 const ChangePasswordCard: React.FC<Props> = ({ profile }) => {
@@ -32,7 +32,7 @@ const ChangePasswordCard: React.FC<Props> = ({ profile }) => {
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
-    if (profile.profile?.accountType === "GOOGLE") {
+    if (profile.accountType === "GOOGLE") {
         return null;
     }
 

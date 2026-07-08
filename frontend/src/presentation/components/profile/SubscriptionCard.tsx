@@ -1,15 +1,15 @@
 import React from 'react';
-import type { ProfileState } from '../../../types/profile';
+import type { UserProfile } from '../../../types/profile';
 import SectionCard from '../common/card/SectionCard';
 import { BadgeCheck, Calendar, Coins, CreditCard } from 'lucide-react';
 
 type Props = {
-    profile: ProfileState
+    profile: UserProfile
 }
 
 const SubscriptionCard: React.FC<Props> = ({ profile }) => {
 
-    const subscription = profile.profile?.subscription;
+    const subscription = profile.subscription;
 
     if (!subscription) {
         return (

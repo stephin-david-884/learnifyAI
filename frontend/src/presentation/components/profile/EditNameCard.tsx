@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import type { ProfileState } from '../../../types/profile';
+import type { UserProfile } from '../../../types/profile';
 import { useProfile } from '../../../hooks/useProfile';
 import { useAuth } from '../../../hooks/useAuth';
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import SectionCard from '../common/card/SectionCard';
 
 
 type Props = {
-    profile: ProfileState
+    profile: UserProfile
 }
 
 const EditNameCard: React.FC<Props> = ({ profile }) => {
@@ -29,13 +29,13 @@ const EditNameCard: React.FC<Props> = ({ profile }) => {
     } = useForm<UpdateProfileFormValues>({
         resolver: zodResolver(updateProfileSchema),
         defaultValues: {
-            name: profile.profile?.name,
+            name: profile.name,
         },
     });
 
     useEffect(() => {
         reset({
-            name: profile.profile?.name,
+            name: profile.name,
         });
     }, [profile, reset]);
 

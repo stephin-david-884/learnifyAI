@@ -1,10 +1,10 @@
 import React from 'react';
 import SectionCard from '../common/card/SectionCard';
-import type { ProfileState } from '../../../types/profile';
+import type { UserProfile } from '../../../types/profile';
 import { Mail, Shield, User } from 'lucide-react';
 
 type Props = {
-    profile: ProfileState
+    profile: UserProfile
 };
 
 const ProfileOverviewCard: React.FC<Props> = ({profile}) => {
@@ -23,7 +23,7 @@ const ProfileOverviewCard: React.FC<Props> = ({profile}) => {
                             Name
                         </p>
                         <p className="font-medium text-slate-900">
-                            {profile.profile?.name}
+                            {profile.name}
                         </p>
                     </div>
                 </div>
@@ -38,7 +38,7 @@ const ProfileOverviewCard: React.FC<Props> = ({profile}) => {
                             Email
                         </p>
                         <p className="font-medium text-slate-900">
-                            {profile.profile?.email}
+                            {profile.email}
                         </p>
                     </div>
                 </div>
@@ -52,7 +52,7 @@ const ProfileOverviewCard: React.FC<Props> = ({profile}) => {
                             Account Type
                         </p>
                         <p className="font-medium text-slate-900">
-                            {profile.profile?.accountType}
+                            {profile.accountType}
                         </p>
                     </div>
                 </div>
