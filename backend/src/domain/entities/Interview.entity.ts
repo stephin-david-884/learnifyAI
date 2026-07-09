@@ -1,14 +1,14 @@
-export type InterviewDifficulty = 
+export type InterviewDifficulty =
     | "EASY"
     | "MEDIUM"
     | "HARD";
 
-export type InterviewStatus = 
-     "GENERATING"
+export type InterviewStatus =
+    "GENERATING"
     | "READY"
     | "IN_PROGRESS"
     | "COMPLETED";
-    
+
 export interface InterviewQuestion {
     question: string;
     expectedConcepts: string[];
@@ -17,12 +17,13 @@ export interface InterviewQuestion {
 
 export interface InterviewAnswer {
     questionIndex: number;
+    question: string;
+    difficulty: InterviewDifficulty;
     transcript: string;
     score: number;
     feedback: string;
     strengths: string[];
     improvements: string[];
-    durationSeconds: number;
 }
 
 type InterviewProps = {
@@ -79,22 +80,27 @@ export class Interview {
         this.status = "IN_PROGRESS";
         this.startedAt = new Date();
     }
-    submitAnswer( answer: InterviewAnswer) {
+    submitAnswers(answers: InterviewAnswer[]) {
 
-        this.answers.push(answer);
+        this.answers = answers;
     }
-    completeInterview( overallScore: number) {
+    completeInterview(
+        answers: InterviewAnswer[],
+        overallScore: number
+    ) {
 
-        this.overallScore =
-            overallScore;
+        this.answers = answers;
+
+        this.overallScore = overallScore;
 
         this.status = "COMPLETED";
+
         this.completedAt = new Date();
     }
     getId(): string {
 
         if (!this.id) {
-            throw new Error( "Interview ID is not set");
+            throw new Error("Interview ID is not set");
         }
 
         return this.id;

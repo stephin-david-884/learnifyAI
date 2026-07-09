@@ -30,6 +30,10 @@ export const toDomainInterview = (
                 (answer) => ({
                     questionIndex: answer.questionIndex,
 
+                    question: answer.question,
+
+                    difficulty: answer.difficulty,
+
                     transcript: answer.transcript,
 
                     score: answer.score,
@@ -40,7 +44,6 @@ export const toDomainInterview = (
 
                     improvements: answer.improvements,
 
-                    durationSeconds: answer.durationSeconds,
                 })
             ),
 
@@ -94,6 +97,12 @@ export const toPersistenceInterview = (
                     questionIndex:
                         answer.questionIndex,
 
+                    question: 
+                        answer.question,
+                    
+                    difficulty:
+                        answer.difficulty,    
+
                     transcript:
                         answer.transcript,
 
@@ -108,9 +117,6 @@ export const toPersistenceInterview = (
 
                     improvements:
                         answer.improvements,
-
-                    durationSeconds:
-                        answer.durationSeconds,
                 })
             ),
 

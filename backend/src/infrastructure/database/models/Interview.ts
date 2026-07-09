@@ -11,12 +11,16 @@ export interface IInterviewQuestion {
 
 export interface IInterviewAnswer {
     questionIndex: number;
+    question: string;
+    difficulty:
+        | "EASY"
+        | "MEDIUM"
+        | "HARD";
     transcript: string;
     score: number;
     feedback: string;
     strengths: string[];
     improvements: string[];
-    durationSeconds: number;
 }
 
 export interface IInterview extends Document {
@@ -76,6 +80,21 @@ const interviewAnswerSchema =
                 required: true,
             },
 
+            question: {
+                type: String,
+                required: true,
+            },
+
+            difficulty: {
+                type: String,
+                enum: [
+                    "EASY",
+                    "MEDIUM",
+                    "HARD",
+                ],
+                required: true,
+            },
+
             transcript: {
                 type: String,
                 required: true,
@@ -99,11 +118,6 @@ const interviewAnswerSchema =
             improvements: {
                 type: [String],
                 default: [],
-            },
-
-            durationSeconds: {
-                type: Number,
-                required: true,
             },
         },
         {

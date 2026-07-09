@@ -11,7 +11,5 @@ export interface SubmitInterviewDTO {
 
     interviewId: string;
 
-    durationSeconds: number;
-
     answers: SubmitInterviewAnswerDTO[];
 }
