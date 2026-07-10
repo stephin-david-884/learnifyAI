@@ -12,5 +12,6 @@ export const interviewMessages = {
         INVALID_ANSWER_SUB: "Invalid answer submission",
         ANSWER_NOT_SUBMITTED: "Interview answers not submitted",
         EVALUATION_FAILED: "Evaluation Failed",
+        INTERVIEW_NOT_COMPLETED: "Interview is not completed"
     }
 }
