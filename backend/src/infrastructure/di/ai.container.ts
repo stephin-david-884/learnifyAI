@@ -2,6 +2,7 @@ import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/ch
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
 import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases/interview/IGenerateInterviewUseCase";
+import { IGetInterviewResultUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewResultUseCase";
 import { IGetInterviewUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewUseCase";
 import { IGetUserInterviewsUseCase } from "../../application/interfaces/usecases/interview/IGetUserInterviewsUseCase";
 import { ISubmitInterviewUseCase } from "../../application/interfaces/usecases/interview/ISubmitInterviewUseCase";
@@ -15,6 +16,7 @@ import { GenerateAnswerUseCase } from "../../application/use-cases/chat/Generate
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
 import { GenerateInterviewUseCase } from "../../application/use-cases/interview/GenerateInterviewUseCase";
+import { GetInterviewResultUseCase } from "../../application/use-cases/interview/GetInterviewResultUseCase";
 import { GetInterviewUseCase } from "../../application/use-cases/interview/GetInterviewUseCase";
 import { GetUserInterviewsUseCase } from "../../application/use-cases/interview/GetUserInterviewsUseCase";
 import { SubmitInterviewUseCase } from "../../application/use-cases/interview/SubmitInterviewUseCase";
@@ -155,6 +157,11 @@ const submitInterviewUseCase: ISubmitInterviewUseCase =
         interviewRepository,
     );
 
+const getInterviewResultUseCase: IGetInterviewResultUseCase =
+    new GetInterviewResultUseCase(
+        interviewRepository,
+    );
+
 // CONTROLLER
 export const chatController =
     new ChatController(
@@ -176,5 +183,6 @@ export const interviewController =
         generateInterviewUseCase,
         getInterviewUseCase,
         getUserInterviewsUseCase,
-        submitInterviewUseCase
+        submitInterviewUseCase,
+        getInterviewResultUseCase,
     );    

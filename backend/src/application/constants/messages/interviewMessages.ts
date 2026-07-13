@@ -4,6 +4,7 @@ export const interviewMessages = {
         INTERVIEW_FETCHED: "Interview fetched successfully",
         INTERVIEWS_FETCHED: "Interviews fetched successfully",
         INTERVIEW_SUBMITTED: "Interview submitted successfully",
+        INTERVIEW_RESULT_FETCHED: "Interview result fetched successfully",
     },
 
     error: {
