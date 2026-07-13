@@ -8,6 +8,7 @@ import { generateAnswerSchema } from "../validators/chat/chat.validator";
 import { generateQuizSchema } from "../validators/quiz/generateQuiz.validator";
 import { submitQuizSchema } from "../validators/quiz/submitQuiz.validator";
 import { generateInterviewSchema } from "../validators/interview/generateInterview.validator";
+import { submitInterviewSchema } from "../validators/interview/submitInterview.validator";
 
 const router = express.Router();
 
@@ -63,6 +64,12 @@ router.get(ROUTES.INTERVIEW.GET_ONE,
 router.get(ROUTES.INTERVIEW.GET_ALL,
     authMiddleware(tokenService),
     interviewController.getUserInterviews
+);
+
+router.post(ROUTES.INTERVIEW.SUBMIT,
+    validate(submitInterviewSchema, "body"),
+    authMiddleware(tokenService),
+    interviewController.submitInterview
 );
 
 export default router;

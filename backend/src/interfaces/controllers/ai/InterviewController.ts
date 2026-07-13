@@ -9,13 +9,16 @@ import { IGetInterviewUseCase } from "../../../application/interfaces/usecases/i
 import { mapToGetInterviewDTO } from "../../../application/mappers/interview/GetInterviewMapper";
 import { IGetUserInterviewsUseCase } from "../../../application/interfaces/usecases/interview/IGetUserInterviewsUseCase";
 import { mapToGetUserInterviewsDTO } from "../../../application/mappers/interview/GetUserInterviewsMapper";
+import { ISubmitInterviewUseCase } from "../../../application/interfaces/usecases/interview/ISubmitInterviewUseCase";
+import { mapToSubmitInterviewDTO } from "../../../application/mappers/interview/SubmitInterviewMapper";
 
 export class InterviewController {
 
     constructor(
         private readonly _generateInterviewUseCase: IGenerateInterviewUseCase,
         private readonly _getInterviewUseCase: IGetInterviewUseCase,
-        private readonly _getUserInterviewsUseCase: IGetUserInterviewsUseCase
+        private readonly _getUserInterviewsUseCase: IGetUserInterviewsUseCase,
+        private readonly _submitInterviewUseCase: ISubmitInterviewUseCase,
     ) {}
 
     generateInterview = asyncHandler(async (req: Request, res: Response) => {
@@ -58,5 +61,19 @@ export class InterviewController {
             interviewMessages.success.INTERVIEWS_FETCHED,
             interviews,
         )
-    })
+    });
+
+    submitInterview = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToSubmitInterviewDTO(req);
+
+        const interview = await this._submitInterviewUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            interviewMessages.success.INTERVIEW_SUBMITTED,
+            interview
+        );
+    });
 }

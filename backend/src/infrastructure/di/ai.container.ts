@@ -4,6 +4,7 @@ import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/c
 import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases/interview/IGenerateInterviewUseCase";
 import { IGetInterviewUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewUseCase";
 import { IGetUserInterviewsUseCase } from "../../application/interfaces/usecases/interview/IGetUserInterviewsUseCase";
+import { ISubmitInterviewUseCase } from "../../application/interfaces/usecases/interview/ISubmitInterviewUseCase";
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { IGetQuizResultUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizResultUseCase";
 import { IGetQuizUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizUseCase";
@@ -16,6 +17,7 @@ import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveCha
 import { GenerateInterviewUseCase } from "../../application/use-cases/interview/GenerateInterviewUseCase";
 import { GetInterviewUseCase } from "../../application/use-cases/interview/GetInterviewUseCase";
 import { GetUserInterviewsUseCase } from "../../application/use-cases/interview/GetUserInterviewsUseCase";
+import { SubmitInterviewUseCase } from "../../application/use-cases/interview/SubmitInterviewUseCase";
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
 import { GetQuizResultUseCase } from "../../application/use-cases/quiz/GetQuizResultUseCase";
 import { GetQuizUseCase } from "../../application/use-cases/quiz/GetQuizUseCase";
@@ -107,7 +109,7 @@ const generateQuizUseCase: IGenerateQuizUseCase =
         quizGenerationService,
         aiCreditService
     );
-    
+
 const getQuizUseCase: IGetQuizUseCase =
     new GetQuizUseCase(
         quizRepository
@@ -117,18 +119,18 @@ const getUserQuizzesUseCase: IGetUserQuizzesUseCase =
     new GetUserQuizzesUseCase(
         quizRepository
     );
-    
+
 const submitQuizUseCase: ISubmitQuizUseCase =
     new SubmitQuizUseCase(
         quizRepository
     );
-    
+
 const getQuizResultUseCase: IGetQuizResultUseCase =
     new GetQuizResultUseCase(
         quizRepository
     );
-    
-const generateInterviewUseCase: IGenerateInterviewUseCase = 
+
+const generateInterviewUseCase: IGenerateInterviewUseCase =
     new GenerateInterviewUseCase(
         interviewRepository,
         documentRepository,
@@ -136,17 +138,22 @@ const generateInterviewUseCase: IGenerateInterviewUseCase =
         interviewGenerationService,
         userSubscriptionRepository,
         aiCreditService,
-    ); 
+    );
 
-const getInterviewUseCase: IGetInterviewUseCase = 
+const getInterviewUseCase: IGetInterviewUseCase =
     new GetInterviewUseCase(
         interviewRepository,
     );
 
-const getUserInterviewsUseCase: IGetUserInterviewsUseCase = 
+const getUserInterviewsUseCase: IGetUserInterviewsUseCase =
     new GetUserInterviewsUseCase(
         interviewRepository
-    );    
+    );
+
+const submitInterviewUseCase: ISubmitInterviewUseCase =
+    new SubmitInterviewUseCase(
+        interviewRepository,
+    );
 
 // CONTROLLER
 export const chatController =
@@ -164,9 +171,10 @@ export const quizController =
         getQuizResultUseCase
     );
 
-export const interviewController = 
+export const interviewController =
     new InterviewController(
         generateInterviewUseCase,
         getInterviewUseCase,
-        getUserInterviewsUseCase
+        getUserInterviewsUseCase,
+        submitInterviewUseCase
     );    
