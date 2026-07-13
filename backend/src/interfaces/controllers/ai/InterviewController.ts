@@ -5,11 +5,13 @@ import { mapToGenerateInterviewDTO } from "../../../application/mappers/intervie
 import { sendSuccess } from "../../http/response";
 import { statusCode } from "../../../application/constants/enums/statusCode";
 import { interviewMessages } from "../../../application/constants/messages/interviewMessages";
+import { IGetInterviewUseCase } from "../../../application/interfaces/usecases/interview/IGetInterviewUseCase";
 
 export class InterviewController {
 
     constructor(
-        private readonly _generateInterviewUseCase: IGenerateInterviewUseCase
+        private readonly _generateInterviewUseCase: IGenerateInterviewUseCase,
+        private readonly _getInterviewUseCase: IGetInterviewUseCase,
     ) {}
 
     generateInterview = asyncHandler(async (req: Request, res: Response) => {
@@ -24,5 +26,19 @@ export class InterviewController {
             interviewMessages.success.INTERVIEW_GENERATED,
             interview
         );
-    })
+    });
+
+    getInterview = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToGenerateInterviewDTO(req);
+
+        const interview = await this._generateInterviewUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            interviewMessages.success.INTERVIEW_FETCHED,
+            interview,
+        )
+    });
 }

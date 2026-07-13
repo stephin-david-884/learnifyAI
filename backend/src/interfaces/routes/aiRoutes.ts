@@ -55,4 +55,9 @@ router.post(ROUTES.INTERVIEW.GENERATE_INTERVIEW,
     interviewController.generateInterview
 );
 
+router.get(ROUTES.INTERVIEW.GET_ONE,
+    authMiddleware(tokenService),
+    interviewController.getInterview
+);
+
 export default router;

@@ -2,6 +2,7 @@ import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/ch
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
 import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases/interview/IGenerateInterviewUseCase";
+import { IGetInterviewUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewUseCase";
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { IGetQuizResultUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizResultUseCase";
 import { IGetQuizUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizUseCase";
@@ -12,6 +13,7 @@ import { GenerateAnswerUseCase } from "../../application/use-cases/chat/Generate
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
 import { GenerateInterviewUseCase } from "../../application/use-cases/interview/GenerateInterviewUseCase";
+import { GetInterviewUseCase } from "../../application/use-cases/interview/GetInterviewUseCase";
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
 import { GetQuizResultUseCase } from "../../application/use-cases/quiz/GetQuizResultUseCase";
 import { GetQuizUseCase } from "../../application/use-cases/quiz/GetQuizUseCase";
@@ -134,6 +136,11 @@ const generateInterviewUseCase: IGenerateInterviewUseCase =
         aiCreditService,
     ); 
 
+const getInterviewUseCase: IGetInterviewUseCase = 
+    new GetInterviewUseCase(
+        interviewRepository,
+    );
+
 // CONTROLLER
 export const chatController =
     new ChatController(
@@ -152,5 +159,6 @@ export const quizController =
 
 export const interviewController = 
     new InterviewController(
-        generateInterviewUseCase
+        generateInterviewUseCase,
+        getInterviewUseCase,
     );    
