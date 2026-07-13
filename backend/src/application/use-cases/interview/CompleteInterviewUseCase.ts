@@ -35,6 +35,11 @@ export class CompleteInterviewUseCase implements ICompleteInterviewUseCase {
             throw new AppError(interviewMessages.error.ANSWER_NOT_SUBMITTED, statusCode.BAD_REQUEST);
         }
 
+        if (interview.status === "COMPLETED") {
+
+            throw new AppError(interviewMessages.error.INTERVIEW_ALREADY_COMPLETED,statusCode.BAD_REQUEST);
+        }
+
         const evaluatedAnswers =
             await this._evaluationService
                 .evaluateInterview(
@@ -42,7 +47,7 @@ export class CompleteInterviewUseCase implements ICompleteInterviewUseCase {
                 );
 
         if (evaluatedAnswers.length === 0) {
-            throw new AppError(interviewMessages.error.EVALUATION_FAILED,statusCode.SERVER_ERROR);
+            throw new AppError(interviewMessages.error.EVALUATION_FAILED, statusCode.SERVER_ERROR);
         }
 
         const overallScore =

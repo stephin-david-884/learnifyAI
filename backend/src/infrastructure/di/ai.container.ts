@@ -1,6 +1,7 @@
 import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/chat/IGenerateAnswerUseCase";
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
+import { ICompleteInterviewUseCase } from "../../application/interfaces/usecases/interview/ICompleteInterviewUseCase";
 import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases/interview/IGenerateInterviewUseCase";
 import { IGetInterviewResultUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewResultUseCase";
 import { IGetInterviewUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewUseCase";
@@ -15,6 +16,7 @@ import { IConsumeCreditsUseCase } from "../../application/interfaces/usecases/su
 import { GenerateAnswerUseCase } from "../../application/use-cases/chat/GenerateAnswerUseCase";
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
+import { CompleteInterviewUseCase } from "../../application/use-cases/interview/CompleteInterviewUseCase";
 import { GenerateInterviewUseCase } from "../../application/use-cases/interview/GenerateInterviewUseCase";
 import { GetInterviewResultUseCase } from "../../application/use-cases/interview/GetInterviewResultUseCase";
 import { GetInterviewUseCase } from "../../application/use-cases/interview/GetInterviewUseCase";
@@ -162,6 +164,12 @@ const getInterviewResultUseCase: IGetInterviewResultUseCase =
         interviewRepository,
     );
 
+const completeInterviewUseCase: ICompleteInterviewUseCase =
+    new CompleteInterviewUseCase(
+        interviewRepository,
+        interviewEvaluationService,
+    );
+
 // CONTROLLER
 export const chatController =
     new ChatController(
@@ -185,4 +193,5 @@ export const interviewController =
         getUserInterviewsUseCase,
         submitInterviewUseCase,
         getInterviewResultUseCase,
+        completeInterviewUseCase,
     );    

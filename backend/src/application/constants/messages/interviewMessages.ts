@@ -5,6 +5,7 @@ export const interviewMessages = {
         INTERVIEWS_FETCHED: "Interviews fetched successfully",
         INTERVIEW_SUBMITTED: "Interview submitted successfully",
         INTERVIEW_RESULT_FETCHED: "Interview result fetched successfully",
+        INTERVIEW_COMPLETED:"Interview completed successfully",
     },
 
     error: {
@@ -17,5 +18,6 @@ export const interviewMessages = {
         ANSWER_NOT_SUBMITTED: "Interview answers not submitted",
         EVALUATION_FAILED: "Evaluation Failed",
         INTERVIEW_NOT_COMPLETED: "Interview has not been completed yet",
+        INTERVIEW_ALREADY_COMPLETED: "Interview already completed"
     }
 }

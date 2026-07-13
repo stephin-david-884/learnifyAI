@@ -77,4 +77,9 @@ router.get(ROUTES.INTERVIEW.GET_RESULT,
     interviewController.getInterviewResult
 );
 
+router.post(ROUTES.INTERVIEW.COMPLETE,
+    authMiddleware(tokenService),
+    interviewController.completeInterview
+);
+
 export default router;

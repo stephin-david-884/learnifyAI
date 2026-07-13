@@ -78,6 +78,7 @@ export const ROUTES = {
     GET_ONE:  "/interview/:interviewId",
     GET_ALL:  "/interviews",
     SUBMIT:  "/interview/:interviewId/submit",
+    COMPLETE: "/interview/:interviewId/complete",
     GET_RESULT:  "/interview/:interviewId/result",
 },
 };
