@@ -71,5 +71,13 @@ export const ROUTES = {
     UPDATE_PROFILE: "/",
     CHANGE_PASSWORD: "/password",
     CANCEL_SUBSCRIPTION: "/subscription/cancel",
-  }
+  },
+
+  INTERVIEW: {
+    GENERATE_INTERVIEW:  "/interview",
+    GET_ONE:  "/interview/:interviewId",
+    GET_ALL:  "/interviews",
+    SUBMIT:  "/interview/:interviewId/submit",
+    GET_RESULT:  "/interview/:interviewId/result",
+},
 };
