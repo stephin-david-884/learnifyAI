@@ -63,6 +63,24 @@ export const API_ROUTES = {
 
         GET_QUIZ_RESULT: (quizId: string) =>
             `/user/ai/quiz/${quizId}/result`,
+
+        GET_USER_INTERVIEWS:
+            "/user/ai/interviews",
+
+        GET_INTERVIEW: (interviewId: string) =>
+            `/user/ai/interview/${interviewId}`,
+
+        GENERATE_INTERVIEW:
+            "/user/ai/interview",
+
+        SUBMIT_INTERVIEW: (interviewId: string) =>
+            `/user/ai/interview/${interviewId}/submit`,
+
+        COMPLETE_INTERVIEW: (interviewId: string) =>
+            `/user/ai/interview/${interviewId}/complete`,
+
+        GET_INTERVIEW_RESULT: (interviewId: string) =>
+            `/user/ai/interview/${interviewId}/result`,
     },
 
     PROFILE: {
