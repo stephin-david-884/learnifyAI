@@ -11,6 +11,8 @@ from "../../components/common/Spinner";
 import { useInterview } from "../../../hooks/useInterview";
 import InterviewOverviewCard from "../../components/interview/InterviewOverviewCard";
 import InterviewGuidelines from "../../components/interview/InterviewGuidelines";
+import MicrophonePermissionCard from "../../components/interview/MicrophonePermissionCard";
+import InterviewTimerInfo from "../../components/interview/InterviewTimerInfo";
 
 const InterviewPreparationPage: React.FC = () => {
 
@@ -122,7 +124,7 @@ const InterviewPreparationPage: React.FC = () => {
 
             <InterviewGuidelines />
 
-            {/* <MicrophonePermissionCard
+            <MicrophonePermissionCard
                 onPermissionChange={
                     setMicrophoneReady
                 }
@@ -132,7 +134,7 @@ const InterviewPreparationPage: React.FC = () => {
                 totalQuestions={
                     currentInterview.totalQuestions
                 }
-            /> */}
+            />
 
             <div className="rounded-3xl border border-slate-200 bg-white p-6">
 
