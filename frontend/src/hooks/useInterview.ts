@@ -1,6 +1,6 @@
-import { useCallback,} from "react";
-import { useDispatch, useSelector,} from "react-redux";
-import type { AppDispatch, RootState,} from "../redux/store";
+import { useCallback, } from "react";
+import { useDispatch, useSelector, } from "react-redux";
+import type { AppDispatch, RootState, } from "../redux/store";
 
 import {
 
@@ -12,6 +12,7 @@ import {
     getInterview,
     getInterviewResult,
     getUserInterviews,
+    startInterview,
     submitInterview,
 
 } from "../redux/features/interview/interviewSlice";
@@ -20,14 +21,14 @@ export const useInterview = () => {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const state = useSelector(( state: RootState) => state.interview);
+    const state = useSelector((state: RootState) => state.interview);
 
-    const clearError = () => dispatch( clearInterviewError());
+    const clearError = () => dispatch(clearInterviewError());
 
     const clearResult = () =>
-        dispatch( clearInterviewResult());
+        dispatch(clearInterviewResult());
 
-    const clearInterview = () => dispatch( clearCurrentInterview());
+    const clearInterview = () => dispatch(clearCurrentInterview());
 
     const createInterview = (
         payload: Parameters<
@@ -39,26 +40,31 @@ export const useInterview = () => {
     const fetchInterview = (
         interviewId: string
     ) =>
-        dispatch(getInterview( interviewId )).unwrap();
+        dispatch(getInterview(interviewId)).unwrap();
 
-    const fetchInterviewResult = useCallback( ( interviewId: string) =>
-                dispatch( getInterviewResult( interviewId ) ).unwrap(),
-            [dispatch]);
+    const beginInterview = (
+        interviewId: string
+    ) =>
+        dispatch(startInterview(interviewId)).unwrap();
 
-    const fetchUserInterviews = ( page = 1, limit = 10 ) =>
-        dispatch( getUserInterviews({ page, limit,})).unwrap();
+    const fetchInterviewResult = useCallback((interviewId: string) =>
+        dispatch(getInterviewResult(interviewId)).unwrap(),
+        [dispatch]);
+
+    const fetchUserInterviews = (page = 1, limit = 10) =>
+        dispatch(getUserInterviews({ page, limit, })).unwrap();
 
     const submitInterviewAnswers = (
         payload: Parameters<
             typeof submitInterview
         >[0]
     ) =>
-        dispatch( submitInterview( payload )).unwrap();
+        dispatch(submitInterview(payload)).unwrap();
 
     const completeInterviewSession = (
         interviewId: string
     ) =>
-        dispatch( completeInterview( interviewId )).unwrap();
+        dispatch(completeInterview(interviewId)).unwrap();
 
     return {
 
@@ -68,6 +74,7 @@ export const useInterview = () => {
         clearInterview,
         createInterview,
         fetchInterview,
+        beginInterview,
         fetchInterviewResult,
         fetchUserInterviews,
         submitInterviewAnswers,

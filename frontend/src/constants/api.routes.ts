@@ -81,6 +81,9 @@ export const API_ROUTES = {
 
         GET_INTERVIEW_RESULT: (interviewId: string) =>
             `/user/ai/interview/${interviewId}/result`,
+
+        START_INTERVIEW: (interviewId: string) =>
+            `/user/ai/interview/${interviewId}/start`,
     },
 
     PROFILE: {

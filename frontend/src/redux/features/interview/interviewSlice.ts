@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { CompleteInterviewResponse, GenerateInterviewPayload, GenerateInterviewResponse, GetInterviewResultResponse, GetUserInterviewsResponse, Interview, InterviewState, SubmitInterviewPayload, SubmitInterviewResponse } from "../../../types/interview";
+import type { CompleteInterviewResponse, GenerateInterviewPayload, GenerateInterviewResponse, GetInterviewResultResponse, GetUserInterviewsResponse, Interview, InterviewState, StartInterviewResponse, SubmitInterviewPayload, SubmitInterviewResponse } from "../../../types/interview";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
 import type { AxiosError } from "axios";
@@ -15,6 +15,8 @@ const initialState: InterviewState = {
     loading: false,
 
     generating: false,
+
+    starting: false,
 
     submitting: false,
 
@@ -79,6 +81,38 @@ export const getInterview =
 
                 return rejectWithValue(err.response?.data?.message ?? "Failed to fetch interview");
             }
+        }
+    );
+
+export const startInterview =
+    createAsyncThunk<
+        StartInterviewResponse,
+        string,
+        { rejectValue: string }
+    >(
+        "interview/startInterview",
+
+        async (
+            interviewId,
+            { rejectWithValue }
+        ) => {
+
+            try {
+
+                const response = await api.post(API_ROUTES.AI.START_INTERVIEW(interviewId));
+
+                return response.data.data;
+
+            } catch (error) {
+
+                const err =
+                    error as AxiosError<{
+                        message: string;
+                    }>;
+
+                return rejectWithValue(err.response?.data?.message ?? "Failed to start interview");
+            }
+
         }
     );
 
@@ -248,113 +282,137 @@ const interviewSlice = createSlice({
             )
             .addCase(generateInterview.rejected, (state, action) => {
 
-                    state.generating = false;
-                    state.error = action.payload ?? "Failed to generate interview";
-                }
+                state.generating = false;
+                state.error = action.payload ?? "Failed to generate interview";
+            }
             )
 
             .addCase(getInterview.pending, (state) => {
 
-                    state.loading = true;
-                    state.error = null;
-                    state.interviewResult = null;
-                }
+                state.loading = true;
+                state.error = null;
+                state.interviewResult = null;
+            }
             )
-
             .addCase(getInterview.fulfilled, (state, action) => {
 
-                    state.loading = false;
-                    state.currentInterview = action.payload;
-                }
+                state.loading = false;
+                state.currentInterview = action.payload;
+            }
             )
             .addCase(getInterview.rejected, (state, action) => {
 
-                    state.loading = false;
-                    state.error = action.payload ?? "Failed to fetch interview";
+                state.loading = false;
+                state.error = action.payload ?? "Failed to fetch interview";
+            }
+            )
+
+            .addCase(startInterview.pending,(state) => {
+
+                    state.starting = true;
+                    state.error = null;
+                }
+            )
+            .addCase(startInterview.fulfilled, (state) => {
+
+                    state.starting = false;
+
+                    if (state.currentInterview) {
+
+                        state.currentInterview.status = "IN_PROGRESS";
+                    }
+
+                }
+            )
+            .addCase(startInterview.rejected,(state, action) => {
+
+                    state.starting = false;
+
+                    state.error = action.payload ?? "Failed to start interview";
                 }
             )
 
             .addCase(getInterviewResult.pending, (state) => {
 
-                    state.loading = true;
-                    state.error = null;
-                }
+                state.loading = true;
+                state.error = null;
+            }
             )
             .addCase(getInterviewResult.fulfilled, (state, action) => {
 
-                    state.loading = false;
-                    state.interviewResult = action.payload;
-                }
+                state.loading = false;
+                state.interviewResult = action.payload;
+            }
             )
-            .addCase(getInterviewResult.rejected, ( state, action) => {
+            .addCase(getInterviewResult.rejected, (state, action) => {
 
-                    state.loading = false;
-                    state.error = action.payload ?? "Failed to fetch interview result";
-                }
+                state.loading = false;
+                state.error = action.payload ?? "Failed to fetch interview result";
+            }
             )
 
             .addCase(getUserInterviews.pending, (state) => {
 
-                    state.loading = true;
-                    state.currentInterview = null;
-                    state.error = null;
-                }
+                state.loading = true;
+                state.currentInterview = null;
+                state.error = null;
+            }
             )
-            .addCase(getUserInterviews.fulfilled, ( state, action) => {
+            .addCase(getUserInterviews.fulfilled, (state, action) => {
 
-                    state.loading = false;
-                    state.interviews = action.payload.items;
-                    state.page = action.payload.page;
-                    state.limit = action.payload.limit;
-                    state.totalPages = action.payload.totalPages;
-                    state.total = action.payload.total;
-                }
+                state.loading = false;
+                state.interviews = action.payload.items;
+                state.page = action.payload.page;
+                state.limit = action.payload.limit;
+                state.totalPages = action.payload.totalPages;
+                state.total = action.payload.total;
+            }
             )
-            .addCase(getUserInterviews.rejected,( state,  action) => {
+            .addCase(getUserInterviews.rejected, (state, action) => {
 
-                    state.loading = false;
+                state.loading = false;
 
-                    state.error = action.payload ?? "Failed to fetch interviews";
-                }
+                state.error = action.payload ?? "Failed to fetch interviews";
+            }
             )
 
-            .addCase(submitInterview.pending,(state) => {
+            .addCase(submitInterview.pending, (state) => {
 
-                    state.submitting = true;
-                    state.error = null;
-                }
+                state.submitting = true;
+                state.error = null;
+            }
             )
             .addCase(submitInterview.fulfilled, (state) => {
-                    state.submitting = false;
-                }
+                state.submitting = false;
+            }
             )
-            .addCase(submitInterview.rejected,( state, action) => {
+            .addCase(submitInterview.rejected, (state, action) => {
 
-                    state.submitting = false;
-                    state.error =action.payload ?? "Failed to submit interview";
-                }
+                state.submitting = false;
+                state.error = action.payload ?? "Failed to submit interview";
+            }
             )
 
             .addCase(completeInterview.pending, (state) => {
 
-                    state.completing = true;
-                    state.error = null;
-                }
+                state.completing = true;
+                state.error = null;
+            }
             )
-            .addCase(completeInterview.fulfilled,(state) => {
+            .addCase(completeInterview.fulfilled, (state) => {
 
-                    state.completing = false;
+                state.completing = false;
 
-                    if ( state.currentInterview) {
-                        state.currentInterview.status = "COMPLETED";
-                    }
+                if (state.currentInterview) {
+                    state.currentInterview.status = "COMPLETED";
                 }
+            }
             )
-            .addCase(completeInterview.rejected, ( state, action) => {
+            .addCase(completeInterview.rejected, (state, action) => {
 
-                    state.completing = false;
-                    state.error = action.payload ?? "Failed to complete interview";
-                }
+                state.completing = false;
+                state.error = action.payload ?? "Failed to complete interview";
+            }
             );
 
     }

@@ -123,6 +123,10 @@ export interface GetUserInterviewsResponse {
     totalPages: number;
 }
 
+export interface StartInterviewResponse {
+    interviewId: string;
+}
+
 export interface InterviewState {
     interviews: InterviewListItem[];
 
@@ -133,6 +137,8 @@ export interface InterviewState {
     loading: boolean;
 
     generating: boolean;
+
+    starting: boolean;
 
     submitting: boolean;
 
