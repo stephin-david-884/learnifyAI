@@ -31,6 +31,7 @@ const QuizListPage = lazy(() => import("./presentation/pages/quiz/QuizListPage")
 const QuizAttemptPage = lazy(() => import("./presentation/pages/quiz/QuizAttemptPage"));
 const QuizResultPage = lazy(() => import("./presentation/pages/quiz/QuizResultPage"));
 const ProfilePage = lazy(() => import("./presentation/pages/profile/ProfilePage"));
+const InterviewListPage = lazy(() => import("./presentation/pages/interview/InterviewListPage"));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -102,11 +103,15 @@ const App = () => {
             <Route path="/subscription/plans" element={<SubscriptionPlansPage />} />
             <Route path="/subscription/payments" element={<PaymentHistoryPage />} />
             <Route path="/documents" element={<DocumentListPage />} />
-            <Route path="/documents/:documentId" element={<DocumentDetailPage />}/>
-            <Route path="/quizzes" element={<QuizListPage />}/>
-            <Route path="/quizzes/:quizId" element={<QuizAttemptPage />}/>
-            <Route path="/quizzes/:quizId/result" element={<QuizResultPage />}/>
-            <Route path="/profile" element={<ProfilePage />}/>
+            <Route path="/documents/:documentId" element={<DocumentDetailPage />} />
+            <Route path="/quizzes" element={<QuizListPage />} />
+            <Route path="/quizzes/:quizId" element={<QuizAttemptPage />} />
+            <Route path="/quizzes/:quizId/result" element={<QuizResultPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/interviews" element={<InterviewListPage />} />
+            {/* <Route path="/interviews/:interviewId" element={<InterviewPreparationPage />}/>
+            <Route path="/interviews/:interviewId/session" element={<InterviewSessionPage />}/>
+            <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/> */}
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
