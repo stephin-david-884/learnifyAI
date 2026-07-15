@@ -82,4 +82,10 @@ router.post(ROUTES.INTERVIEW.COMPLETE,
     interviewController.completeInterview
 );
 
+router.post(ROUTES.INTERVIEW.START,
+    authMiddleware(tokenService),
+    interviewController.startInterview
+
+);
+
 export default router;

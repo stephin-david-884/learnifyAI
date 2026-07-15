@@ -6,6 +6,7 @@ import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases
 import { IGetInterviewResultUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewResultUseCase";
 import { IGetInterviewUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewUseCase";
 import { IGetUserInterviewsUseCase } from "../../application/interfaces/usecases/interview/IGetUserInterviewsUseCase";
+import { IStartInterviewUseCase } from "../../application/interfaces/usecases/interview/IStartInterviewUseCase";
 import { ISubmitInterviewUseCase } from "../../application/interfaces/usecases/interview/ISubmitInterviewUseCase";
 import { IGenerateQuizUseCase } from "../../application/interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { IGetQuizResultUseCase } from "../../application/interfaces/usecases/quiz/IGetQuizResultUseCase";
@@ -21,6 +22,7 @@ import { GenerateInterviewUseCase } from "../../application/use-cases/interview/
 import { GetInterviewResultUseCase } from "../../application/use-cases/interview/GetInterviewResultUseCase";
 import { GetInterviewUseCase } from "../../application/use-cases/interview/GetInterviewUseCase";
 import { GetUserInterviewsUseCase } from "../../application/use-cases/interview/GetUserInterviewsUseCase";
+import { StartInterviewUseCase } from "../../application/use-cases/interview/StartInterviewUseCase";
 import { SubmitInterviewUseCase } from "../../application/use-cases/interview/SubmitInterviewUseCase";
 import { GenerateQuizUseCase } from "../../application/use-cases/quiz/GenerateQuizUseCase";
 import { GetQuizResultUseCase } from "../../application/use-cases/quiz/GetQuizResultUseCase";
@@ -170,6 +172,11 @@ const completeInterviewUseCase: ICompleteInterviewUseCase =
         interviewEvaluationService,
     );
 
+const startInterviewUseCase: IStartInterviewUseCase =  
+    new StartInterviewUseCase(
+        interviewRepository
+    );
+
 // CONTROLLER
 export const chatController =
     new ChatController(
@@ -194,4 +201,5 @@ export const interviewController =
         submitInterviewUseCase,
         getInterviewResultUseCase,
         completeInterviewUseCase,
+        startInterviewUseCase,
     );    

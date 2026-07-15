@@ -77,6 +77,7 @@ export const ROUTES = {
     GENERATE_INTERVIEW:  "/interview",
     GET_ONE:  "/interview/:interviewId",
     GET_ALL:  "/interviews",
+    START: "/interview/:interviewId/start",
     SUBMIT:  "/interview/:interviewId/submit",
     COMPLETE: "/interview/:interviewId/complete",
     GET_RESULT:  "/interview/:interviewId/result",

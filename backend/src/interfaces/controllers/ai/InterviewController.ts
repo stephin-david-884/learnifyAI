@@ -15,6 +15,8 @@ import { IGetInterviewResultUseCase } from "../../../application/interfaces/usec
 import { mapToGetInterviewResultDTO } from "../../../application/mappers/interview/GetInterviewResultMapper";
 import { ICompleteInterviewUseCase } from "../../../application/interfaces/usecases/interview/ICompleteInterviewUseCase";
 import { mapToCompleteInterviewDTO } from "../../../application/mappers/interview/CompleteInterviewMapper";
+import { IStartInterviewUseCase } from "../../../application/interfaces/usecases/interview/IStartInterviewUseCase";
+import { mapToStartInterviewDTO } from "../../../application/mappers/interview/StartInterviewMapper";
 
 export class InterviewController {
 
@@ -25,6 +27,7 @@ export class InterviewController {
         private readonly _submitInterviewUseCase: ISubmitInterviewUseCase,
         private readonly _getInterviewResultUseCase: IGetInterviewResultUseCase,
         private readonly _completeInterviewUseCase: ICompleteInterviewUseCase,
+        private readonly _startInterviewUseCase: IStartInterviewUseCase,
     ) {}
 
     generateInterview = asyncHandler(async (req: Request, res: Response) => {
@@ -109,5 +112,26 @@ export class InterviewController {
             interviewMessages.success.INTERVIEW_COMPLETED,
             interview
         )
-    })
+    });
+
+    startInterview = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToStartInterviewDTO(req);
+
+        const result = await this._startInterviewUseCase.execute(data);
+
+        return sendSuccess(
+
+            res,
+
+            statusCode.OK,
+
+            interviewMessages.success.INTERVIEW_STARTED,
+
+            result
+        );
+
+    }
+
+);
 }
