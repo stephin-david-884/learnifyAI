@@ -18,6 +18,7 @@ export const interviewMessages = {
         ANSWER_NOT_SUBMITTED: "Interview answers not submitted",
         EVALUATION_FAILED: "Evaluation Failed",
         INTERVIEW_NOT_COMPLETED: "Interview has not been completed yet",
-        INTERVIEW_ALREADY_COMPLETED: "Interview already completed"
+        INTERVIEW_ALREADY_COMPLETED: "Interview already completed",
+        INTERVIEW_ALREADY_STARTED: "Interview has already been started.",
     }
 }
