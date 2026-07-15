@@ -3,19 +3,23 @@ import {
     ClipboardList,
     Sparkles,
     BookOpen,
+    Mic,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
 
 import GenerateQuizModal
-from "../../modals/GenerateQuizModal";
+    from "../../modals/GenerateQuizModal";
 
 import { useQuiz }
-from "../../../../hooks/useQuiz";
+    from "../../../../hooks/useQuiz";
 
 import type {
     DocumentItem,
 } from "../../../../types/document";
+import { useInterview } from "../../../../hooks/useInterview";
+import { useSubscription } from "../../../../hooks/useSubscription";
+import GenerateInterviewModal from "../../modals/GenerateInterviewModal";
 
 type Props = {
     document: DocumentItem;
@@ -28,10 +32,15 @@ const LearnHubTab: React.FC<Props> = ({
     const navigate =
         useNavigate();
 
-    const {
-        createQuiz,
-        generating,
-    } = useQuiz();
+    const { createQuiz, generating } = useQuiz();
+
+    const { createInterview, generating: interviewGenerating } = useInterview();
+
+    const { activeSubscription } = useSubscription();
+
+    const hasInterviewAccess = activeSubscription?.planSnapshot?.features?.interviewAccess;
+
+    const [interviewModal, setInterviewModal] = useState(false);
 
     const [openModal, setOpenModal] =
         useState(false);
@@ -58,11 +67,39 @@ const LearnHubTab: React.FC<Props> = ({
         return result;
     };
 
+    const handleGenerateInterview =
+        async (data: {
+            title: string;
+            questionCount: 5 | 10;
+            topics: string[];
+        }) => {
+
+            const result =
+                await createInterview({
+
+                    documentId:
+                        document.id,
+
+                    title:
+                        data.title,
+
+                    topics:
+                        data.topics,
+
+                    questionCount:
+                        data.questionCount,
+
+                });
+
+            navigate("/interviews");
+
+            return result;
+        };
+
     return (
         <>
             <div className="space-y-6">
 
-                {/* Header */}
 
                 <div className="rounded-3xl border border-slate-200 bg-white p-6">
 
@@ -159,25 +196,69 @@ const LearnHubTab: React.FC<Props> = ({
                             onClick={() =>
                                 setOpenModal(true)
                             }
-                            className="
-                                rounded-2xl
-                                bg-gradient-to-r
-                                from-red-500
-                                to-rose-600
-                                px-5
-                                py-3
-                                font-semibold
-                                text-white
-                                shadow-lg
-                                shadow-red-500/20
-                                transition
-                                hover:opacity-90
-                            "
+                            className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-5 py-3 font-semibold text-white shadow-lg shadow-red-500/20 transition  hover:opacity-90"
                         >
                             Generate Quiz
                         </button>
 
                     </div>
+                </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-6">
+
+                    <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+                        <div>
+
+                            <div className="flex items-center gap-2">
+
+                                <Mic
+                                    size={20}
+                                    className="text-red-600"
+                                />
+
+                                <h3 className="font-semibold">
+
+                                    AI Interview
+
+                                </h3>
+
+                            </div>
+
+                            <p className="mt-2 text-sm text-slate-500">
+
+                                Practice AI mock interviews using your document topics.
+                                Voice responses will be evaluated with detailed feedback.
+
+                            </p>
+
+                        </div>
+
+                        {hasInterviewAccess ? (
+
+                            <button
+                                onClick={() =>
+                                    setInterviewModal(true)
+                                }
+                                className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-5 py-3 font-semibold text-white shadow-lg shadow-red-500/20 hover:opacity-90"
+                            >
+
+                                Generate Interview
+
+                            </button>
+
+                        ) : (
+
+                            <div className="rounded-2xl bg-amber-50 px-5 py-3 text-sm font-medium text-amber-700">
+
+                                Available on Pro Plan
+
+                            </div>
+
+                        )}
+
+                    </div>
+
                 </div>
             </div>
 
@@ -192,6 +273,22 @@ const LearnHubTab: React.FC<Props> = ({
                 onGenerate={
                     handleGenerateQuiz
                 }
+            />
+
+            <GenerateInterviewModal
+                open={interviewModal}
+
+                documentTitle={document.title}
+
+                topics={document.topics}
+
+                loading={interviewGenerating}
+
+                onClose={() =>
+                    setInterviewModal(false)
+                }
+
+                onGenerate={handleGenerateInterview}
             />
         </>
     );
