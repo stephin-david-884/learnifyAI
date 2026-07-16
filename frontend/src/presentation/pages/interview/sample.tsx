@@ -1,26 +1,10 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-
-import {
-    useNavigate,
-    useParams,
-} from "react-router-dom";
-
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams,} from "react-router-dom";
 import Swal from "sweetalert2";
-
 import Spinner from "../../components/common/Spinner";
-
 import { useInterview } from "../../../hooks/useInterview";
 
-import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition";
-
-import type {
-    InterviewAnswerPayload,
-} from "../../../types/interview";
+import type { InterviewAnswerPayload } from "../../../types/interview";
 
 import InterviewProgress from "../../components/interview/InterviewProgress";
 import InterviewQuestionCard from "../../components/interview/InterviewQuestionCard";
@@ -29,7 +13,6 @@ import RecordingControls from "../../components/interview/RecordingControls";
 import InterviewTimer from "../../components/interview/InterviewTimer";
 
 const FIVE_QUESTION_DURATION = 10 * 60;
-
 const TEN_QUESTION_DURATION = 20 * 60;
 
 const InterviewSessionPage: React.FC = () => {
@@ -41,93 +24,39 @@ const InterviewSessionPage: React.FC = () => {
     const {
 
         loading,
-
         submitting,
-
         completing,
-
         currentInterview,
-
         fetchInterview,
-
         submitInterviewAnswers,
-
         completeInterviewSession,
 
     } = useInterview();
 
-    const {
 
-        transcript,
+    const [currentQuestionIndex, setCurrentQuestionIndex,] = useState(0);
 
-        isRecording,
+    const [currentTranscript, setCurrentTranscript,] = useState("");
 
-        browserSupported,
+    const [isRecording, setIsRecording,] = useState(false);
 
-        error,
+    const [answers, setAnswers,] = useState<Record<number, string>>({});
 
-        startRecording,
-
-        stopRecording,
-
-        retryRecording,
-
-        resetTranscript,
-
-        loadTranscript,
-
-    } = useSpeechRecognition();
-
-    const [
-
-        currentQuestionIndex,
-
-        setCurrentQuestionIndex,
-
-    ] = useState(0);
-
-    const [
-
-        answers,
-
-        setAnswers,
-
-    ] = useState<Record<number, string>>({});
-
-    const [
-
-        remainingSeconds,
-
-        setRemainingSeconds,
-
-    ] = useState(0);
-
-    /*
-    -------------------------------------------------------
-    Fetch Interview
-    -------------------------------------------------------
-    */
+    const [remainingSeconds, setRemainingSeconds,] = useState(0);
 
     useEffect(() => {
 
         if (!interviewId) {
-
             navigate("/interviews");
-
             return;
-
         }
 
         fetchInterview(interviewId)
-
             .catch(async () => {
 
                 await Swal.fire({
-
                     icon: "error",
-
                     title: "Interview not found",
-
                     text: "Unable to load interview.",
 
                 });
@@ -136,142 +65,64 @@ const InterviewSessionPage: React.FC = () => {
 
             });
 
-    }, [
+    }, [interviewId, fetchInterview, navigate,]);
 
-        interviewId,
-
-        fetchInterview,
-
-        navigate,
-
-    ]);
-
-    /*
-    -------------------------------------------------------
-    Timer
-    -------------------------------------------------------
-    */
 
     useEffect(() => {
 
         if (!currentInterview) {
-
             return;
-
         }
 
         const duration =
-
             currentInterview.totalQuestions === 5
-
                 ? FIVE_QUESTION_DURATION
-
                 : TEN_QUESTION_DURATION;
 
-        setRemainingSeconds(duration);
+        setRemainingSeconds(
+            duration
+        );
 
-    }, [
-
-        currentInterview,
-
-    ]);
-
-    /*
-    -------------------------------------------------------
-    Current Question
-    -------------------------------------------------------
-    */
+    }, [currentInterview,]);
 
     const currentQuestion =
-
         useMemo(() => {
 
             if (!currentInterview) {
-
                 return null;
-
             }
 
-            return currentInterview.questions[
-                currentQuestionIndex
-            ];
+            return currentInterview.questions[ currentQuestionIndex];
 
-        }, [
-
-            currentInterview,
-
-            currentQuestionIndex,
-
-        ]);
-
-    /*
-    -------------------------------------------------------
-    Progress
-    -------------------------------------------------------
-    */
+        }, [currentInterview, currentQuestionIndex,]);
 
     const progress =
-
         useMemo(() => {
 
             if (!currentInterview) {
 
                 return 0;
-
             }
 
             return (
-
-                (
-
-                    (currentQuestionIndex + 1)
-
-                    / currentInterview.totalQuestions
-
-                ) * 100
-
+                ((currentQuestionIndex + 1) /
+                    currentInterview.totalQuestions)
+                * 100
             );
 
-        }, [
-
-            currentInterview,
-
-            currentQuestionIndex,
-
-        ]);
-
-    /*
-    -------------------------------------------------------
-    Restore Saved Transcript
-    -------------------------------------------------------
-    */
+        }, [ currentInterview, currentQuestionIndex,]);
 
     useEffect(() => {
 
-        loadTranscript(
+        setCurrentTranscript(
 
             answers[currentQuestionIndex] ?? ""
 
         );
 
-    }, [
-
-        currentQuestionIndex,
-
-        answers,
-
-        loadTranscript,
-
-    ]);
-
-    /*
-    -------------------------------------------------------
-    Save Current Transcript
-    -------------------------------------------------------
-    */
+    }, [currentQuestionIndex,answers]);
 
     const saveCurrentTranscript =
-
         useCallback(() => {
 
             setAnswers(
@@ -280,9 +131,10 @@ const InterviewSessionPage: React.FC = () => {
 
                     ...prev,
 
-                    [currentQuestionIndex]:
-
-                        transcript.trim(),
+                    [
+                        currentQuestionIndex
+                    ]:
+                        currentTranscript.trim(),
 
                 })
 
@@ -290,147 +142,93 @@ const InterviewSessionPage: React.FC = () => {
 
         }, [
 
-            transcript,
+            currentTranscript,
 
             currentQuestionIndex,
 
         ]);
 
-    /*
-    -------------------------------------------------------
-    Navigation
-    -------------------------------------------------------
-    */
 
-    const handleNext = () => {
+    const handleNext =
+        () => {
 
-        saveCurrentTranscript();
+            saveCurrentTranscript();
 
-        if (!currentInterview) {
+            if (!currentInterview) {
+                return;
+            }
 
-            return;
+            if (currentQuestionIndex >= currentInterview.totalQuestions - 1) {
 
-        }
+                return;
+            }
 
-        if (
+            setCurrentQuestionIndex(prev => prev + 1);
 
-            currentQuestionIndex >=
+        };
 
-            currentInterview.totalQuestions - 1
+    const handlePrevious =
+        () => {
 
-        ) {
+            saveCurrentTranscript();
 
-            return;
+            if (currentQuestionIndex === 0) {
+                return;
+            }
 
-        }
+            setCurrentQuestionIndex(prev => prev - 1);
 
-        setCurrentQuestionIndex(
-
-            prev => prev + 1
-
-        );
-
-    };
-
-    const handlePrevious = () => {
-
-        saveCurrentTranscript();
-
-        if (currentQuestionIndex === 0) {
-
-            return;
-
-        }
-
-        setCurrentQuestionIndex(
-
-            prev => prev - 1
-
-        );
-
-    };
+        };
 
     /*
     -------------------------------------------------------
-    Re-record Answer
+    Recording Placeholder
+
+    (Web Speech API
+    will replace these)
     -------------------------------------------------------
     */
 
-    const handleRetryRecording = () => {
+    const handleStartRecording =
+        () => {
 
-        retryRecording();
+            setIsRecording(true);
 
-        setAnswers(
+        };
 
-            prev => ({
+    const handleStopRecording =
+        () => {
 
-                ...prev,
+            setIsRecording(false);
 
-                [currentQuestionIndex]: "",
+        };
 
-            })
+    const handleRetryRecording =
+        () => {
 
-        );
+            setCurrentTranscript("");
 
-    };
+            setAnswers(
 
-    /*
-    -------------------------------------------------------
-    Browser Support
-    -------------------------------------------------------
-    */
+                prev => ({...prev, [currentQuestionIndex]: "",})
 
-    if (!browserSupported) {
+            );
 
-        return (
+        };
 
-            <div className="rounded-3xl border border-red-200 bg-red-50 p-8">
-
-                <h2 className="text-xl font-bold text-red-700">
-
-                    Browser Not Supported
-
-                </h2>
-
-                <p className="mt-2 text-red-600">
-
-                    Your browser doesn't support
-                    speech recognition.
-
-                    Please use Google Chrome
-                    or Microsoft Edge.
-
-                </p>
-
-            </div>
-
-        );
-
-    }
-
-    if (
-
-        loading ||
-
-        !currentInterview ||
-
-        !currentQuestion
-
-    ) {
+    if (loading || !currentInterview || !currentQuestion) {
 
         return (
 
             <div className="flex h-[60vh] items-center justify-center">
-
                 <Spinner />
-
             </div>
 
         );
 
     }
 
-        return (
+    return (
 
         <div className="mx-auto max-w-7xl space-y-6">
 
@@ -457,27 +255,19 @@ const InterviewSessionPage: React.FC = () => {
                 <div className="w-full lg:w-[340px]">
 
                     <InterviewTimer
-
-                        remainingSeconds={
-                            remainingSeconds
-                        }
-
+                        remainingSeconds={remainingSeconds}
                         totalSeconds={
-
                             currentInterview.totalQuestions === 5
-
                                 ? FIVE_QUESTION_DURATION
-
                                 : TEN_QUESTION_DURATION
-
                         }
-
                     />
 
                 </div>
 
             </div>
 
+            {/* Progress */}
 
             <InterviewProgress
 
@@ -488,21 +278,18 @@ const InterviewSessionPage: React.FC = () => {
                 }
 
                 totalQuestions={
-
                     currentInterview.totalQuestions
-
                 }
 
                 progress={progress}
 
             />
 
-
             <div className="grid gap-6 xl:grid-cols-3">
 
+                {/* Left */}
 
                 <div className="space-y-6 xl:col-span-2">
-
 
                     <InterviewQuestionCard
 
@@ -518,6 +305,18 @@ const InterviewSessionPage: React.FC = () => {
 
                         }
 
+                        // questionNumber={
+
+                        //     currentQuestionIndex + 1
+
+                        // }
+
+                        // totalQuestions={
+
+                        //     currentInterview.totalQuestions
+
+                        // }
+
                         isRecording={
 
                             isRecording
@@ -525,112 +324,73 @@ const InterviewSessionPage: React.FC = () => {
                         }
 
                     />
-
-
-                    {error && (
-
-                        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
-
-                            {error}
-
-                        </div>
-
-                    )}
-
 
                     <TranscriptCard
 
                         transcript={
-
-                            transcript
-
+                            currentTranscript
                         }
+
+                        // isRecording={
+                        //     isRecording
+                        // }
 
                     />
 
-
                 </div>
 
+                {/* Right */}
 
                 <div className="space-y-6">
-
 
                     <RecordingControls
 
                         isRecording={
-
                             isRecording
-
                         }
 
                         hasTranscript={
 
-                            transcript
+                            currentTranscript
                                 .trim()
                                 .length > 0
 
                         }
 
                         disabled={
-
                             submitting ||
-
                             completing
-
                         }
 
                         onStart={
-
-                            startRecording
-
+                            handleStartRecording
                         }
 
                         onStop={
-
-                            stopRecording
-
+                            handleStopRecording
                         }
 
                         onRetry={
-
                             handleRetryRecording
-
                         }
 
                     />
 
-
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
 
-
                         <h3 className="text-lg font-bold text-slate-900">
-
                             Interview Progress
-
                         </h3>
 
-
                         <div className="mt-6 space-y-3">
-
 
                             {currentInterview.questions.map(
 
                                 (_, index) => {
 
+                                    const answered =Boolean(answers[index]);
 
-                                    const answered =
-
-                                        Boolean(
-
-                                            answers[index]
-
-                                        );
-
-
-                                    const active =
-
-                                        currentQuestionIndex === index;
-
+                                    const active = currentQuestionIndex === index;
 
                                     return (
 
@@ -643,37 +403,38 @@ const InterviewSessionPage: React.FC = () => {
                                                 saveCurrentTranscript();
 
                                                 setCurrentQuestionIndex(
-
                                                     index
-
                                                 );
 
                                             }}
 
-                                            className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 transition
-
+                                            className={`flex  w-full items-center justify-between rounded-2xl border px-4 py-3 transition
                                                 ${active
 
                                                     ? "border-red-500 bg-red-50"
-
                                                     : "border-slate-200 hover:border-red-300"
 
                                                 }
-
                                             `}
-
                                         >
 
-                                            <span className="font-medium">
+                                            <span
+                                                className="font-medium"
+                                            >
 
                                                 Question {index + 1}
 
                                             </span>
 
-
                                             {answered ? (
 
-                                                <span className="text-sm font-semibold text-emerald-600">
+                                                <span
+                                                    className="
+                                                        text-sm
+                                                        font-semibold
+                                                        text-emerald-600
+                                                    "
+                                                >
 
                                                     Answered
 
@@ -681,14 +442,18 @@ const InterviewSessionPage: React.FC = () => {
 
                                             ) : (
 
-                                                <span className="text-sm text-slate-400">
+                                                <span
+                                                    className="
+                                                        text-sm
+                                                        text-slate-400
+                                                    "
+                                                >
 
                                                     Pending
 
                                                 </span>
 
                                             )}
-
 
                                         </button>
 
@@ -698,111 +463,84 @@ const InterviewSessionPage: React.FC = () => {
 
                             )}
 
-
                         </div>
-
 
                     </div>
 
-
                 </div>
-
 
             </div>
 
+            {/* Bottom Navigation */}
 
             <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 sm:flex-row sm:justify-between">
-
 
                 <button
 
                     onClick={handlePrevious}
 
                     disabled={
-
                         currentQuestionIndex === 0
-
                     }
 
                     className="rounded-2xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
-
                 >
 
                     Previous Question
 
                 </button>
 
-
                 <div className="flex gap-3">
 
-
                     {currentQuestionIndex <
-
-                    currentInterview.totalQuestions - 1 ? (
-
+                        currentInterview.totalQuestions - 1 ? (
 
                         <button
 
                             onClick={handleNext}
 
                             className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
-
                         >
 
                             Save & Next
 
                         </button>
 
-
                     ) : (
-
 
                         <button
 
                             onClick={async () => {
 
-
                                 saveCurrentTranscript();
 
-
                                 await Swal.fire({
-
-                                    title: "Interview Ready",
-
-                                    text:
-
-                                        "Your answers have been saved. Interview submission can now be connected.",
-
-                                    icon: "success",
+                                    title:
+                                        "Interview Ready",
+                                    text: "Interview submission will be implemented after Speech Recognition integration.",
+                                    icon: "info",
 
                                 });
-
 
                             }}
 
                             className="rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
-
                         >
 
                             Finish Interview
 
                         </button>
 
-
                     )}
-
 
                 </div>
 
-
             </div>
-
 
         </div>
 
     );
 
 };
-
 
 export default InterviewSessionPage;

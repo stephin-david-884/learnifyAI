@@ -5,15 +5,15 @@ import {
     useState,
 } from "react";
 
-declare global {
+// declare global {
 
-    interface Window {
+//     interface Window {
 
-        SpeechRecognition: SpeechRecognitionConstructor;
+//         SpeechRecognition: SpeechRecognitionConstructor;
 
-        webkitSpeechRecognition: SpeechRecognitionConstructor;
-    }
-}
+//         webkitSpeechRecognition: SpeechRecognitionConstructor;
+//     }
+// }
 
 type UseSpeechRecognitionReturn = {
 
@@ -32,6 +32,8 @@ type UseSpeechRecognitionReturn = {
     retryRecording: () => void;
 
     resetTranscript: () => void;
+
+    loadTranscript: (text: string) => void;
 };
 
 export const useSpeechRecognition =
@@ -100,9 +102,8 @@ export const useSpeechRecognition =
                         event.results[i][0].transcript;
                 }
 
-                setTranscript(
-                    latestTranscript.trim()
-                );
+                setTranscript(latestTranscript.trim());
+
             };
 
             /*
@@ -209,8 +210,6 @@ export const useSpeechRecognition =
                     return;
                 }
 
-                setTranscript("");
-
                 setError(null);
 
                 recognitionRef.current.start();
@@ -238,11 +237,22 @@ export const useSpeechRecognition =
         const retryRecording =
             useCallback(() => {
 
+                if (!recognitionRef.current) {
+
+                    return;
+                }
+
+                recognitionRef.current.stop();
+
                 setTranscript("");
 
                 setError(null);
 
-                recognitionRef.current?.stop();
+                setTimeout(() => {
+
+                    recognitionRef.current?.start();
+
+                }, 200);
 
             }, []);
 
@@ -254,6 +264,17 @@ export const useSpeechRecognition =
             useCallback(() => {
 
                 setTranscript("");
+
+            }, []);
+
+        /* 
+        Load Transcript
+        */
+
+        const loadTranscript =
+            useCallback((text: string) => {
+
+                setTranscript(text);
 
             }, []);
 
@@ -274,5 +295,7 @@ export const useSpeechRecognition =
             retryRecording,
 
             resetTranscript,
+
+            loadTranscript,
         };
     };
