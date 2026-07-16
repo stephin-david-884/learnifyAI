@@ -78,34 +78,16 @@ const InterviewSessionPage: React.FC = () => {
 
     } = useSpeechRecognition();
 
-    const [
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-        currentQuestionIndex,
+    const [answers, setAnswers] = useState<Record<number, string>>({});
 
-        setCurrentQuestionIndex,
+    const [remainingSeconds, setRemainingSeconds] = useState(0);
 
-    ] = useState(0);
-
-    const [
-
-        answers,
-
-        setAnswers,
-
-    ] = useState<Record<number, string>>({});
-
-    const [
-
-        remainingSeconds,
-
-        setRemainingSeconds,
-
-    ] = useState(0);
+    const isBusy = submitting || completing;
 
     /*
-    -------------------------------------------------------
     Fetch Interview
-    -------------------------------------------------------
     */
 
     useEffect(() => {
@@ -147,9 +129,7 @@ const InterviewSessionPage: React.FC = () => {
     ]);
 
     /*
-    -------------------------------------------------------
     Timer
-    -------------------------------------------------------
     */
 
     useEffect(() => {
@@ -170,16 +150,38 @@ const InterviewSessionPage: React.FC = () => {
 
         setRemainingSeconds(duration);
 
-    }, [
-
-        currentInterview,
-
-    ]);
+    }, [currentInterview,]);
 
     /*
-    -------------------------------------------------------
+    Countdown
+    */
+
+    useEffect(() => {
+
+        if (remainingSeconds <= 0 || isBusy) {
+
+            return;
+        }
+
+        const interval =
+            window.setInterval(() => {
+
+                setRemainingSeconds(
+                    prev => prev - 1
+                );
+
+            }, 1000);
+
+        return () => {
+
+            clearInterval(interval);
+
+        };
+
+    }, [remainingSeconds, isBusy]);
+
+    /*
     Current Question
-    -------------------------------------------------------
     */
 
     const currentQuestion =
@@ -205,9 +207,7 @@ const InterviewSessionPage: React.FC = () => {
         ]);
 
     /*
-    -------------------------------------------------------
     Progress
-    -------------------------------------------------------
     */
 
     const progress =
@@ -241,9 +241,7 @@ const InterviewSessionPage: React.FC = () => {
         ]);
 
     /*
-    -------------------------------------------------------
     Restore Saved Transcript
-    -------------------------------------------------------
     */
 
     useEffect(() => {
@@ -265,9 +263,7 @@ const InterviewSessionPage: React.FC = () => {
     ]);
 
     /*
-    -------------------------------------------------------
     Save Current Transcript
-    -------------------------------------------------------
     */
 
     const saveCurrentTranscript =
@@ -297,12 +293,12 @@ const InterviewSessionPage: React.FC = () => {
         ]);
 
     /*
-    -------------------------------------------------------
     Navigation
-    -------------------------------------------------------
     */
 
     const handleNext = () => {
+
+        stopRecording();
 
         saveCurrentTranscript();
 
@@ -334,6 +330,8 @@ const InterviewSessionPage: React.FC = () => {
 
     const handlePrevious = () => {
 
+        stopRecording();
+
         saveCurrentTranscript();
 
         if (currentQuestionIndex === 0) {
@@ -351,33 +349,129 @@ const InterviewSessionPage: React.FC = () => {
     };
 
     /*
-    -------------------------------------------------------
     Re-record Answer
-    -------------------------------------------------------
     */
 
     const handleRetryRecording = () => {
 
         retryRecording();
 
-        setAnswers(
-
-            prev => ({
-
-                ...prev,
-
-                [currentQuestionIndex]: "",
-
-            })
+        setAnswers(prev => ({ ...prev, [currentQuestionIndex]: "", })
 
         );
 
     };
 
+    const handleFinishInterview =
+        useCallback(async (autoSubmit = false) => {
+
+            if (!currentInterview || !interviewId) {
+
+                return;
+            }
+
+            stopRecording();
+
+            saveCurrentTranscript();
+
+            if (!autoSubmit) {
+
+                const result =
+                    await Swal.fire({
+
+                        title: "Finish Interview?",
+                        text: "You won't be able to edit your answers after submission.",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Submit",
+
+                    });
+
+                if (!result.isConfirmed) {
+
+                    return;
+
+                }
+            }
+
+            try {
+
+                const payload: InterviewAnswerPayload[] =
+
+                    currentInterview.questions.map(
+                        (_, index) => ({
+
+                            questionIndex: index,
+
+                            transcript:
+                                index === currentQuestionIndex
+                                    ? transcript.trim()
+                                    : answers[index]?.trim() ?? "",
+
+                        })
+                    );
+
+                await submitInterviewAnswers({
+
+                    interviewId,
+
+                    answers: payload,
+
+                });
+
+                await completeInterviewSession(interviewId);
+
+                resetTranscript();
+
+                navigate(`/interviews/${interviewId}/result`);
+
+            } catch {
+
+                await Swal.fire({
+
+                    icon: "error",
+
+                    title: "Submission Failed",
+                    text: "Unable to complete interview.",
+
+                });
+
+            }
+
+        },
+
+            [answers, currentInterview, interviewId, navigate, saveCurrentTranscript,
+                stopRecording, submitInterviewAnswers, completeInterviewSession,]
+
+        );
+
     /*
-    -------------------------------------------------------
+    Auto Submit
+    */
+
+    useEffect(() => {
+
+        if (remainingSeconds !== 0) {
+
+            return;
+        }
+
+        handleFinishInterview(true);
+
+    }, [remainingSeconds, handleFinishInterview]);
+
+    /*
+    Cleanup
+    */
+
+    useEffect(() => {
+
+        return () => { stopRecording(); };
+
+    }, [stopRecording]);
+
+    /*
     Browser Support
-    -------------------------------------------------------
     */
 
     if (!browserSupported) {
@@ -408,15 +502,7 @@ const InterviewSessionPage: React.FC = () => {
 
     }
 
-    if (
-
-        loading ||
-
-        !currentInterview ||
-
-        !currentQuestion
-
-    ) {
+    if (loading || !currentInterview || !currentQuestion) {
 
         return (
 
@@ -430,7 +516,7 @@ const InterviewSessionPage: React.FC = () => {
 
     }
 
-        return (
+    return (
 
         <div className="mx-auto max-w-7xl space-y-6">
 
@@ -571,13 +657,7 @@ const InterviewSessionPage: React.FC = () => {
 
                         }
 
-                        disabled={
-
-                            submitting ||
-
-                            completing
-
-                        }
+                        disabled={isBusy}
 
                         onStart={
 
@@ -638,7 +718,11 @@ const InterviewSessionPage: React.FC = () => {
 
                                             key={index}
 
+                                            disabled={isBusy}
+
                                             onClick={() => {
+
+                                                stopRecording();
 
                                                 saveCurrentTranscript();
 
@@ -718,11 +802,7 @@ const InterviewSessionPage: React.FC = () => {
 
                     onClick={handlePrevious}
 
-                    disabled={
-
-                        currentQuestionIndex === 0
-
-                    }
+                    disabled={currentQuestionIndex === 0 || isBusy}
 
                     className="rounded-2xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
 
@@ -738,18 +818,20 @@ const InterviewSessionPage: React.FC = () => {
 
                     {currentQuestionIndex <
 
-                    currentInterview.totalQuestions - 1 ? (
+                        currentInterview.totalQuestions - 1 ? (
 
 
                         <button
 
                             onClick={handleNext}
 
+                            disabled={isBusy}
+
                             className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
 
                         >
 
-                            Save & Next
+                            {isBusy ? "Please wait..." : "Save & Next"}
 
                         </button>
 
@@ -759,32 +841,15 @@ const InterviewSessionPage: React.FC = () => {
 
                         <button
 
-                            onClick={async () => {
+                            onClick={() => handleFinishInterview()}
 
-
-                                saveCurrentTranscript();
-
-
-                                await Swal.fire({
-
-                                    title: "Interview Ready",
-
-                                    text:
-
-                                        "Your answers have been saved. Interview submission can now be connected.",
-
-                                    icon: "success",
-
-                                });
-
-
-                            }}
+                            disabled={isBusy}
 
                             className="rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
 
                         >
 
-                            Finish Interview
+                            {submitting ? "Submitting..." : completing ? "Evaluating..." : "Finish Interview"}
 
                         </button>
 
