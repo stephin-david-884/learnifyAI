@@ -107,7 +107,8 @@ const interviewAnswerSchema =
 
             feedback: {
                 type: String,
-                required: true,
+                required: false,
+                default:""
             },
 
             strengths: {

@@ -122,7 +122,7 @@ const InterviewSessionPage: React.FC = () => {
 
         interviewId,
 
-        fetchInterview,
+        // fetchInterview,
 
         navigate,
 

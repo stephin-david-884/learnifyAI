@@ -50,7 +50,7 @@ const GenerateInterviewModal: React.FC<Props> = ({
 
     const remaining = maxTopics - selectedTopics.length;
 
-    const canGenerate = useMemo(() => title.trim().length > 0 && selectedTopics.length >= 2, []);
+    const canGenerate = useMemo(() => title.trim().length > 0 && selectedTopics.length >= 2, [title, selectedTopics]);
 
     if (!open) return null;
 
