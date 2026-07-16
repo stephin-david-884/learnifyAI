@@ -34,6 +34,7 @@ const ProfilePage = lazy(() => import("./presentation/pages/profile/ProfilePage"
 const InterviewListPage = lazy(() => import("./presentation/pages/interview/InterviewListPage"));
 const InterviewPreparationPage = lazy(() => import("./presentation/pages/interview/InterviewPreparationPage"));
 const InterviewSessionPage = lazy(() => import('./presentation/pages/interview/InterviewSessionPage'));
+const InterviewResultPage = lazy(() => import('./presentation/pages/interview/InterviewResultPage'));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -113,7 +114,7 @@ const App = () => {
             <Route path="/interviews" element={<InterviewListPage />} />
             <Route path="/interviews/:interviewId" element={<InterviewPreparationPage />}/>
             <Route path="/interviews/:interviewId/session" element={<InterviewSessionPage />}/>
-            {/* <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/> */}
+            <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/>
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
