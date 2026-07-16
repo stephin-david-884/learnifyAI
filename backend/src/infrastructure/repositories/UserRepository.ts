@@ -54,14 +54,15 @@ export class UserRepository
         };
     }
 
+    async findByIdWithPassword(id: string): Promise<User | null> {
+        const user = await this._model.findById(id).select("+password").lean();
 
-    // async findByIdWithPassword(id: string): Promise<User | null> {
-    //     const user = await UserModel.findById(id)
-    //                         .select("+password")
-    //                         .lean();
-    //     if (!user) return null;
-    //     return toDomainUser(user);
-    // }
+        if(!user){
+            return null;
+        }
+
+        return toDomainUser(user);
+    }
 
 
     // async delete(id: string): Promise<void> {

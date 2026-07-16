@@ -1,21 +1,8 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-
-import {
-    useNavigate,
-    useParams,
-} from "react-router-dom";
-
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
-
 import Spinner from "../../components/common/Spinner";
-
 import { useInterview } from "../../../hooks/useInterview";
-
 import { useSpeechRecognition } from "../../../hooks/useSpeechRecognition";
 
 import type {

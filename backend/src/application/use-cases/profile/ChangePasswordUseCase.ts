@@ -16,7 +16,7 @@ export class ChangePasswordUseCase implements IChangePasswordUseCase {
 
     async execute(data: ChangePasswordDTO): Promise<void> {
         
-        const user = await this._userRepository.findById(data.userId);
+        const user = await this._userRepository.findByIdWithPassword(data.userId);
 
         if(!user) {
             throw new AppError(authMessages.error.USER_NOT_FOUND, statusCode.NOT_FOUND);
