@@ -5,7 +5,7 @@ export interface GenerateFlashcardDTO {
 
     topic: string;
 
-    cardCount: number;
+    cardCount: 5 | 10;
 }
 
 export interface GenerateFlashcardResponseDTO {
