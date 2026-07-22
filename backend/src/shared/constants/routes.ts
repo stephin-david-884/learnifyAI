@@ -74,12 +74,19 @@ export const ROUTES = {
   },
 
   INTERVIEW: {
-    GENERATE_INTERVIEW:  "/interview",
-    GET_ONE:  "/interview/:interviewId",
-    GET_ALL:  "/interviews",
+    GENERATE_INTERVIEW: "/interview",
+    GET_ONE: "/interview/:interviewId",
+    GET_ALL: "/interviews",
     START: "/interview/:interviewId/start",
-    SUBMIT:  "/interview/:interviewId/submit",
+    SUBMIT: "/interview/:interviewId/submit",
     COMPLETE: "/interview/:interviewId/complete",
-    GET_RESULT:  "/interview/:interviewId/result",
-},
+    GET_RESULT: "/interview/:interviewId/result",
+  },
+
+  FLASHCARD: {
+    GENERATE: "/flashcards",
+    GET_ALL: "/flashcards",
+    GET_ONE: "/flashcards/:flashcardSetId",
+    DELETE: "/flashcards/:flashcardSetId",
+  },
 };

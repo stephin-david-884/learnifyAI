@@ -2,13 +2,14 @@ import express from "express";
 import { ROUTES } from "../../shared/constants/routes";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { tokenService } from "../../infrastructure/di/container";
-import { chatController, interviewController, quizController } from "../../infrastructure/di/ai.container";
+import { chatController, flashcardController, interviewController, quizController } from "../../infrastructure/di/ai.container";
 import { validate } from "../middlewares/validate";
 import { generateAnswerSchema } from "../validators/chat/chat.validator";
 import { generateQuizSchema } from "../validators/quiz/generateQuiz.validator";
 import { submitQuizSchema } from "../validators/quiz/submitQuiz.validator";
 import { generateInterviewSchema } from "../validators/interview/generateInterview.validator";
 import { submitInterviewSchema } from "../validators/interview/submitInterview.validator";
+import { generateFlashcardSchema } from "../validators/flashcard/generateFlashcard.validator";
 
 const router = express.Router();
 
@@ -86,6 +87,12 @@ router.post(ROUTES.INTERVIEW.START,
     authMiddleware(tokenService),
     interviewController.startInterview
 
+);
+
+router.post(ROUTES.FLASHCARD.GENERATE,
+    validate(generateFlashcardSchema, "body"),
+    authMiddleware(tokenService),
+    flashcardController.generateFlashcards
 );
 
 export default router;

@@ -1,6 +1,7 @@
 import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/chat/IGenerateAnswerUseCase";
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
+import { IGenerateFlashcardsUseCase } from "../../application/interfaces/usecases/flashcard/IGenerateFlashcardsUseCase";
 import { ICompleteInterviewUseCase } from "../../application/interfaces/usecases/interview/ICompleteInterviewUseCase";
 import { IGenerateInterviewUseCase } from "../../application/interfaces/usecases/interview/IGenerateInterviewUseCase";
 import { IGetInterviewResultUseCase } from "../../application/interfaces/usecases/interview/IGetInterviewResultUseCase";
@@ -17,6 +18,7 @@ import { IConsumeCreditsUseCase } from "../../application/interfaces/usecases/su
 import { GenerateAnswerUseCase } from "../../application/use-cases/chat/GenerateAnswerUseCase";
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
+import { GenerateFlashcardsUseCase } from "../../application/use-cases/flashcard/GenerateFlashcardsUseCase";
 import { CompleteInterviewUseCase } from "../../application/use-cases/interview/CompleteInterviewUseCase";
 import { GenerateInterviewUseCase } from "../../application/use-cases/interview/GenerateInterviewUseCase";
 import { GetInterviewResultUseCase } from "../../application/use-cases/interview/GetInterviewResultUseCase";
@@ -31,11 +33,13 @@ import { GetUserQuizzesUseCase } from "../../application/use-cases/quiz/GetUserQ
 import { SubmitQuizUseCase } from "../../application/use-cases/quiz/SubmitQuizUseCase";
 import { ConsumeCreditsUseCase } from "../../application/use-cases/subscription/ConsumeCreditsUseCase";
 import { ChatController } from "../../interfaces/controllers/ai/ChatController";
+import { FlashcardController } from "../../interfaces/controllers/ai/FlashcardController";
 import { InterviewController } from "../../interfaces/controllers/ai/InterviewController";
 import { QuizController } from "../../interfaces/controllers/ai/QuizController";
 import { ChatRepository } from "../repositories/ChatRepository";
 import { DocumentChunkRepository } from "../repositories/DocumentChunkRepository";
 import { DocumentRepository } from "../repositories/DocumentRepository";
+import { FlashcardSetRepository } from "../repositories/FlashcardSetRepository";
 import { InterviewRepository } from "../repositories/InterviewRepository";
 import { QuizRepository } from "../repositories/QuizRepository";
 import { UserRepository } from "../repositories/UserRepository";
@@ -43,6 +47,7 @@ import { UserSubscriptionRepository } from "../repositories/UserSubscriptionRepo
 import { AICreditService } from "../services/ai/AICreditService";
 import { GeminiAIService } from "../services/ai/GeminiAIService";
 import { GoogleEmbeddingService } from "../services/ai/GeminiEmbeddingService";
+import { GroqFlashcardGenerationService } from "../services/ai/GroqFlashcardGenerationService";
 import { GroqInterviewEvaluationService } from "../services/ai/GroqInterviewEvaluationService";
 import { GroqInterviewGenerationService } from "../services/ai/GroqInterviewGenerationService";
 import { GroqQuizGenerationService } from "../services/ai/GroqQuizGenerationService";
@@ -57,6 +62,7 @@ const userRepository = new UserRepository();
 const userSubscriptionRepository = new UserSubscriptionRepository();
 const quizRepository = new QuizRepository();
 const interviewRepository = new InterviewRepository();
+const flashcardSetRepository = new FlashcardSetRepository();
 
 //SERVICES
 const embeddingService = new GoogleEmbeddingService();
@@ -75,6 +81,8 @@ const quizGenerationService = new GroqQuizGenerationService();
 const interviewGenerationService = new GroqInterviewGenerationService();
 
 const interviewEvaluationService = new GroqInterviewEvaluationService();
+
+const flashcardAIService = new GroqFlashcardGenerationService();
 
 //USECASES
 
@@ -177,6 +185,15 @@ const startInterviewUseCase: IStartInterviewUseCase =
         interviewRepository
     );
 
+const generateFlashcardsUseCase: IGenerateFlashcardsUseCase = 
+    new GenerateFlashcardsUseCase(
+        flashcardSetRepository,
+        documentRepository,
+        documentChunkRepository,
+        flashcardAIService,
+        aiCreditService
+    );
+
 // CONTROLLER
 export const chatController =
     new ChatController(
@@ -202,4 +219,9 @@ export const interviewController =
         getInterviewResultUseCase,
         completeInterviewUseCase,
         startInterviewUseCase,
-    );    
+    ); 
+    
+export const flashcardController = 
+    new FlashcardController(
+        generateFlashcardsUseCase,
+    )    
