@@ -1,6 +1,6 @@
 export interface GetUserFlashcardSetsDTO {
-    page: number;
-    limit: number;
+    page?: number;
+    limit?: number;
     search?: string;
-    documentId?: string;
+    userId: string;
 }

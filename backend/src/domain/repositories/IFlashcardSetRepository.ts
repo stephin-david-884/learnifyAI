@@ -1,5 +1,4 @@
 import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
-import { GetUserFlashcardSetsDTO } from "../../application/dtos/flashcard/GetUserFlashcardSetsDTO";
 import { FlashcardSet } from "../entities/FlashcardSet.entity";
 import { IBaseRepository } from "./IBaseRepository";
 
@@ -8,7 +7,9 @@ export interface IFlashcardSetRepository
 
     getUserFlashcardSets(
         userId: string,
-        query: GetUserFlashcardSetsDTO
+        page: number, 
+        limit: number,
+        search: string,
     ): Promise<
         PaginatedResponseDTO<FlashcardSet>
     >;

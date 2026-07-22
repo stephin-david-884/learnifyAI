@@ -1,5 +1,4 @@
 import { PaginatedResponseDTO } from "../../application/dtos/common/paginated-response.dto";
-import { GetUserFlashcardSetsDTO } from "../../application/dtos/flashcard/GetUserFlashcardSetsDTO";
 import { FlashcardSet } from "../../domain/entities/FlashcardSet.entity";
 import { IFlashcardSetRepository } from "../../domain/repositories/IFlashcardSetRepository";
 
@@ -29,17 +28,12 @@ export class FlashcardSetRepository
 
     async getUserFlashcardSets(
         userId: string,
-        query: GetUserFlashcardSetsDTO
+        page: number, 
+        limit: number,
+        search: string,
     ): Promise<
         PaginatedResponseDTO<FlashcardSet>
     > {
-
-        const {
-            page,
-            limit,
-            search,
-            documentId,
-        } = query;
 
         const skip = (page - 1) * limit;
 
@@ -49,10 +43,6 @@ export class FlashcardSetRepository
         > = {
             userId,
         };
-
-        if (documentId) {
-            filter.documentId = documentId;
-        }
 
         if (search?.trim()) {
             filter.topic = {
