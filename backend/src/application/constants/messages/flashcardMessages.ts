@@ -3,6 +3,7 @@ export const flashcardMessages = {
         FLASHCARDS_GENERATED: "Flashcards generated successfully",
         FLASHCARD_SETS_FETCHED: "Flashcard sets fetched successfully",
         FLASHCARD_SET_FETCHED:"Flashcard set fetched successfully",
+        FLASHCARD_SET_DELETED: "Flashcard set deleted successfully",
     },
 
     error:{

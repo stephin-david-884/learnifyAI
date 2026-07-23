@@ -1,6 +1,7 @@
 import { IGenerateAnswerUseCase } from "../../application/interfaces/usecases/chat/IGenerateAnswerUseCase";
 import { IGetChatHistoryUseCase } from "../../application/interfaces/usecases/chat/IGetChatHistoryUseCase";
 import { ISaveChatHistoryUseCase } from "../../application/interfaces/usecases/chat/ISaveChatHistoryUseCase";
+import { IDeleteFlashcardSetUseCase } from "../../application/interfaces/usecases/flashcard/IDeleteFlashcardSetUseCase";
 import { IGenerateFlashcardsUseCase } from "../../application/interfaces/usecases/flashcard/IGenerateFlashcardsUseCase";
 import { IGetFlashcardSetUseCase } from "../../application/interfaces/usecases/flashcard/IGetFlashcardSetUseCase";
 import { IGetUserFlashcardSetsUseCase } from "../../application/interfaces/usecases/flashcard/IGetUserFlashcardSetsUseCase";
@@ -20,6 +21,7 @@ import { IConsumeCreditsUseCase } from "../../application/interfaces/usecases/su
 import { GenerateAnswerUseCase } from "../../application/use-cases/chat/GenerateAnswerUseCase";
 import { GetChatHistoryUseCase } from "../../application/use-cases/chat/GetChatHistoryUseCase";
 import { SaveChatHistoryUseCase } from "../../application/use-cases/chat/SaveChatHistoryUseCase";
+import { DeleteFlashcardSetUseCase } from "../../application/use-cases/flashcard/DeleteFlashcardSetUseCase";
 import { GenerateFlashcardsUseCase } from "../../application/use-cases/flashcard/GenerateFlashcardsUseCase";
 import { GetFlashcardSetUseCase } from "../../application/use-cases/flashcard/GetFlashcardSetUseCase";
 import { GetUserFlashcardSetsUseCase } from "../../application/use-cases/flashcard/GetUserFlashcardSetsUseCase";
@@ -184,12 +186,12 @@ const completeInterviewUseCase: ICompleteInterviewUseCase =
         interviewEvaluationService,
     );
 
-const startInterviewUseCase: IStartInterviewUseCase =  
+const startInterviewUseCase: IStartInterviewUseCase =
     new StartInterviewUseCase(
         interviewRepository
     );
 
-const generateFlashcardsUseCase: IGenerateFlashcardsUseCase = 
+const generateFlashcardsUseCase: IGenerateFlashcardsUseCase =
     new GenerateFlashcardsUseCase(
         flashcardSetRepository,
         documentRepository,
@@ -205,6 +207,11 @@ const getUserFlashcardSetsUseCase: IGetUserFlashcardSetsUseCase =
 
 const getFlashcardSetUseCase: IGetFlashcardSetUseCase =
     new GetFlashcardSetUseCase(
+        flashcardSetRepository
+    );
+
+const deleteFlashcardSetUseCase: IDeleteFlashcardSetUseCase =
+    new DeleteFlashcardSetUseCase(
         flashcardSetRepository
     );
 
@@ -233,11 +240,12 @@ export const interviewController =
         getInterviewResultUseCase,
         completeInterviewUseCase,
         startInterviewUseCase,
-    ); 
-    
-export const flashcardController = 
+    );
+
+export const flashcardController =
     new FlashcardController(
         generateFlashcardsUseCase,
         getUserFlashcardSetsUseCase,
-        getFlashcardSetUseCase
+        getFlashcardSetUseCase,
+        deleteFlashcardSetUseCase
     )    

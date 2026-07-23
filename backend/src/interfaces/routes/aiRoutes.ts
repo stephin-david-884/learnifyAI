@@ -105,4 +105,9 @@ router.get(ROUTES.FLASHCARD.GET_ONE,
     flashcardController.getFlashcardSet
 );
 
+router.delete(ROUTES.FLASHCARD.DELETE,
+    authMiddleware(tokenService),
+    flashcardController.deleteFlashcardSet
+)
+
 export default router;
