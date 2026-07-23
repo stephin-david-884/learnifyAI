@@ -1,6 +1,7 @@
 export const flashcardMessages = {
     success: {
-        FLASHCARDS_GENERATED: "Flashcards generated successfully"
+        FLASHCARDS_GENERATED: "Flashcards generated successfully",
+        FLASHCARD_SETS_FETCHED: "Flashcard sets fetched successfully",
     },
 
     error:{

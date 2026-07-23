@@ -95,4 +95,9 @@ router.post(ROUTES.FLASHCARD.GENERATE,
     flashcardController.generateFlashcards
 );
 
+router.get(ROUTES.FLASHCARD.GET_ALL,
+    authMiddleware(tokenService),
+    flashcardController.getUserFlashcardSets
+);
+
 export default router;
