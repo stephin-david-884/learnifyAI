@@ -41,7 +41,7 @@ router.get(ROUTES.QUIZ.GET_ONE,
 );
 
 router.post(ROUTES.QUIZ.SUBMIT,
-    validate(submitQuizSchema,"body"),
+    validate(submitQuizSchema, "body"),
     authMiddleware(tokenService),
     quizController.submitQuiz
 );
@@ -98,6 +98,11 @@ router.post(ROUTES.FLASHCARD.GENERATE,
 router.get(ROUTES.FLASHCARD.GET_ALL,
     authMiddleware(tokenService),
     flashcardController.getUserFlashcardSets
+);
+
+router.get(ROUTES.FLASHCARD.GET_ONE,
+    authMiddleware(tokenService),
+    flashcardController.getFlashcardSet
 );
 
 export default router;

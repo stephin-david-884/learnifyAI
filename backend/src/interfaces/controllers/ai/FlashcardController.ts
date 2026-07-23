@@ -7,12 +7,15 @@ import { statusCode } from "../../../application/constants/enums/statusCode";
 import { flashcardMessages } from "../../../application/constants/messages/flashcardMessages";
 import { mapToGetUserFlashcardSetsDTO } from "../../../application/mappers/flashcard/GetUserFlashcardMapper";
 import { IGetUserFlashcardSetsUseCase } from "../../../application/interfaces/usecases/flashcard/IGetUserFlashcardSetsUseCase";
+import { IGetFlashcardSetUseCase } from "../../../application/interfaces/usecases/flashcard/IGetFlashcardSetUseCase";
+import { mapToGetFlashcardSetDTO } from "../../../application/mappers/flashcard/GetFlashcardMapper";
 
 export class FlashcardController {
 
     constructor(
         private readonly _generateFlashcardsUseCase: IGenerateFlashcardsUseCase,
         private readonly _getUserFlashcardSetsUseCase: IGetUserFlashcardSetsUseCase,
+        private readonly _getFlashcardSetUseCase: IGetFlashcardSetUseCase
     ) {}
 
     generateFlashcards = asyncHandler(async (req: Request, res: Response) => {
@@ -41,5 +44,19 @@ export class FlashcardController {
             flashcardMessages.success.FLASHCARD_SETS_FETCHED,
             result
         );
+    });
+
+    getFlashcardSet = asyncHandler(async (req: Request, res: Response) => {
+
+        const data = mapToGetFlashcardSetDTO(req);
+
+        const flashcardSet = await this._getFlashcardSetUseCase.execute(data);
+
+        return sendSuccess(
+            res,
+            statusCode.OK,
+            flashcardMessages.success.FLASHCARD_SET_FETCHED,
+            flashcardSet
+        )
     })
 }
