@@ -84,6 +84,16 @@ export const API_ROUTES = {
 
         START_INTERVIEW: (interviewId: string) =>
             `/user/ai/interview/${interviewId}/start`,
+
+        GENERATE_FLASHCARDS : "/user/ai/flashcards",
+
+        GET_USER_FLASHCARDS : "/user/ai/flashcards",
+
+        GET_FLASHCARD_SET: (flashcardSetId: string) => 
+             `/user/ai/flashcards/${flashcardSetId}`,
+
+        DELETE_FLASHCARD_SET: (flashcardSetId: string) =>
+            `/user/ai/flashcards/${flashcardSetId}`
     },
 
     PROFILE: {
