@@ -17,15 +17,15 @@ const FlashcardProgress: React.FC<Props> = ({
 
     return (
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
 
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
                 <div className="flex items-center gap-3">
 
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-red-50">
 
-                        <BookOpen className="text-blue-600" size={24}/>
+                        <BookOpen className="text-red-600" size={20}/>
 
                     </div>
 
@@ -37,7 +37,7 @@ const FlashcardProgress: React.FC<Props> = ({
 
                         </p>
 
-                        <h2 className="text-xl font-bold text-slate-900">
+                        <h2 className="text-lg font-semibold text-slate-900">
 
                             {topic}
 
@@ -75,7 +75,7 @@ const FlashcardProgress: React.FC<Props> = ({
 
                     </span>
 
-                    <span className="text-sm font-semibold text-blue-600">
+                    <span className="text-sm font-semibold text-red-600">
 
                         {percentage}%
 
@@ -83,10 +83,10 @@ const FlashcardProgress: React.FC<Props> = ({
 
                 </div>
 
-                <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+                <div className="h-2 overflow-hidden rounded-full bg-slate-200">
 
                     <div
-                        className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500"
+                        className="h-full rounded-full bg-gradient-to-r from-red-500 to-rose-600 transition-all duration-500"
                         style={{
                             width: `${percentage}%`,
                         }}

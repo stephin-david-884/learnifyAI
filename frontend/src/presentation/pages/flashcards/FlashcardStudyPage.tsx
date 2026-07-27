@@ -1,16 +1,6 @@
-import React, {
-    useEffect,
-    useMemo,
-    useState,
-} from "react";
-
-import {
-    useNavigate,
-    useParams,
-} from "react-router-dom";
-
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../../components/common/Spinner";
-
 import { useFlashcards } from "../../../hooks/useFlashcards";
 import FlashcardProgress from "../../components/flashcard/FlashcardProgress";
 import Flashcard from "../../components/flashcard/Flashcard";
@@ -18,13 +8,9 @@ import FlashcardControls from "../../components/flashcard/FlashcardControls";
 
 const FlashcardStudyPage: React.FC = () => {
 
-    const { flashcardSetId } =
-        useParams<{
-            flashcardSetId: string;
-        }>();
+    const { flashcardSetId } = useParams<{flashcardSetId: string;}>();
 
-    const navigate =
-        useNavigate();
+    const navigate = useNavigate();
 
     const {
         currentFlashcardSet,
@@ -47,10 +33,7 @@ const FlashcardStudyPage: React.FC = () => {
 
         }
 
-    }, [
-        flashcardSetId,
-        fetchFlashcardSet,
-    ]);
+    }, [flashcardSetId, fetchFlashcardSet]);
 
     useEffect(() => {
 
@@ -156,10 +139,7 @@ const FlashcardStudyPage: React.FC = () => {
 
     }
 
-    if (
-        !currentFlashcardSet ||
-        !currentCard
-    ) {
+    if ( !currentFlashcardSet || !currentCard) {
 
         return (
 
@@ -175,7 +155,7 @@ const FlashcardStudyPage: React.FC = () => {
 
     return (
 
-        <div className="mx-auto max-w-5xl space-y-8">
+        <div className="mx-auto max-w-6xl space-y-6">
 
             <div>
 
@@ -190,13 +170,13 @@ const FlashcardStudyPage: React.FC = () => {
 
                 </button>
 
-                <h1 className="mt-4 text-3xl font-bold text-slate-900">
+                <h1 className="mt-2 text-3xl font-bold text-slate-900">
 
                     {currentFlashcardSet.topic}
 
                 </h1>
 
-                <p className="mt-2 text-slate-500">
+                <p className="mt-1 text-slate-500">
 
                     Study one card at a time.
 

@@ -33,7 +33,7 @@ const Flashcard: React.FC<Props> = ({
     return (
 
         <div
-            className="group mx-auto w-full max-w-3xl"
+            className="group mx-auto w-full max-w-4xl"
             style={{
                 perspective: "1400px",
             }}
@@ -42,7 +42,7 @@ const Flashcard: React.FC<Props> = ({
             <button
                 type="button"
                 onClick={onFlip}
-                className="block h-[420px] w-full cursor-pointer rounded-3xl text-left focus:outline-none focus:ring-4 focus:ring-blue-200"
+                className="block h-[340px] w-full cursor-pointer rounded-3xl text-left focus:outline-none focus:ring-4 focus:ring-red-200"
             >
 
                 <div
@@ -59,7 +59,7 @@ const Flashcard: React.FC<Props> = ({
                 >
 
                     <div
-                        className="absolute inset-0 flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-8 shadow-xl"
+                        className="absolute inset-0 flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-6 shadow-xl"
                         style={{
                             backfaceVisibility:
                                 "hidden",
@@ -91,11 +91,11 @@ const Flashcard: React.FC<Props> = ({
                         <div className="flex flex-1 flex-col items-center justify-center">
 
                             <HelpCircle
-                                size={56}
-                                className="mb-6 text-blue-500"
+                                size={42}
+                                className="mb-6 text-red-500"
                             />
 
-                            <h2 className="text-center text-3xl font-bold leading-relaxed text-slate-900">
+                            <h2 className="text-center text-2xl font-bold leading-relaxed text-slate-900">
 
                                 {card.question}
 
@@ -112,7 +112,7 @@ const Flashcard: React.FC<Props> = ({
                     </div>
 
                     <div
-                        className="absolute inset-0 flex h-full flex-col rounded-3xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 shadow-xl"
+                        className="absolute inset-0 flex h-full flex-col rounded-3xl border border-red-100 bg-gradient-to-br from-red-50 to-rose-50 p-6 shadow-xl"
                         style={{
                             transform:
                                 "rotateY(180deg)",
@@ -147,11 +147,11 @@ const Flashcard: React.FC<Props> = ({
                         <div className="flex flex-1 flex-col items-center justify-center">
 
                             <CheckCircle2
-                                size={56}
+                                size={42}
                                 className="mb-6 text-emerald-500"
                             />
 
-                            <p className="text-center text-2xl font-semibold leading-relaxed text-slate-800">
+                            <p className="text-center text-xl font-semibold leading-relaxed text-slate-800">
 
                                 {card.answer}
 
@@ -159,7 +159,7 @@ const Flashcard: React.FC<Props> = ({
 
                         </div>
 
-                        <p className="text-center text-sm text-slate-500">
+                        <p className="text-center text-xs text-slate-500">
 
                             Great! Continue to the next flashcard.
 

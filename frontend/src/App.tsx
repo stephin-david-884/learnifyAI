@@ -118,7 +118,7 @@ const App = () => {
             <Route path="/interviews/:interviewId/session" element={<InterviewSessionPage />}/>
             <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/>
             <Route path="flashcards" element={<FlashcardListPage />} />
-            <Route path="flashcards/:flashcardId" element={<FlashcardStudyPage/>} />
+            <Route path="flashcards/:flashcardSetId" element={<FlashcardStudyPage/>} />
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
