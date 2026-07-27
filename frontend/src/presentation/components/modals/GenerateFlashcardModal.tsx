@@ -73,8 +73,6 @@ const GenerateFlashcardModal: React.FC<Props> = ({
 
             <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-xl">
 
-                {/* Header */}
-
                 <div className="flex items-center justify-between">
 
                     <div className="flex items-center gap-3">
@@ -114,8 +112,6 @@ const GenerateFlashcardModal: React.FC<Props> = ({
                 {/* Body */}
 
                 <div className="mt-6 space-y-6">
-
-                    {/* Topics */}
 
                     <div>
 
@@ -188,8 +184,6 @@ const GenerateFlashcardModal: React.FC<Props> = ({
 
                     </div>
 
-                    {/* Card Count */}
-
                     <div>
 
                         <label className="mb-3 block text-sm font-medium text-slate-700">
@@ -247,8 +241,6 @@ const GenerateFlashcardModal: React.FC<Props> = ({
 
                     </div>
 
-                    {/* Credit Box */}
-
                     <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
 
                         <div className="text-sm font-semibold text-blue-700">
@@ -264,8 +256,6 @@ const GenerateFlashcardModal: React.FC<Props> = ({
                         </div>
 
                     </div>
-
-                    {/* Generate */}
 
                     <button
                         disabled={
