@@ -35,6 +35,8 @@ const InterviewListPage = lazy(() => import("./presentation/pages/interview/Inte
 const InterviewPreparationPage = lazy(() => import("./presentation/pages/interview/InterviewPreparationPage"));
 const InterviewSessionPage = lazy(() => import('./presentation/pages/interview/InterviewSessionPage'));
 const InterviewResultPage = lazy(() => import('./presentation/pages/interview/InterviewResultPage'));
+const FlashcardListPage = lazy(() => import('./presentation/pages/flashcards/FlashcardListPage'));
+const FlashcardStudyPage = lazy(() => import('./presentation/pages/flashcards/FlashcardStudyPage'));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -115,6 +117,8 @@ const App = () => {
             <Route path="/interviews/:interviewId" element={<InterviewPreparationPage />}/>
             <Route path="/interviews/:interviewId/session" element={<InterviewSessionPage />}/>
             <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/>
+            <Route path="flashcards" element={<FlashcardListPage />} />
+            <Route path="flashcards/:flashcardId" element={<FlashcardStudyPage/>} />
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />

@@ -1,9 +1,9 @@
 import React from "react";
 import { RotateCcw, HelpCircle, CheckCircle2 } from "lucide-react";
-import type { Flashcard, FlashcardDifficulty } from "../../../types/flashcard";
+import type { Flashcard as FlashcardItem, FlashcardDifficulty } from "../../../types/flashcard";
 
 type Props = {
-    card: Flashcard;
+    card: FlashcardItem;
 
     flipped: boolean;
 
