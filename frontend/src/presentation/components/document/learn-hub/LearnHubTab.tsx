@@ -4,6 +4,7 @@ import {
     Sparkles,
     BookOpen,
     Mic,
+    Layers3,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -20,6 +21,9 @@ import type {
 import { useInterview } from "../../../../hooks/useInterview";
 import { useSubscription } from "../../../../hooks/useSubscription";
 import GenerateInterviewModal from "../../modals/GenerateInterviewModal";
+import { useFlashcards } from "../../../../hooks/useFlashcards";
+import { useProfile } from "../../../../hooks/useProfile";
+import GenerateFlashcardModal from "../../modals/GenerateFlashcardModal";
 
 type Props = {
     document: DocumentItem;
@@ -34,16 +38,21 @@ const LearnHubTab: React.FC<Props> = ({
 
     const { createQuiz, generating } = useQuiz();
 
+    const { createFlashcards, generating: flashcardGenerating } = useFlashcards();
+
     const { createInterview, generating: interviewGenerating } = useInterview();
 
     const { activeSubscription } = useSubscription();
+
+    const { fetchProfile } = useProfile();
 
     const hasInterviewAccess = activeSubscription?.planSnapshot?.features?.interviewAccess;
 
     const [interviewModal, setInterviewModal] = useState(false);
 
-    const [openModal, setOpenModal] =
-        useState(false);
+    const [flashcardModal, setFlashcardModal] = useState(false);
+
+    const [openModal, setOpenModal] = useState(false);
 
     const handleGenerateQuiz = async (
         data: {
@@ -95,6 +104,21 @@ const LearnHubTab: React.FC<Props> = ({
 
             return result;
         };
+
+    const handleGenerateFlashcards = async (data: { topic: string; cardCount: 5 | 10; }) => {
+
+        const result = await createFlashcards({
+            documentId: document.id,
+            topic: data.topic,
+            cardCount: data.cardCount,
+        });
+
+        await fetchProfile();
+
+        navigate("/flashcards");
+
+        return result;
+    }
 
     return (
         <>
@@ -260,6 +284,32 @@ const LearnHubTab: React.FC<Props> = ({
                     </div>
 
                 </div>
+
+                <div className="rounded-3xl border border-slate-200 bg-white p-6">
+
+                    <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <Layers3 size={20} className="text-red-600" />
+                                <h3 className="font-semibold text-slate-900">
+                                    AI Flashcards
+                                </h3>
+                            </div>
+                            <p className="mt-2 text-sm text-slate-500">
+                                Generate interactive flashcards from a single topic.
+
+                                Study using a flip-card experience.
+                            </p>
+                        </div>
+                        <button onClick={() => setFlashcardModal(true)}
+                            className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-5 py-3 font-semibold text-white shadow-lg shadow-red-500/20 transition hover:opacity-90"
+                        >
+                            Generate Flashcards
+                        </button>
+                    </div>
+
+                </div>
             </div>
 
             <GenerateQuizModal
@@ -289,6 +339,22 @@ const LearnHubTab: React.FC<Props> = ({
                 }
 
                 onGenerate={handleGenerateInterview}
+            />
+
+            <GenerateFlashcardModal
+                open={flashcardModal}
+
+                topics={document.topics}
+
+                loading={flashcardGenerating}
+
+                onClose={() =>
+                    setFlashcardModal(false)
+                }
+
+                onGenerate={
+                    handleGenerateFlashcards
+                }
             />
         </>
     );
