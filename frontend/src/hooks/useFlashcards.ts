@@ -17,7 +17,9 @@ export const useFlashcards = () => {
         payload: Parameters<typeof generateFlashcards>[0]
     ) => dispatch(generateFlashcards(payload)).unwrap();
 
-    const fetchUserFlashcardSets = useCallback((page = 1, limit = 10, search?: string) =>
+    const fetchUserFlashcardSets = useCallback(({ page = 1, limit = 10, search }: {
+        page?: number; limit?: number; search?: string
+    }) =>
         dispatch(
             getUserFlashcardSets({ page, limit, search })).unwrap(),
         [dispatch]);
@@ -38,5 +40,5 @@ export const useFlashcards = () => {
         fetchUserFlashcardSets,
         fetchFlashcardSet,
         deleteSet
-    };    
+    };
 };
