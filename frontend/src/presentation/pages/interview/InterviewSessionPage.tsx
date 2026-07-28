@@ -10,10 +10,10 @@ import type {
 } from "../../../types/interview";
 
 import InterviewProgress from "../../components/interview/InterviewProgress";
-import InterviewQuestionCard from "../../components/interview/InterviewQuestionCard";
 import TranscriptCard from "../../components/interview/TranscriptCard";
 import RecordingControls from "../../components/interview/RecordingControls";
 import InterviewTimer from "../../components/interview/InterviewTimer";
+import InterviewPresenter from "../../components/interview/InterviewPresenter";
 
 const FIVE_QUESTION_DURATION = 10 * 60;
 
@@ -70,6 +70,8 @@ const InterviewSessionPage: React.FC = () => {
     const [answers, setAnswers] = useState<Record<number, string>>({});
 
     const [remainingSeconds, setRemainingSeconds] = useState(0);
+
+    const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState(false);
 
     const isBusy = submitting || completing;
 
@@ -577,26 +579,10 @@ const InterviewSessionPage: React.FC = () => {
                 <div className="space-y-6 xl:col-span-2">
 
 
-                    <InterviewQuestionCard
-
-                        question={
-
-                            currentQuestion.question
-
-                        }
-
-                        difficulty={
-
-                            currentQuestion.difficulty
-
-                        }
-
-                        isRecording={
-
-                            isRecording
-
-                        }
-
+                    <InterviewPresenter
+                        question={currentQuestion.question}
+                        difficulty={currentQuestion.difficulty}
+                        onSpeakingChange={setIsInterviewerSpeaking}
                     />
 
 
@@ -627,43 +613,27 @@ const InterviewSessionPage: React.FC = () => {
 
                 <div className="space-y-6">
 
+                    {isInterviewerSpeaking && (
+
+                        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+
+                            <p className="text-sm font-medium text-amber-700">
+
+                                Please wait until the interviewer finishes asking the question.
+
+                            </p>
+
+                        </div>
+
+                    )}
 
                     <RecordingControls
-
-                        isRecording={
-
-                            isRecording
-
-                        }
-
-                        hasTranscript={
-
-                            transcript
-                                .trim()
-                                .length > 0
-
-                        }
-
-                        disabled={isBusy}
-
-                        onStart={
-
-                            startRecording
-
-                        }
-
-                        onStop={
-
-                            stopRecording
-
-                        }
-
-                        onRetry={
-
-                            handleRetryRecording
-
-                        }
-
+                        isRecording={isRecording}
+                        hasTranscript={transcript.trim().length > 0}
+                        disabled={isBusy || isInterviewerSpeaking}
+                        onStart={startRecording}
+                        onStop={stopRecording}
+                        onRetry={handleRetryRecording}
                     />
 
 
@@ -694,9 +664,7 @@ const InterviewSessionPage: React.FC = () => {
                                         );
 
 
-                                    const active =
-
-                                        currentQuestionIndex === index;
+                                    const active =  currentQuestionIndex === index;
 
 
                                     return (
@@ -789,7 +757,7 @@ const InterviewSessionPage: React.FC = () => {
 
                     onClick={handlePrevious}
 
-                    disabled={currentQuestionIndex === 0 || isBusy}
+                    disabled={currentQuestionIndex === 0 || isBusy || isInterviewerSpeaking}
 
                     className="rounded-2xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
 
@@ -812,7 +780,7 @@ const InterviewSessionPage: React.FC = () => {
 
                             onClick={handleNext}
 
-                            disabled={isBusy}
+                            disabled={isBusy || isInterviewerSpeaking}
 
                             className="rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
 
@@ -830,7 +798,7 @@ const InterviewSessionPage: React.FC = () => {
 
                             onClick={() => handleFinishInterview()}
 
-                            disabled={isBusy}
+                            disabled={isBusy || isInterviewerSpeaking}
 
                             className="rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 px-8 py-3 font-semibold text-white transition hover:opacity-90"
 

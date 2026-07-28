@@ -11,7 +11,7 @@ type Props = {
 
     difficulty: InterviewDifficulty;
 
-    onSpeakingChange?: ( speaking: boolean ) => void;
+    onSpeakingChange?: (speaking: boolean) => void;
 
 };
 
@@ -34,7 +34,7 @@ const InterviewPresenter: React.FC<Props> = ({
 
     useEffect(() => {
 
-        onSpeakingChange?.( isSpeaking );
+        onSpeakingChange?.(isSpeaking);
 
     }, [isSpeaking, onSpeakingChange]);
 
@@ -50,9 +50,14 @@ const InterviewPresenter: React.FC<Props> = ({
             return;
         }
 
-        speak(question);
+        const timeout = window.setTimeout(() => {
+
+            speak(question);
+
+        }, 500);
 
         return () => {
+            clearTimeout(timeout);
             stop();
         };
 
@@ -62,16 +67,16 @@ const InterviewPresenter: React.FC<Props> = ({
 
     const handleReplay = useCallback(() => {
 
-            speak(question);
+        speak(question);
 
-        }, [question, speak]);
+    }, [question, speak]);
 
     return (
 
         <div className="space-y-8">
 
             <AvatarFace
-                isSpeaking={ isSpeaking}
+                isSpeaking={isSpeaking}
             />
 
             <QuestionBubble
