@@ -73,20 +73,20 @@ const InterviewPresenter: React.FC<Props> = ({
 
     return (
 
-        <div className="space-y-8">
+        <div className="grid gap-6 lg:grid-cols-[180px_1fr] lg:items-start">
 
-            <AvatarFace
-                isSpeaking={isSpeaking}
-            />
+            <div className="flex justify-center lg:sticky lg:top-6">
+                <AvatarFace isSpeaking={isSpeaking} />
+            </div>
 
-            <QuestionBubble
-
-                question={question}
-                difficulty={difficulty}
-                isSpeaking={isSpeaking}
-                onReplay={handleReplay}
-
-            />
+            <div className="min-w-0">
+                <QuestionBubble
+                    question={question}
+                    difficulty={difficulty}
+                    isSpeaking={isSpeaking}
+                    onReplay={handleReplay}
+                />
+            </div>
 
         </div>
 

@@ -33,19 +33,19 @@ const QuestionBubble: React.FC<Props> = ({
 
     return (
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
 
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
                 <div>
 
-                    <h2 className="text-2xl font-bold text-slate-900">
+                    <h2 className="text-xl font-bold text-slate-900">
 
                         Interview Question
 
                     </h2>
 
-                    <p className="mt-2 text-slate-500">
+                    <p className="mt-1 text-slate-500">
 
                         Listen carefully before answering.
 
@@ -56,14 +56,14 @@ const QuestionBubble: React.FC<Props> = ({
                 <div className="flex items-center gap-3">
 
                     <span
-                        className={`rounded-xl px-4 py-2 text-sm font-semibold ${difficultyStyles[difficulty]}`}
+                        className={`rounded-lg px-3 py-1.5 text-sm font-semibold ${difficultyStyles[difficulty]}`}
                     >
                         {difficulty}
                     </span>
 
                     <button
                         onClick={onReplay}
-                        className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                        className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
                     >
 
                         <RotateCcw size={16}/>
@@ -78,14 +78,14 @@ const QuestionBubble: React.FC<Props> = ({
 
             {/* Speaking Indicator */}
 
-            <div className="mt-6">
+            <div className="mt-4">
 
                 {isSpeaking ? (
 
-                    <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4">
+                    <div className="flex items-center gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-3">
 
                         <Volume2
-                            size={20}
+                            size={18}
                             className="animate-pulse text-red-600"
                         />
 
@@ -112,7 +112,7 @@ const QuestionBubble: React.FC<Props> = ({
                     <div className="flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4">
 
                         <Volume2
-                            size={20}
+                            size={18}
                             className="text-emerald-600"
                         />
 
@@ -140,30 +140,26 @@ const QuestionBubble: React.FC<Props> = ({
 
             {/* Speech Bubble */}
 
-            <div className="relative mt-8">
-
-                {/* Bubble Tail */}
-
-                <div className="absolute -left-3 top-8 h-6 w-6 rotate-45 border-l border-t border-slate-200 bg-slate-50" />
+            <div className="relative mt-5">
 
                 <div
-                    className={`rounded-3xl border border-slate-200 bg-slate-50 p-8 transition-all duration-300
+                    className={`rounded-3xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300
 
                         ${isSpeaking ? "border-red-200 bg-red-50" : ""}
 
                     `}
                 >
 
-                    <div className="flex items-start gap-5">
+                    <div className="flex items-start gap-3">
 
                         <Sparkles
-                            size={28}
+                            size={22}
                             className={`mt-1 shrink-0
                                 ${ isSpeaking ? "text-red-500" : "text-slate-400" }
                             `}
                         />
 
-                        <p className="text-2xl font-semibold leading-10 text-slate-900">
+                        <p className="text-xl font-semibold leading-9 text-slate-900">
 
                             {question}
 
@@ -177,7 +173,7 @@ const QuestionBubble: React.FC<Props> = ({
 
             {/* Tip */}
 
-            <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+            {/* <div className="mt-8 rounded-2xl border border-blue-100 bg-blue-50 p-5">
 
                 <h3 className="font-semibold text-blue-700">
 
@@ -194,7 +190,7 @@ const QuestionBubble: React.FC<Props> = ({
 
                 </p>
 
-            </div>
+            </div> */}
 
         </div>
 
