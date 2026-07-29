@@ -42,6 +42,7 @@ import { ChatController } from "../../interfaces/controllers/ai/ChatController";
 import { FlashcardController } from "../../interfaces/controllers/ai/FlashcardController";
 import { InterviewController } from "../../interfaces/controllers/ai/InterviewController";
 import { QuizController } from "../../interfaces/controllers/ai/QuizController";
+import { AIUsageRepository } from "../repositories/AIUsageRepository";
 import { ChatRepository } from "../repositories/ChatRepository";
 import { DocumentChunkRepository } from "../repositories/DocumentChunkRepository";
 import { DocumentRepository } from "../repositories/DocumentRepository";
@@ -57,6 +58,9 @@ import { GroqFlashcardGenerationService } from "../services/ai/GroqFlashcardGene
 import { GroqInterviewEvaluationService } from "../services/ai/GroqInterviewEvaluationService";
 import { GroqInterviewGenerationService } from "../services/ai/GroqInterviewGenerationService";
 import { GroqQuizGenerationService } from "../services/ai/GroqQuizGenerationService";
+import { AICostEstimator } from "../services/analytics/AICostEstimator";
+import { AIUsageRecorder } from "../services/analytics/AIUsageRecorder";
+import { AIUsageTracker } from "../services/analytics/AIUsageTracker";
 import { CreditService } from "../services/subscription/CreditService";
 import { SubscriptionService } from "../services/subscription/SubscriptionService";
 
@@ -69,6 +73,7 @@ const userSubscriptionRepository = new UserSubscriptionRepository();
 const quizRepository = new QuizRepository();
 const interviewRepository = new InterviewRepository();
 const flashcardSetRepository = new FlashcardSetRepository();
+const aiUsageRepository = new AIUsageRepository();;
 
 //SERVICES
 const embeddingService = new GoogleEmbeddingService();
@@ -81,14 +86,26 @@ const creditService = new CreditService(
     userSubscriptionRepository,
     subscriptionService
 );
+const costEstimator =
+    new AICostEstimator();
+
+const tracker =
+    new AIUsageTracker(aiUsageRepository);
+
+const usageRecorder =
+    new AIUsageRecorder(
+        tracker,
+        costEstimator
+    );
+
 
 const quizGenerationService = new GroqQuizGenerationService();
 
-const interviewGenerationService = new GroqInterviewGenerationService();
+const interviewGenerationService = new GroqInterviewGenerationService(usageRecorder);
 
-const interviewEvaluationService = new GroqInterviewEvaluationService();
+const interviewEvaluationService = new GroqInterviewEvaluationService(usageRecorder);
 
-const flashcardAIService = new GroqFlashcardGenerationService();
+const flashcardAIService = new GroqFlashcardGenerationService(usageRecorder);
 
 //USECASES
 
