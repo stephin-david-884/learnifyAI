@@ -3,12 +3,15 @@ import { IFlashcardGenerationService } from "../../../application/interfaces/ser
 import { Flashcard } from "../../../domain/entities/Flashcard.entity";
 import { buildFlashcardPrompt } from "../../../application/prompts/flashcard/buildFlashcardPrompt";
 import { parseFlashcardResponse } from "../../../application/parsers/flashcard/parseFlashcardResponse";
+import { IAIUsageRecorder } from "../../../application/interfaces/services/analytics/IAIUsageRecorder";
 
 export class GroqFlashcardGenerationService implements IFlashcardGenerationService {
 
     private readonly _client;
 
-    constructor() {
+    constructor(
+        private readonly _usageRecorder: IAIUsageRecorder,
+    ) {
         this._client = new Groq({
             apiKey: process.env.GROQ_API_KEY,
         });
@@ -16,23 +19,74 @@ export class GroqFlashcardGenerationService implements IFlashcardGenerationServi
 
     async generateFlashcards(context: string, topic: string, cardCount: number): Promise<Flashcard[]> {
 
-        const prompt = buildFlashcardPrompt(context, topic, cardCount);
+        return this._usageRecorder.record(
 
-        const completion = await this._client.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
+            {
+                provider: "GROQ",
 
-            temperature: 0.3,
+                feature: "FLASHCARD_GENERATION",
 
-            messages: [
-                {
-                    role: "user",
-                    content: prompt,
+                aiModel: "llama-3.3-70b-versatile",
+
+                metadata: {
+                    topic,
+                    requestedFlashcards: cardCount,
                 },
-            ],
-        });
+            },
 
-        const raw = completion.choices[0]?.message?.content ?? "[]";
+            async () => {
 
-        return parseFlashcardResponse(raw);
+                const prompt =
+                    buildFlashcardPrompt(
+                        context,
+                        topic,
+                        cardCount,
+                    );
+
+                const completion =
+                    await this._client.chat.completions.create({
+
+                        model: "llama-3.3-70b-versatile",
+
+                        temperature: 0.3,
+
+                        messages: [
+                            {
+                                role: "user",
+                                content: prompt,
+                            },
+                        ],
+
+                    });
+
+                const raw =
+                    completion.choices[0]?.message?.content ??
+                    "[]";
+
+                const flashcards =
+                    parseFlashcardResponse(raw);
+
+                return {
+
+                    result: flashcards,
+
+                    usage: {
+
+                        requestTokens:
+                            completion.usage?.prompt_tokens,
+
+                        responseTokens:
+                            completion.usage?.completion_tokens,
+
+                        totalTokens:
+                            completion.usage?.total_tokens,
+
+                    },
+
+                };
+
+            },
+
+        );
     }
 }

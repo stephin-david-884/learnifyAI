@@ -50,7 +50,7 @@ export class AIUsageRecorder implements IAIUsageRecorder {
 
         } catch (error) {
 
-            const latencyMs = performance.now() - startedAt;
+            const latencyMs = Date.now() - startedAt;
 
             const estimatedCost = this.estimator.estimate({
                 provider: context.provider,
