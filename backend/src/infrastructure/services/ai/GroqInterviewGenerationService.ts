@@ -1,12 +1,15 @@
 import { Groq } from "groq-sdk/client.js";
 import { IInterviewGenerationService } from "../../../application/interfaces/services/ai/IInterviewGenerationService";
 import { InterviewQuestion } from "../../../domain/entities/Interview.entity";
+import { IAIUsageRecorder } from "../../../application/interfaces/services/analytics/IAIUsageRecorder";
 
 export class GroqInterviewGenerationService implements IInterviewGenerationService {
 
     private readonly _client;
 
-    constructor() {
+    constructor(
+        private readonly _usageRecorder: IAIUsageRecorder,
+    ) {
         this._client = new Groq({
             apiKey: process.env.GROQ_API_KEY,
         });
@@ -14,7 +17,24 @@ export class GroqInterviewGenerationService implements IInterviewGenerationServi
 
     async generateInterview(context: string, topics: string[], questionCount: number): Promise<InterviewQuestion[]> {
 
-        const prompt = `
+        return this._usageRecorder.record(
+
+            {
+                provider: "GROQ",
+
+                feature: "INTERVIEW_GENERATION",
+
+                aiModel: "llama-3.3-70b-versatile",
+
+                metadata: {
+                    topics: topics.join(", "),
+                    requestedQuestions: questionCount,
+                },
+            },
+
+            async () => {
+
+                const prompt = `
 
             You are a Senior Technical Interviewer.
 
@@ -62,48 +82,80 @@ export class GroqInterviewGenerationService implements IInterviewGenerationServi
 
             `;
 
-        const completion = await this._client.chat.completions.create({
-            model: "llama-3.3-70b-versatile",
-            temperature: 0.4,
-            messages: [
-                {
-                    role: "user",
-                    content: prompt
-                },
-            ],
-        });
+                const completion =
+                    await this._client.chat.completions.create({
 
-        const raw = completion.choices[0]?.message?.content ?? "[]";
+                        model: "llama-3.3-70b-versatile",
 
-        const cleaned = raw.replace(/```json\s*/gi, "")
-                           .replace(/```\s*/g, "") 
-                           .trim();
+                        temperature: 0.4,
 
-        const parsed = JSON.parse(cleaned);
-        
-        if (!Array.isArray(parsed)) {
-            throw new Error(
-                "Invalid interview response"
-            );
-        }
+                        messages: [
+                            {
+                                role: "user",
+                                content: prompt,
+                            },
+                        ],
 
-        return parsed.filter(
-            (
-                question
-            ): question is InterviewQuestion => {
+                    });
 
-                const difficulty =
-                    question?.difficulty;
+                const raw =
+                    completion.choices[0]?.message?.content ?? "[]";
 
-                const validDifficulty =
-                    difficulty === "EASY" ||
-                    difficulty === "MEDIUM" ||
-                    difficulty === "HARD";
+                const cleaned = raw
+                    .replace(/```json\s*/gi, "")
+                    .replace(/```\s*/g, "")
+                    .trim();
 
-                return (
-                    typeof question?.question === "string" && validDifficulty
+                const parsed = JSON.parse(cleaned);
+
+                if (!Array.isArray(parsed)) {
+                    throw new Error(
+                        "Invalid interview response"
+                    );
+                }
+
+                const questions = parsed.filter(
+                    (
+                        question
+                    ): question is InterviewQuestion => {
+
+                        const difficulty =
+                            question?.difficulty;
+
+                        const validDifficulty =
+                            difficulty === "EASY" ||
+                            difficulty === "MEDIUM" ||
+                            difficulty === "HARD";
+
+                        return (
+                            typeof question?.question === "string" &&
+                            validDifficulty
+                        );
+
+                    }
                 );
+
+                return {
+
+                    result: questions,
+
+                    usage: {
+
+                        requestTokens:
+                            completion.usage?.prompt_tokens,
+
+                        responseTokens:
+                            completion.usage?.completion_tokens,
+
+                        totalTokens:
+                            completion.usage?.total_tokens,
+
+                    },
+
+                };
+
             }
+
         );
     }
 }
