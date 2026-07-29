@@ -32,7 +32,7 @@ type AIUsageEventProps = {
 
     feature: AIUsageFeature;
 
-    model: string;
+    aiModel: string;
 
     userId?: string;
 
@@ -65,7 +65,7 @@ export class AIUsageEvent {
 
     public readonly feature: AIUsageFeature;
 
-    public readonly model: string;
+    public readonly aiModel: string;
 
     public readonly userId?: string;
 
@@ -97,7 +97,7 @@ export class AIUsageEvent {
 
         this.feature = props.feature;
 
-        this.model = props.model;
+        this.aiModel = props.aiModel;
 
         this.userId = props.userId;
 
