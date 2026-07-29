@@ -5,16 +5,6 @@ import {
     useState,
 } from "react";
 
-// declare global {
-
-//     interface Window {
-
-//         SpeechRecognition: SpeechRecognitionConstructor;
-
-//         webkitSpeechRecognition: SpeechRecognitionConstructor;
-//     }
-// }
-
 type UseSpeechRecognitionReturn = {
 
     transcript: string;

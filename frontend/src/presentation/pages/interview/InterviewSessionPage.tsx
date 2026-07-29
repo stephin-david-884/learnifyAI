@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../../components/common/Spinner";
@@ -69,11 +69,13 @@ const InterviewSessionPage: React.FC = () => {
 
     const [answers, setAnswers] = useState<Record<number, string>>({});
 
-    const [remainingSeconds, setRemainingSeconds] = useState(0);
+    const [remainingSeconds, setRemainingSeconds] = useState<number | null>(null);
 
     const [isInterviewerSpeaking, setIsInterviewerSpeaking] = useState(false);
 
     const isBusy = submitting || completing;
+
+    const autoSubmittedRef = useRef(false);
 
     /*
     Fetch Interview
@@ -129,6 +131,8 @@ const InterviewSessionPage: React.FC = () => {
 
         }
 
+        autoSubmittedRef.current = false;
+
         const duration =
 
             currentInterview.totalQuestions === 5
@@ -147,7 +151,7 @@ const InterviewSessionPage: React.FC = () => {
 
     useEffect(() => {
 
-        if (remainingSeconds <= 0 || isBusy) {
+        if (remainingSeconds === null || remainingSeconds <= 0 || isBusy) {
 
             return;
         }
@@ -156,7 +160,13 @@ const InterviewSessionPage: React.FC = () => {
             window.setInterval(() => {
 
                 setRemainingSeconds(
-                    prev => prev - 1
+                    prev => {
+                        if (prev === null || prev <= 0) {
+                            return 0;
+                        }
+
+                        return prev - 1;
+                    }
                 );
 
             }, 1000);
@@ -440,12 +450,17 @@ const InterviewSessionPage: React.FC = () => {
 
     useEffect(() => {
 
-        if (remainingSeconds !== 0) {
-
+        if (remainingSeconds === null || remainingSeconds > 0) {
             return;
         }
 
-        handleFinishInterview(true);
+        if (autoSubmittedRef.current) {
+            return;
+        }
+
+        autoSubmittedRef.current = true;
+
+        void handleFinishInterview(true);
 
     }, [remainingSeconds, handleFinishInterview]);
 
@@ -533,9 +548,7 @@ const InterviewSessionPage: React.FC = () => {
 
                     <InterviewTimer
 
-                        remainingSeconds={
-                            remainingSeconds
-                        }
+                        remainingSeconds={remainingSeconds ?? 0}
 
                         totalSeconds={
 
@@ -663,7 +676,7 @@ const InterviewSessionPage: React.FC = () => {
                                         );
 
 
-                                    const active =  currentQuestionIndex === index;
+                                    const active = currentQuestionIndex === index;
 
 
                                     return (
