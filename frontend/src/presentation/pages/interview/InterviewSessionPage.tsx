@@ -529,7 +529,7 @@ const InterviewSessionPage: React.FC = () => {
 
                 </div>
 
-                <div className="w-full lg:w-[340px]">
+                <div className="w-full lg:w-[300px]">
 
                     <InterviewTimer
 
@@ -573,7 +573,7 @@ const InterviewSessionPage: React.FC = () => {
             />
 
 
-            <div className="grid gap-6 xl:grid-cols-3">
+            <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
 
 
                 <div className="space-y-6 xl:col-span-2">
@@ -585,6 +585,28 @@ const InterviewSessionPage: React.FC = () => {
                         onSpeakingChange={setIsInterviewerSpeaking}
                     />
 
+                    {isInterviewerSpeaking && (
+
+                        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+
+                            <p className="text-sm font-medium text-amber-700">
+
+                                Please wait until the interviewer finishes asking the question.
+
+                            </p>
+
+                        </div>
+
+                    )}
+
+                    <RecordingControls
+                        isRecording={isRecording}
+                        hasTranscript={transcript.trim().length > 0}
+                        disabled={isBusy || isInterviewerSpeaking}
+                        onStart={startRecording}
+                        onStop={stopRecording}
+                        onRetry={handleRetryRecording}
+                    />
 
                     {error && (
 
@@ -611,30 +633,7 @@ const InterviewSessionPage: React.FC = () => {
                 </div>
 
 
-                <div className="space-y-6">
-
-                    {isInterviewerSpeaking && (
-
-                        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
-
-                            <p className="text-sm font-medium text-amber-700">
-
-                                Please wait until the interviewer finishes asking the question.
-
-                            </p>
-
-                        </div>
-
-                    )}
-
-                    <RecordingControls
-                        isRecording={isRecording}
-                        hasTranscript={transcript.trim().length > 0}
-                        disabled={isBusy || isInterviewerSpeaking}
-                        onStart={startRecording}
-                        onStop={stopRecording}
-                        onRetry={handleRetryRecording}
-                    />
+                <div className="space-y-5">
 
 
                     <div className="rounded-3xl border border-slate-200 bg-white p-6">
@@ -647,7 +646,7 @@ const InterviewSessionPage: React.FC = () => {
                         </h3>
 
 
-                        <div className="mt-6 space-y-3">
+                        <div className="mt-4 space-y-3">
 
 
                             {currentInterview.questions.map(
@@ -689,7 +688,7 @@ const InterviewSessionPage: React.FC = () => {
 
                                             }}
 
-                                            className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 transition
+                                            className={`flex w-full items-center justify-between rounded-xl border px-4 py-2.5 transition
 
                                                 ${active
 
@@ -750,7 +749,7 @@ const InterviewSessionPage: React.FC = () => {
             </div>
 
 
-            <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-6 sm:flex-row sm:justify-between">
+            <div className="flex flex-col gap-3 rounded-3xl border border-slate-200 bg-white p-5 sm:flex-row sm:justify-between">
 
 
                 <button
@@ -759,7 +758,7 @@ const InterviewSessionPage: React.FC = () => {
 
                     disabled={currentQuestionIndex === 0 || isBusy || isInterviewerSpeaking}
 
-                    className="rounded-2xl border border-slate-300 px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-2xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
 
                 >
 

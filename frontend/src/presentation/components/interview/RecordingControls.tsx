@@ -21,13 +21,13 @@ const RecordingControls: React.FC<Props> = ({
 
     return (
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6">
+        <div className="rounded-3xl border border-slate-200 bg-white p-5">
 
             <div className="flex items-center justify-between">
 
                 <div>
 
-                    <h2 className="text-lg font-bold text-slate-900">
+                    <h2 className="text-base font-bold text-slate-900">
                         Recording Controls
                     </h2>
 
@@ -45,7 +45,7 @@ const RecordingControls: React.FC<Props> = ({
 
                     <div className="flex items-center gap-2">
 
-                        <span className="relative flex h-3 w-3">
+                        <span className="relative flex h-2.5 w-2.5">
 
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"/>
 
@@ -63,7 +63,7 @@ const RecordingControls: React.FC<Props> = ({
 
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-4">
+            <div className="mt-4 flex flex-wrap gap-4">
 
                 {!isRecording ? (
 
@@ -78,8 +78,8 @@ const RecordingControls: React.FC<Props> = ({
                             bg-gradient-to-r
                             from-red-500
                             to-rose-600
-                            px-6
-                            py-3
+                            px-5
+                            py-2.5
                             font-semibold
                             text-white
                             transition
@@ -89,7 +89,7 @@ const RecordingControls: React.FC<Props> = ({
                         "
                     >
 
-                        <Mic size={20} />
+                        <Mic size={18} />
 
                         Start Recording
 
@@ -114,7 +114,7 @@ const RecordingControls: React.FC<Props> = ({
                         "
                     >
 
-                        <Square size={20} />
+                        <Square size={18} />
 
                         Stop Recording
 
