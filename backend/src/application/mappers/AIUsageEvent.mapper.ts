@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { AIUsageEvent } from "../../domain/entities/AIUsageEvent.entity";
 import { AIUsageEventLean } from "../../infrastructure/database/models/AIUsageEvent";
 
@@ -51,9 +52,9 @@ export const toPersistenceAIUsageEvent = (
 
         aiModel: event.aiModel,
 
-        userId: event.userId ?? null,
+        userId: new Types.ObjectId(event.userId) ?? null,
 
-        documentId: event.documentId ?? null,
+        documentId: new Types.ObjectId(event.documentId) ?? null,
 
         requestTokens: event.requestTokens ?? null,
 
