@@ -1,3 +1,4 @@
+import { AnalyticsFilterDTO } from "../../application/dtos/admin/analytics/analyticsFilter.dto";
 import { AIProvider, AIUsageFeature } from "../entities/AIUsageEvent.entity";
 
 
@@ -80,19 +81,19 @@ export interface LatencyStatistics {
 
 export interface IAnalyticsRepository {
 
-    getOverviewMetrics(): Promise<OverviewMetrics>;
+    getOverviewMetrics(filter: AnalyticsFilterDTO): Promise<OverviewMetrics>;
 
-    getDailyAIUsage(days: number): Promise<DailyAIUsage[]>;
+    getDailyAIUsage(filter: AnalyticsFilterDTO): Promise<DailyAIUsage[]>;
 
-    getFeatureUsage(): Promise<FeatureUsage[]>;
+    getFeatureUsage(filter: AnalyticsFilterDTO): Promise<FeatureUsage[]>;
 
-    getProviderUsage(): Promise<ProviderUsage[]>;
+    getProviderUsage(filter: AnalyticsFilterDTO): Promise<ProviderUsage[]>;
 
-    getModelUsage(): Promise<ModelUsage[]>;
+    getModelUsage(filter: AnalyticsFilterDTO): Promise<ModelUsage[]>;
 
-    getFailureStatistics(): Promise<FailureStatistics[]>;
+    getFailureStatistics(filter: AnalyticsFilterDTO): Promise<FailureStatistics[]>;
 
-    getEstimatedCost(days: number): Promise<number>;
+    getEstimatedCost(filter: AnalyticsFilterDTO): Promise<number>;
 
-    getLatencyStatistics(): Promise<LatencyStatistics>;
+    getLatencyStatistics(filter: AnalyticsFilterDTO): Promise<LatencyStatistics>;
 }

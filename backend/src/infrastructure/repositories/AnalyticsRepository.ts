@@ -1,7 +1,20 @@
 import { Model } from "mongoose";
-import { DailyAIUsage, FailureStatistics, FeatureUsage, IAnalyticsRepository, LatencyStatistics, ModelUsage, OverviewMetrics, ProviderUsage } from "../../domain/repositories/IAnalyticsRepository";
-import { AIUsageEventLean, AIUsageEventModel } from "../database/models/AIUsageEvent";
-
+import { AnalyticsFilterDTO } from "../../application/dtos/admin/analytics/analyticsFilter.dto";
+import {
+    DailyAIUsage,
+    FailureStatistics,
+    FeatureUsage,
+    IAnalyticsRepository,
+    LatencyStatistics,
+    ModelUsage,
+    OverviewMetrics,
+    ProviderUsage,
+} from "../../domain/repositories/IAnalyticsRepository";
+import {
+    AIUsageEventLean,
+    AIUsageEventModel,
+} from "../database/models/AIUsageEvent";
+import { buildDateRange } from "../../utils/buildDateRange";
 
 
 export class AnalyticsRepository implements IAnalyticsRepository {
@@ -10,9 +23,23 @@ export class AnalyticsRepository implements IAnalyticsRepository {
         private readonly model: Model<AIUsageEventLean> = AIUsageEventModel
     ) { }
 
-    async getOverviewMetrics(): Promise<OverviewMetrics> {
+    async getOverviewMetrics(
+        filter: AnalyticsFilterDTO
+    ): Promise<OverviewMetrics> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         const [result] = await this.model.aggregate([
+
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
+
             {
                 $group: {
                     _id: null,
@@ -48,59 +75,45 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                     estimatedCost: {
                         $sum: "$estimatedCost",
                     },
-
                 },
             },
 
             {
                 $project: {
-
                     _id: 0,
-
                     totalRequests: 1,
-
                     successfulRequests: 1,
-
                     failedRequests: 1,
-
                     averageLatencyMs: {
                         $round: [
                             "$averageLatencyMs",
                             2,
                         ],
                     },
-
                     estimatedCost: {
                         $round: [
                             "$estimatedCost",
                             6,
                         ],
                     },
-
                 },
             },
         ]);
 
-        return (
-            result ?? {
-                totalRequests: 0,
-                successfulRequests: 0,
-                failedRequests: 0,
-                averageLatencyMs: 0,
-                estimatedCost: 0,
-            }
-        );
+        return result ?? {
+            totalRequests: 0,
+            successfulRequests: 0,
+            failedRequests: 0,
+            averageLatencyMs: 0,
+            estimatedCost: 0,
+        };
     }
 
     async getDailyAIUsage(
-        days: number
+        filter: AnalyticsFilterDTO
     ): Promise<DailyAIUsage[]> {
 
-        const startDate = new Date();
-
-        startDate.setDate(
-            startDate.getDate() - days
-        );
+        const { startDate, endDate } = buildDateRange(filter);
 
         return await this.model.aggregate([
 
@@ -108,6 +121,7 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                 $match: {
                     createdAt: {
                         $gte: startDate,
+                        $lte: endDate,
                     },
                 },
             },
@@ -116,15 +130,10 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                 $group: {
 
                     _id: {
-
                         $dateToString: {
-
                             format: "%Y-%m-%d",
-
                             date: "$createdAt",
-
                         },
-
                     },
 
                     totalRequests: {
@@ -132,106 +141,84 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                     },
 
                     successfulRequests: {
-
                         $sum: {
-
                             $cond: [
-
                                 {
                                     $eq: [
                                         "$status",
                                         "SUCCESS",
                                     ],
                                 },
-
                                 1,
-
                                 0,
-
                             ],
-
                         },
-
                     },
 
                     failedRequests: {
-
                         $sum: {
-
                             $cond: [
-
                                 {
                                     $eq: [
                                         "$status",
                                         "FAILED",
                                     ],
                                 },
-
                                 1,
-
                                 0,
-
                             ],
-
                         },
-
                     },
 
                     estimatedCost: {
-
                         $sum: "$estimatedCost",
-
                     },
-
                 },
-
             },
 
             {
                 $project: {
-
                     _id: 0,
-
                     date: "$_id",
-
                     totalRequests: 1,
-
                     successfulRequests: 1,
-
                     failedRequests: 1,
-
                     estimatedCost: {
-
                         $round: [
                             "$estimatedCost",
                             6,
                         ],
-
                     },
-
                 },
-
             },
 
             {
                 $sort: {
-
                     date: 1,
-
                 },
-
             },
-
         ]);
     }
 
-    async getFeatureUsage(): Promise<FeatureUsage[]> {
+    async getFeatureUsage(
+        filter: AnalyticsFilterDTO
+    ): Promise<FeatureUsage[]> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         return await this.model.aggregate([
 
             {
-                $group: {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
+            {
+                $group: {
                     _id: "$feature",
 
                     totalRequests: {
@@ -241,50 +228,50 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                     estimatedCost: {
                         $sum: "$estimatedCost",
                     },
-
                 },
-
             },
 
             {
                 $project: {
-
                     _id: 0,
-
                     feature: "$_id",
-
                     totalRequests: 1,
-
                     estimatedCost: {
                         $round: [
                             "$estimatedCost",
                             6,
                         ],
                     },
-
                 },
-
             },
 
             {
                 $sort: {
-
                     totalRequests: -1,
-
                 },
-
             },
-
         ]);
     }
 
-    async getProviderUsage(): Promise<ProviderUsage[]> {
+    async getProviderUsage(
+        filter: AnalyticsFilterDTO
+    ): Promise<ProviderUsage[]> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         return await this.model.aggregate([
 
             {
-                $group: {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
+            {
+                $group: {
                     _id: "$provider",
 
                     totalRequests: {
@@ -294,46 +281,47 @@ export class AnalyticsRepository implements IAnalyticsRepository {
                     estimatedCost: {
                         $sum: "$estimatedCost",
                     },
-
                 },
-
             },
 
             {
                 $project: {
-
                     _id: 0,
-
                     provider: "$_id",
-
                     totalRequests: 1,
-
                     estimatedCost: {
                         $round: [
                             "$estimatedCost",
                             6,
                         ],
                     },
-
                 },
-
             },
 
             {
                 $sort: {
-
                     totalRequests: -1,
-
                 },
-
             },
-
         ]);
     }
 
-    async getModelUsage(): Promise<ModelUsage[]> {
+    async getModelUsage(
+        filter: AnalyticsFilterDTO
+    ): Promise<ModelUsage[]> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         return await this.model.aggregate([
+
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
             {
                 $group: {
@@ -374,19 +362,29 @@ export class AnalyticsRepository implements IAnalyticsRepository {
 
             {
                 $sort: {
-
                     totalRequests: -1,
-
                 },
-
             },
 
         ]);
     }
 
-    async getFailureStatistics(): Promise<FailureStatistics[]> {
+    async getFailureStatistics(
+        filter: AnalyticsFilterDTO
+    ): Promise<FailureStatistics[]> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         return await this.model.aggregate([
+
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
             {
                 $group: {
@@ -527,9 +525,22 @@ export class AnalyticsRepository implements IAnalyticsRepository {
         ]);
     }
 
-    async getEstimatedCost(): Promise<number> {
+    async getEstimatedCost(
+        filter: AnalyticsFilterDTO
+    ): Promise<number> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         const [result] = await this.model.aggregate([
+
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
             {
                 $group: {
@@ -573,9 +584,22 @@ export class AnalyticsRepository implements IAnalyticsRepository {
         return result?.estimatedCost ?? 0;
     }
 
-    async getLatencyStatistics(): Promise<LatencyStatistics> {
+    async getLatencyStatistics(
+        filter: AnalyticsFilterDTO
+    ): Promise<LatencyStatistics> {
+
+        const { startDate, endDate } = buildDateRange(filter);
 
         const [result] = await this.model.aggregate([
+
+            {
+                $match: {
+                    createdAt: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                },
+            },
 
             {
 
