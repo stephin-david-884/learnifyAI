@@ -112,4 +112,7 @@ export const API_ROUTES = {
         GET_PAYMENTS: "/admin/payments",
     },
 
+    ADMIN_ANALYTICS: {
+        GET_DASHBOARD_SUMMARY: "/admin/analytics/dashboard",
+    }
 }
