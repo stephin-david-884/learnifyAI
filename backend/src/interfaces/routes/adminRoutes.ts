@@ -7,6 +7,8 @@ import { verifyCsrf } from '../middlewares/csrfVerify';
 import { adminMiddleware } from '../middlewares/adminMiddleware';
 import { adminSubscriptionController } from '../../infrastructure/di/subscription.container';
 import { createSubscriptionPlanSchema, deactivateSubscriptionPlanSchema, updateSubscriptionPlanSchema } from '../validators/admin/admin.subscription.validator';
+import { analyticsController } from '../../infrastructure/di/analytics.container';
+import { analyticsFilterSchema } from '../validators/admin/analytics.validator';
 
 const router = express.Router();
 
@@ -51,5 +53,45 @@ router.get(ROUTES.ADMIN_SUBSCRIPTION.GET_PAYMENTS,
     verifyCsrf,
     adminSubscriptionController.getPayments
 )
+
+router.get(
+    ROUTES.ADMIN_ANALYTICS.DASHBOARD,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    validate(analyticsFilterSchema, "query"),
+    analyticsController.getDashboardSummary
+);
+
+router.get(
+    ROUTES.ADMIN_ANALYTICS.AI,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    validate(analyticsFilterSchema, "query"),
+    analyticsController.getAIAnalytics
+);
+
+router.get(
+    ROUTES.ADMIN_ANALYTICS.USERS,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    validate(analyticsFilterSchema, "query"),
+    analyticsController.getUserAnalytics
+);
+
+router.get(
+    ROUTES.ADMIN_ANALYTICS.DOCUMENTS,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    validate(analyticsFilterSchema, "query"),
+    analyticsController.getDocumentAnalytics
+);
+
+router.get(
+    ROUTES.ADMIN_ANALYTICS.REVENUE,
+    adminMiddleware(tokenService),
+    verifyCsrf,
+    validate(analyticsFilterSchema, "query"),
+    analyticsController.getRevenueAnalytics
+);
 
 export default router;

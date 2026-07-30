@@ -89,4 +89,12 @@ export const ROUTES = {
     GET_ONE: "/flashcards/:flashcardSetId",
     DELETE: "/flashcards/:flashcardSetId",
   },
+
+  ADMIN_ANALYTICS: {
+    DASHBOARD: "/analytics/dashboard",
+    AI: "/analytics/ai",
+    USERS: "/analytics/users",
+    DOCUMENTS: "/analytics/documents",
+    REVENUE: "/analytics/revenue",
+  },
 };
