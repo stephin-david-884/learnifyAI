@@ -1,6 +1,7 @@
 import type { AIAnalytics } from "../../../../../types/admin/analytics";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
+import DailyAIUsageChart from "../charts/DailyAIUsageChart";
 
 interface AISectionProps {
     ai: AIAnalytics | null;
@@ -103,21 +104,10 @@ const AISection = ({
 
                     {/* DailyAIUsageChart */}
 
-                    <div
-                        className="
-                            flex
-                            h-72
-                            items-center
-                            justify-center
-                            rounded-lg
-                            border-2
-                            border-dashed
-                            border-gray-200
-                            text-gray-400
-                        "
-                    >
-                        DailyAIUsageChart
-                    </div>
+                    <DailyAIUsageChart
+                        data={ai.dailyUsage}
+                        loading={loading}
+                    />
 
                 </ChartCard>
 
