@@ -14,7 +14,6 @@ import { setLogoutHandler } from "./lib/axios";
 import ForgotPasswordProtectedRoute from "./components/auth/ForgotPasswordProtectedRoute";
 import AdminProtectedRoute from "./components/auth/AdminProtectedRoute";
 import AdminLogin from "./presentation/pages/admin/AdminLogin";
-import AdminDashboard from "./presentation/pages/admin/AdminDashboard";
 import { useAdminAuth } from "./hooks/useAdminAuth";
 
 const ForgotPassword = lazy(() => import('./presentation/pages/auth/ForgotPassword'));
@@ -37,6 +36,7 @@ const InterviewSessionPage = lazy(() => import('./presentation/pages/interview/I
 const InterviewResultPage = lazy(() => import('./presentation/pages/interview/InterviewResultPage'));
 const FlashcardListPage = lazy(() => import('./presentation/pages/flashcards/FlashcardListPage'));
 const FlashcardStudyPage = lazy(() => import('./presentation/pages/flashcards/FlashcardStudyPage'));
+const AnalyticsDashboard = lazy(() => import('./presentation/pages/admin/AnalyticsDashboard'));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -124,7 +124,7 @@ const App = () => {
           <Route path="/admin/login" element={<AdminLogin />} />
 
           <Route element={<AdminProtectedRoute />}>
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AnalyticsDashboard />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/subscriptions" element={<AdminSubscriptionPlansPage />} />
             <Route path="/admin/payments" element={<AdminPaymentsPage />} />

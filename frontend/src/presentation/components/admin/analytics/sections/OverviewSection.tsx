@@ -3,7 +3,6 @@ import {
     Crown,
     FileText,
     IndianRupee,
-    ShieldCheck,
     Users,
 } from "lucide-react";
 
@@ -60,12 +59,12 @@ const OverviewSection = ({
                   icon: Bot,
               },
 
-              {
-                  title: "Success Rate",
-                  value: `${dashboard.ai.overview.successRate}%`,
-                  subtitle: `${dashboard.ai.overview.failedRequests} failed requests`,
-                  icon: ShieldCheck,
-              },
+            //   {
+            //       title: "Success Rate",
+            //       value: `${dashboard.ai.overview.successRate}%`,
+            //       subtitle: `${dashboard.ai.overview.failedRequests} failed requests`,
+            //       icon: ShieldCheck,
+            //   },
           ]
         : [];
 
