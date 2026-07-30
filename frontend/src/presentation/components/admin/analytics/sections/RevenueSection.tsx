@@ -1,4 +1,5 @@
 import type { RevenueAnalytics } from "../../../../../types/admin/analytics";
+import RevenueTrendChart from "../charts/RevenueTrendChart";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
 
@@ -102,21 +103,10 @@ const RevenueSection = ({
 
                     {/* RevenueTrendChart */}
 
-                    <div
-                        className="
-                            flex
-                            h-72
-                            items-center
-                            justify-center
-                            rounded-lg
-                            border-2
-                            border-dashed
-                            border-gray-200
-                            text-gray-400
-                        "
-                    >
-                        RevenueTrendChart
-                    </div>
+                    <RevenueTrendChart
+                        data={revenue.revenueTrend}
+                        loading={loading}
+                    />
 
                 </ChartCard>
 
