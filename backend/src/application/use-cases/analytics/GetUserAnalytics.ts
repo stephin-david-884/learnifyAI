@@ -1,3 +1,4 @@
+import { IUserAnalyticsRepository } from "../../../domain/repositories/IUserAnalyticsRepository";
 import { AnalyticsFilterDTO } from "../../dtos/admin/analytics/analyticsFilter.dto";
 import { GetUserAnalyticsResponseDTO } from "../../dtos/admin/analytics/GetUserAnalytics.dto";
 import { IGetUserAnalytics } from "../../interfaces/usecases/analytics/IGetUserAnalytics";
