@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import type { AnalyticsFilter, AnalyticsState, DashboardSummary } from "../../../types/admin/analytics";
+import type { AIAnalytics, AnalyticsFilter, AnalyticsState, DashboardSummary, DocumentAnalytics, RevenueAnalytics, UserAnalytics } from "../../../types/admin/analytics";
 import type { AxiosError } from "axios";
 import api from "../../../lib/axios";
 import { API_ROUTES } from "../../../constants/api.routes";
@@ -71,6 +71,170 @@ export const getDashboardSummary =
         }
     );
 
+export const getAIAnalytics =
+    createAsyncThunk<
+        AIAnalytics,
+        AnalyticsFilter,
+        { rejectValue: string }
+    >(
+        "analytics/getAIAnalytics",
+
+        async (
+            filter,
+            { rejectWithValue }
+        ) => {
+
+            try {
+
+                const response = await api.get(
+                    API_ROUTES.ADMIN_ANALYTICS.GET_AI_ANALYTICS,
+                    {
+                        params: filter,
+                    }
+                );
+
+                return response.data.data;
+
+            } catch (error) {
+
+                const err =
+                    error as AxiosError<{
+                        message: string;
+                    }>;
+
+                return rejectWithValue(
+                    err.response?.data?.message ??
+                    "Failed to fetch AI analytics"
+                );
+
+            }
+
+        }
+    );
+
+export const getUserAnalytics =
+    createAsyncThunk<
+        UserAnalytics,
+        AnalyticsFilter,
+        { rejectValue: string }
+    >(
+        "analytics/getUserAnalytics",
+
+        async (
+            filter,
+            { rejectWithValue }
+        ) => {
+
+            try {
+
+                const response = await api.get(
+                    API_ROUTES.ADMIN_ANALYTICS.GET_USER_ANALYTICS,
+                    {
+                        params: filter,
+                    }
+                );
+
+                return response.data.data;
+
+            } catch (error) {
+
+                const err =
+                    error as AxiosError<{
+                        message: string;
+                    }>;
+
+                return rejectWithValue(
+                    err.response?.data?.message ??
+                    "Failed to fetch user analytics"
+                );
+
+            }
+
+        }
+    );
+
+export const getDocumentAnalytics =
+    createAsyncThunk<
+        DocumentAnalytics,
+        AnalyticsFilter,
+        { rejectValue: string }
+    >(
+        "analytics/getDocumentAnalytics",
+
+        async (
+            filter,
+            { rejectWithValue }
+        ) => {
+
+            try {
+
+                const response = await api.get(
+                    API_ROUTES.ADMIN_ANALYTICS.GET_DOCUMENT_ANALYTICS,
+                    {
+                        params: filter,
+                    }
+                );
+
+                return response.data.data;
+
+            } catch (error) {
+
+                const err =
+                    error as AxiosError<{
+                        message: string;
+                    }>;
+
+                return rejectWithValue(
+                    err.response?.data?.message ??
+                    "Failed to fetch document analytics"
+                );
+
+            }
+
+        }
+    );
+
+export const getRevenueAnalytics =
+    createAsyncThunk<
+        RevenueAnalytics,
+        AnalyticsFilter,
+        { rejectValue: string }
+    >(
+        "analytics/getRevenueAnalytics",
+
+        async (
+            filter,
+            { rejectWithValue }
+        ) => {
+
+            try {
+
+                const response = await api.get(
+                    API_ROUTES.ADMIN_ANALYTICS.GET_REVENUE_ANALYTICS,
+                    {
+                        params: filter,
+                    }
+                );
+
+                return response.data.data;
+
+            } catch (error) {
+
+                const err =
+                    error as AxiosError<{
+                        message: string;
+                    }>;
+
+                return rejectWithValue(
+                    err.response?.data?.message ??
+                    "Failed to fetch revenue analytics"
+                );
+
+            }
+
+        }
+    );
+
 const analyticsSlice = createSlice({
     name: "analytics",
 
@@ -102,6 +266,12 @@ const analyticsSlice = createSlice({
 
             state.revenue = null;
 
+            state.loading = false;
+
+            state.refreshing = false;
+
+            state.error = null;
+
         },
 
     },
@@ -109,13 +279,21 @@ const analyticsSlice = createSlice({
     extraReducers: (builder) => {
         builder
 
-        /* Dashboard summary */
+            /* Dashboard summary */
 
             .addCase(
                 getDashboardSummary.pending,
                 (state) => {
 
-                    state.loading = true;
+                    if (state.dashboard) {
+
+                        state.refreshing = true;
+
+                    } else {
+
+                        state.loading = true;
+
+                    }
 
                     state.error = null;
 
@@ -126,6 +304,8 @@ const analyticsSlice = createSlice({
                 (state, action) => {
 
                     state.loading = false;
+
+                    state.refreshing = false;
 
                     state.dashboard = action.payload;
 
@@ -145,6 +325,8 @@ const analyticsSlice = createSlice({
 
                     state.loading = false;
 
+                    state.refreshing = false;
+
                     state.error =
                         action.payload ??
                         "Failed to fetch dashboard summary";
@@ -152,6 +334,184 @@ const analyticsSlice = createSlice({
                 }
             )
 
-            
+            /* AI Analytics */
+
+            .addCase(
+                getAIAnalytics.pending,
+                (state) => {
+
+                    state.refreshing = true;
+
+                    state.error = null;
+
+                }
+            )
+
+            .addCase(
+                getAIAnalytics.fulfilled,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.ai = action.payload;
+
+                    if (state.dashboard) {
+
+                        state.dashboard.ai = action.payload;
+
+                    }
+
+                }
+            )
+
+            .addCase(
+                getAIAnalytics.rejected,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.error =
+                        action.payload ??
+                        "Failed to fetch AI analytics";
+
+                }
+            )
+
+            /* User analytics */
+
+            .addCase(
+                getUserAnalytics.pending,
+                (state) => {
+
+                    state.refreshing = true;
+
+                    state.error = null;
+
+                }
+            )
+
+            .addCase(
+                getUserAnalytics.fulfilled,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.users = action.payload;
+
+                    if (state.dashboard) {
+
+                        state.dashboard.users = action.payload;
+
+                    }
+
+                }
+            )
+
+            .addCase(
+                getUserAnalytics.rejected,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.error =
+                        action.payload ??
+                        "Failed to fetch user analytics";
+
+                }
+            )
+
+            /* Document Analytics */
+
+            .addCase(
+                getDocumentAnalytics.pending,
+                (state) => {
+
+                    state.refreshing = true;
+
+                    state.error = null;
+
+                }
+            )
+
+            .addCase(
+                getDocumentAnalytics.fulfilled,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.documents = action.payload;
+
+                    if (state.dashboard) {
+
+                        state.dashboard.documents = action.payload;
+
+                    }
+
+                }
+            )
+
+            .addCase(
+                getDocumentAnalytics.rejected,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.error =
+                        action.payload ??
+                        "Failed to fetch document analytics";
+
+                }
+            )
+
+            /* Revenue Analytics */
+
+            .addCase(
+                getRevenueAnalytics.pending,
+                (state) => {
+
+                    state.refreshing = true;
+
+                    state.error = null;
+
+                }
+            )
+
+            .addCase(
+                getRevenueAnalytics.fulfilled,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.revenue = action.payload;
+
+                    if (state.dashboard) {
+
+                        state.dashboard.revenue = action.payload;
+
+                    }
+
+                }
+            )
+
+            .addCase(
+                getRevenueAnalytics.rejected,
+                (state, action) => {
+
+                    state.refreshing = false;
+
+                    state.error =
+                        action.payload ??
+                        "Failed to fetch revenue analytics";
+
+                }
+            )
     }
-})
+});
+
+export const {
+    clearAnalyticsError,
+    clearDashboard,
+    setAnalyticsFilter,
+} = analyticsSlice.actions;
+
+export default analyticsSlice.reducer;;

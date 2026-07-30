@@ -114,5 +114,9 @@ export const API_ROUTES = {
 
     ADMIN_ANALYTICS: {
         GET_DASHBOARD_SUMMARY: "/admin/analytics/dashboard",
+        GET_AI_ANALYTICS: "/admin/analytics/ai",
+        GET_USER_ANALYTICS: "/admin/analytics/users",
+        GET_DOCUMENT_ANALYTICS: "/admin/analytics/documents",
+        GET_REVENUE_ANALYTICS: "/admin/analytics/revenue",
     }
 }
