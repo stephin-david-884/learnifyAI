@@ -1,9 +1,5 @@
-import {
-    DocumentMimeTypeBreakdown,
-    DocumentOverview,
-    DocumentStatusBreakdown,
-    DocumentUploadTrend,
-} from "../../domain/repositories/IDocumentAnalyticsRepository";
+import { DocumentMimeTypeBreakdown, DocumentOverview, DocumentStatusBreakdown, DocumentUploadTrend } from "../../../../domain/repositories/IDocumentAnalyticsRepository";
+
 
 export interface GetDocumentAnalyticsResponseDTO {
 
