@@ -1,25 +1,18 @@
 import { Model } from "mongoose";
+import { BillingCycleBreakdown, IRevenueAnalyticsRepository, PlanRevenueBreakdown, RevenueOverview, RevenueTrend, SubscriptionStatusBreakdown } from "../../domain/repositories/IRevenueAnalyticsRepository";
+import { UserSubscriptionLean, UserSubscriptionModel } from "../database/models/UserSubscription";
 import { AnalyticsFilterDTO } from "../../application/dtos/admin/analytics/analyticsFilter.dto";
-import {
-    DocumentMimeTypeBreakdown,
-    DocumentOverview,
-    DocumentStatusBreakdown,
-    DocumentUploadTrend,
-    IDocumentAnalyticsRepository,
-} from "../../domain/repositories/IDocumentAnalyticsRepository";
-import { DocumentLean, DocumentModel } from "../database/models/Document";
 import { buildDateRange } from "../../utils/buildDateRange";
 
-export class DocumentAnalyticsRepository
-    implements IDocumentAnalyticsRepository {
+export class RevenueAnalyticsRepository implements IRevenueAnalyticsRepository {
 
     constructor(
-        private readonly model: Model<DocumentLean> = DocumentModel,
-    ) {}
+        private readonly model: Model<UserSubscriptionLean> = UserSubscriptionModel,
+    ) { }
 
     async getOverview(
-        filter: AnalyticsFilterDTO,
-    ): Promise<DocumentOverview> {
+        filter: AnalyticsFilterDTO
+    ): Promise<RevenueOverview> {
 
         const { startDate, endDate } =
             buildDateRange(filter);
@@ -29,33 +22,53 @@ export class DocumentAnalyticsRepository
 
                 {
                     $match: {
+
                         createdAt: {
+
                             $gte: startDate,
+
                             $lte: endDate,
+
                         },
+
                     },
+
                 },
 
                 {
+
                     $group: {
 
                         _id: null,
 
-                        totalDocuments: {
+                        totalRevenue: {
+
+                            $sum: "$planSnapshot.price",
+
+                        },
+
+                        totalSubscriptions: {
+
                             $sum: 1,
+
                         },
 
-                        readyDocuments: {
+                        activeSubscriptions: {
 
                             $sum: {
 
                                 $cond: [
 
                                     {
+
                                         $eq: [
+
                                             "$status",
-                                            "READY",
+
+                                            "ACTIVE",
+
                                         ],
+
                                     },
 
                                     1,
@@ -68,17 +81,22 @@ export class DocumentAnalyticsRepository
 
                         },
 
-                        processingDocuments: {
+                        expiredSubscriptions: {
 
                             $sum: {
 
                                 $cond: [
 
                                     {
+
                                         $eq: [
+
                                             "$status",
-                                            "PROCESSING",
+
+                                            "EXPIRED",
+
                                         ],
+
                                     },
 
                                     1,
@@ -91,17 +109,22 @@ export class DocumentAnalyticsRepository
 
                         },
 
-                        failedDocuments: {
+                        cancelledSubscriptions: {
 
                             $sum: {
 
                                 $cond: [
 
                                     {
+
                                         $eq: [
+
                                             "$status",
-                                            "FAILED",
+
+                                            "CANCELLED",
+
                                         ],
+
                                     },
 
                                     1,
@@ -114,54 +137,9 @@ export class DocumentAnalyticsRepository
 
                         },
 
-                        uploadingDocuments: {
+                        averageRevenuePerSubscription: {
 
-                            $sum: {
-
-                                $cond: [
-
-                                    {
-                                        $eq: [
-                                            "$status",
-                                            "UPLOADING",
-                                        ],
-                                    },
-
-                                    1,
-
-                                    0,
-
-                                ],
-
-                            },
-
-                        },
-
-                        totalPages: {
-
-                            $sum: {
-
-                                $ifNull: [
-
-                                    "$totalPages",
-
-                                    0,
-
-                                ],
-
-                            },
-
-                        },
-
-                        totalStorageBytes: {
-
-                            $sum: "$fileSize",
-
-                        },
-
-                        averageFileSizeBytes: {
-
-                            $avg: "$fileSize",
+                            $avg: "$planSnapshot.price",
 
                         },
 
@@ -170,29 +148,26 @@ export class DocumentAnalyticsRepository
                 },
 
                 {
+
                     $project: {
 
                         _id: 0,
 
-                        totalDocuments: 1,
+                        totalRevenue: 1,
 
-                        readyDocuments: 1,
+                        totalSubscriptions: 1,
 
-                        processingDocuments: 1,
+                        activeSubscriptions: 1,
 
-                        failedDocuments: 1,
+                        expiredSubscriptions: 1,
 
-                        uploadingDocuments: 1,
+                        cancelledSubscriptions: 1,
 
-                        totalPages: 1,
-
-                        totalStorageBytes: 1,
-
-                        averageFileSizeBytes: {
+                        averageRevenuePerSubscription: {
 
                             $round: [
 
-                                "$averageFileSizeBytes",
+                                "$averageRevenuePerSubscription",
 
                                 2,
 
@@ -208,29 +183,25 @@ export class DocumentAnalyticsRepository
 
         return result ?? {
 
-            totalDocuments: 0,
+            totalRevenue: 0,
 
-            readyDocuments: 0,
+            totalSubscriptions: 0,
 
-            processingDocuments: 0,
+            activeSubscriptions: 0,
 
-            failedDocuments: 0,
+            expiredSubscriptions: 0,
 
-            uploadingDocuments: 0,
+            cancelledSubscriptions: 0,
 
-            totalPages: 0,
-
-            totalStorageBytes: 0,
-
-            averageFileSizeBytes: 0,
+            averageRevenuePerSubscription: 0,
 
         };
 
     }
 
-    async getUploadTrend(
-        filter: AnalyticsFilterDTO,
-    ): Promise<DocumentUploadTrend[]> {
+    async getRevenueTrend(
+        filter: AnalyticsFilterDTO
+    ): Promise<RevenueTrend[]> {
 
         const { startDate, endDate } =
             buildDateRange(filter);
@@ -268,9 +239,9 @@ export class DocumentAnalyticsRepository
 
                     },
 
-                    uploads: {
+                    revenue: {
 
-                        $sum: 1,
+                        $sum: "$planSnapshot.price",
 
                     },
 
@@ -286,7 +257,7 @@ export class DocumentAnalyticsRepository
 
                     date: "$_id",
 
-                    uploads: 1,
+                    revenue: 1,
 
                 },
 
@@ -306,9 +277,170 @@ export class DocumentAnalyticsRepository
 
     }
 
+    async getPlanBreakdown(
+        filter: AnalyticsFilterDTO
+    ): Promise<PlanRevenueBreakdown[]> {
+
+        const { startDate, endDate } =
+            buildDateRange(filter);
+
+        return await this.model.aggregate([
+
+            {
+
+                $match: {
+
+                    createdAt: {
+
+                        $gte: startDate,
+
+                        $lte: endDate,
+
+                    },
+
+                },
+
+            },
+
+            {
+
+                $group: {
+
+                    _id: {
+
+                        planName: "$planSnapshot.name",
+
+                        billingCycle: "$planSnapshot.billingCycle",
+
+                    },
+
+                    subscriptions: {
+
+                        $sum: 1,
+
+                    },
+
+                    revenue: {
+
+                        $sum: "$planSnapshot.price",
+
+                    },
+
+                },
+
+            },
+
+            {
+
+                $project: {
+
+                    _id: 0,
+
+                    planName: "$_id.planName",
+
+                    billingCycle: "$_id.billingCycle",
+
+                    subscriptions: 1,
+
+                    revenue: 1,
+
+                },
+
+            },
+
+            {
+
+                $sort: {
+
+                    revenue: -1,
+
+                },
+
+            },
+
+        ]);
+
+    }
+
+    async getBillingCycleBreakdown(
+        filter: AnalyticsFilterDTO
+    ): Promise<BillingCycleBreakdown[]> {
+
+        const { startDate, endDate } =
+            buildDateRange(filter);
+
+        return await this.model.aggregate([
+
+            {
+                $match: {
+
+                    createdAt: {
+
+                        $gte: startDate,
+
+                        $lte: endDate,
+
+                    },
+
+                },
+
+            },
+
+            {
+
+                $group: {
+
+                    _id: "$planSnapshot.billingCycle",
+
+                    subscriptions: {
+
+                        $sum: 1,
+
+                    },
+
+                    revenue: {
+
+                        $sum: "$planSnapshot.price",
+
+                    },
+
+                },
+
+            },
+
+            {
+
+                $project: {
+
+                    _id: 0,
+
+                    billingCycle: "$_id",
+
+                    subscriptions: 1,
+
+                    revenue: 1,
+
+                },
+
+            },
+
+            {
+
+                $sort: {
+
+                    revenue: -1,
+
+                },
+
+            },
+
+        ]);
+
+    }
+
     async getStatusBreakdown(
-        filter: AnalyticsFilterDTO,
-    ): Promise<DocumentStatusBreakdown[]> {
+        filter: AnalyticsFilterDTO
+    ): Promise<SubscriptionStatusBreakdown[]> {
 
         const { startDate, endDate } =
             buildDateRange(filter);
@@ -337,7 +469,7 @@ export class DocumentAnalyticsRepository
 
                     _id: "$status",
 
-                    totalDocuments: {
+                    subscriptions: {
 
                         $sum: 1,
 
@@ -355,7 +487,7 @@ export class DocumentAnalyticsRepository
 
                     status: "$_id",
 
-                    totalDocuments: 1,
+                    subscriptions: 1,
 
                 },
 
@@ -365,7 +497,7 @@ export class DocumentAnalyticsRepository
 
                 $sort: {
 
-                    totalDocuments: -1,
+                    subscriptions: -1,
 
                 },
 
@@ -374,74 +506,4 @@ export class DocumentAnalyticsRepository
         ]);
 
     }
-
-    async getMimeTypeBreakdown(
-        filter: AnalyticsFilterDTO,
-    ): Promise<DocumentMimeTypeBreakdown[]> {
-
-        const { startDate, endDate } =
-            buildDateRange(filter);
-
-        return await this.model.aggregate([
-
-            {
-
-                $match: {
-
-                    createdAt: {
-
-                        $gte: startDate,
-
-                        $lte: endDate,
-
-                    },
-
-                },
-
-            },
-
-            {
-
-                $group: {
-
-                    _id: "$mimeType",
-
-                    totalDocuments: {
-
-                        $sum: 1,
-
-                    },
-
-                },
-
-            },
-
-            {
-
-                $project: {
-
-                    _id: 0,
-
-                    mimeType: "$_id",
-
-                    totalDocuments: 1,
-
-                },
-
-            },
-
-            {
-
-                $sort: {
-
-                    totalDocuments: -1,
-
-                },
-
-            },
-
-        ]);
-
-    }
-
-} 
+}
