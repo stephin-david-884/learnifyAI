@@ -73,7 +73,7 @@ const userSubscriptionRepository = new UserSubscriptionRepository();
 const quizRepository = new QuizRepository();
 const interviewRepository = new InterviewRepository();
 const flashcardSetRepository = new FlashcardSetRepository();
-const aiUsageRepository = new AIUsageRepository();;
+const aiUsageRepository = new AIUsageRepository();
 
 //SERVICES
 const embeddingService = new GoogleEmbeddingService();
