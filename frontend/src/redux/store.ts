@@ -10,6 +10,7 @@ import chatReducer from "./features/chat/chatSlice";
 import quizReducer from "./features/quiz/quizSlice";
 import interviewReducer from "./features/interview/interviewSlice";
 import flashcardReducer from "./features/flashcard/flashcardSlice";
+import analyticsReducer from "./features/admin/analyticsSlice";
 
 export const store = configureStore({
     reducer: {
@@ -24,6 +25,7 @@ export const store = configureStore({
         profile: profileSlice,
         interview: interviewReducer,
         flashcard: flashcardReducer,
+        analytics: analyticsReducer,
     }
 })
 

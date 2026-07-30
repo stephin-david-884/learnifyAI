@@ -514,4 +514,4 @@ export const {
     setAnalyticsFilter,
 } = analyticsSlice.actions;
 
-export default analyticsSlice.reducer;;
+export default analyticsSlice.reducer;
