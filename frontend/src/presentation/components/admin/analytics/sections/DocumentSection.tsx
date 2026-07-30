@@ -2,6 +2,7 @@ import type { DocumentAnalytics } from "../../../../../types/admin/analytics";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
 import DocumentUploadChart from "../charts/DocumentUploadChart";
+import StatusBreakdownChart from "../charts/StatusBreakdownChart";
 
 interface DocumentSectionProps {
     documents: DocumentAnalytics | null;
@@ -128,6 +129,18 @@ const DocumentSection = ({
                 </ChartCard>
 
                 <ChartCard
+                    title="Status Breakdown"
+                    subtitle="Distribution of document processing status."
+                >
+
+                    <StatusBreakdownChart
+                        data={documents.statusBreakdown}
+                        loading={loading}
+                    />
+
+                </ChartCard>
+
+                <ChartCard
                     title="Document Overview"
                     subtitle="Current document statistics."
                 >
@@ -212,8 +225,7 @@ const DocumentSection = ({
 
                 <ChartCard
                     title="Storage Usage"
-                    subtitle="Overall storage statistics."
-                    className="lg:col-span-2"
+                    subtitle="Overall storage statistics."                   
                 >
 
                     <div className="grid gap-4 md:grid-cols-2">
