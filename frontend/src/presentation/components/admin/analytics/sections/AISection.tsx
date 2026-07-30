@@ -2,6 +2,9 @@ import type { AIAnalytics } from "../../../../../types/admin/analytics";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
 import DailyAIUsageChart from "../charts/DailyAIUsageChart";
+import FeatureUsageChart from "../charts/FeatureUsageChart";
+import ProviderUsageChart from "../charts/ProviderUsageChart";
+import ModelUsageChart from "../charts/ModelUsageChart";
 
 interface AISectionProps {
     ai: AIAnalytics | null;
@@ -235,10 +238,6 @@ const AISection = ({
                     className="lg:col-span-2"
                 >
 
-                    {/* FeatureUsageChart */}
-                    {/* ProviderUsageChart */}
-                    {/* ModelUsageChart */}
-
                     <div
                         className="
                             grid
@@ -247,53 +246,20 @@ const AISection = ({
                         "
                     >
 
-                        <div
-                            className="
-                                flex
-                                h-56
-                                items-center
-                                justify-center
-                                rounded-lg
-                                border-2
-                                border-dashed
-                                border-gray-200
-                                text-gray-400
-                            "
-                        >
-                            FeatureUsageChart
-                        </div>
+                        <FeatureUsageChart
+                            data={ai.featureUsage}
+                            loading={loading}
+                        />
 
-                        <div
-                            className="
-                                flex
-                                h-56
-                                items-center
-                                justify-center
-                                rounded-lg
-                                border-2
-                                border-dashed
-                                border-gray-200
-                                text-gray-400
-                            "
-                        >
-                            ProviderUsageChart
-                        </div>
+                        <ProviderUsageChart
+                            data={ai.providerUsage}
+                            loading={loading}
+                        />
 
-                        <div
-                            className="
-                                flex
-                                h-56
-                                items-center
-                                justify-center
-                                rounded-lg
-                                border-2
-                                border-dashed
-                                border-gray-200
-                                text-gray-400
-                            "
-                        >
-                            ModelUsageChart
-                        </div>
+                        <ModelUsageChart
+                            data={ai.modelUsage}
+                            loading={loading}
+                        />
 
                     </div>
 
