@@ -8,7 +8,7 @@ import { GetDashboardSummary } from "../../application/use-cases/analytics/GetDa
 import { GetDocumentAnalytics } from "../../application/use-cases/analytics/GetDocumentAnalytics";
 import { GetRevenueAnalytics } from "../../application/use-cases/analytics/GetRevenueAnalytics";
 import { GetUserAnalytics } from "../../application/use-cases/analytics/GetUserAnalytics";
-import { AnalyticsController } from "../../interfaces/controllers/ai/AnalyticsController";
+import { AnalyticsController } from "../../interfaces/controllers/admin/AnalyticsController";
 // import { AIUsageRepository } from "../repositories/AIUsageRepository";
 import { AnalyticsRepository } from "../repositories/AnalyticsRepository";
 import { DocumentAnalyticsRepository } from "../repositories/DocumentAnalyticsRepository";

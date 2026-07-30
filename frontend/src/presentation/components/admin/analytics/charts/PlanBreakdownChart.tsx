@@ -1,23 +1,57 @@
+import { useMemo } from "react";
 import {
-    CartesianGrid,
-    Line,
-    LineChart,
     ResponsiveContainer,
-    Tooltip,
+    BarChart,
+    CartesianGrid,
     XAxis,
     YAxis,
+    Tooltip,
+    Legend,
+    Bar,
 } from "recharts";
-import type { RevenueTrend } from "../../../../../types/admin/analytics";
+import type { PlanRevenueBreakdown } from "../../../../../types/admin/analytics";
 
-interface RevenueTrendChartProps {
-    data: RevenueTrend[];
+interface PlanBreakdownChartProps {
+    data: PlanRevenueBreakdown[];
     loading?: boolean;
 }
 
-const RevenueTrendChart = ({
+interface ChartData {
+    planName: string;
+    MONTHLY: number;
+    YEARLY: number;
+}
+
+const PlanBreakdownChart = ({
     data,
     loading = false,
-}: RevenueTrendChartProps) => {
+}: PlanBreakdownChartProps) => {
+
+    const chartData = useMemo<ChartData[]>(() => {
+
+        const grouped = new Map<string, ChartData>();
+
+        data.forEach((item) => {
+
+            if (!grouped.has(item.planName)) {
+
+                grouped.set(item.planName, {
+                    planName: item.planName,
+                    MONTHLY: 0,
+                    YEARLY: 0,
+                });
+
+            }
+
+            const current = grouped.get(item.planName)!;
+
+            current[item.billingCycle] = item.revenue;
+
+        });
+
+        return Array.from(grouped.values());
+
+    }, [data]);
 
     if (loading) {
 
@@ -43,7 +77,7 @@ const RevenueTrendChart = ({
 
     }
 
-    if (!data.length) {
+    if (!chartData.length) {
 
         return (
 
@@ -60,7 +94,7 @@ const RevenueTrendChart = ({
                     text-gray-500
                 "
             >
-                No revenue data available.
+                No plan revenue available.
             </div>
 
         );
@@ -76,13 +110,13 @@ const RevenueTrendChart = ({
                 height="100%"
             >
 
-                <LineChart
-                    data={data}
+                <BarChart
+                    data={chartData}
                     margin={{
                         top: 10,
                         right: 20,
                         left: 10,
-                        bottom: 0,
+                        bottom: 5,
                     }}
                 >
 
@@ -91,19 +125,19 @@ const RevenueTrendChart = ({
                     />
 
                     <XAxis
-                        dataKey="date"
+                        dataKey="planName"
                         tick={{
                             fontSize: 12,
                         }}
                     />
 
                     <YAxis
-                        tick={{
-                            fontSize: 12,
-                        }}
                         tickFormatter={(value) =>
                             `₹${Number(value).toLocaleString()}`
                         }
+                        tick={{
+                            fontSize: 12,
+                        }}
                     />
 
                     <Tooltip
@@ -113,20 +147,21 @@ const RevenueTrendChart = ({
                         ]}
                     />
 
-                    <Line
-                        type="monotone"
-                        dataKey="revenue"
-                        stroke="#2563eb"
-                        strokeWidth={3}
-                        dot={{
-                            r: 4,
-                        }}
-                        activeDot={{
-                            r: 6,
-                        }}
+                    <Legend />
+
+                    <Bar
+                        dataKey="MONTHLY"
+                        name="Monthly"
+                        radius={[4, 4, 0, 0]}
                     />
 
-                </LineChart>
+                    <Bar
+                        dataKey="YEARLY"
+                        name="Yearly"
+                        radius={[4, 4, 0, 0]}
+                    />
+
+                </BarChart>
 
             </ResponsiveContainer>
 
@@ -136,4 +171,4 @@ const RevenueTrendChart = ({
 
 };
 
-export default RevenueTrendChart;
+export default PlanBreakdownChart;

@@ -1,23 +1,30 @@
 import {
+    Bar,
+    BarChart,
     CartesianGrid,
-    Line,
-    LineChart,
+    Cell,
     ResponsiveContainer,
     Tooltip,
     XAxis,
     YAxis,
 } from "recharts";
-import type { RevenueTrend } from "../../../../../types/admin/analytics";
+import type { BillingCycleBreakdown } from "../../../../../types/admin/analytics";
 
-interface RevenueTrendChartProps {
-    data: RevenueTrend[];
+
+interface BillingCycleChartProps {
+    data: BillingCycleBreakdown[];
     loading?: boolean;
 }
 
-const RevenueTrendChart = ({
+const COLORS = [
+    "#2563eb",
+    "#16a34a",
+];
+
+const BillingCycleChart = ({
     data,
     loading = false,
-}: RevenueTrendChartProps) => {
+}: BillingCycleChartProps) => {
 
     if (loading) {
 
@@ -60,7 +67,7 @@ const RevenueTrendChart = ({
                     text-gray-500
                 "
             >
-                No revenue data available.
+                No billing cycle data available.
             </div>
 
         );
@@ -76,13 +83,13 @@ const RevenueTrendChart = ({
                 height="100%"
             >
 
-                <LineChart
+                <BarChart
                     data={data}
                     margin={{
                         top: 10,
                         right: 20,
                         left: 10,
-                        bottom: 0,
+                        bottom: 5,
                     }}
                 >
 
@@ -91,19 +98,19 @@ const RevenueTrendChart = ({
                     />
 
                     <XAxis
-                        dataKey="date"
+                        dataKey="billingCycle"
                         tick={{
                             fontSize: 12,
                         }}
                     />
 
                     <YAxis
-                        tick={{
-                            fontSize: 12,
-                        }}
                         tickFormatter={(value) =>
                             `₹${Number(value).toLocaleString()}`
                         }
+                        tick={{
+                            fontSize: 12,
+                        }}
                     />
 
                     <Tooltip
@@ -111,22 +118,29 @@ const RevenueTrendChart = ({
                             `₹${value.toLocaleString()}`,
                             "Revenue",
                         ]}
+                        labelFormatter={(label) =>
+                            `Billing Cycle: ${label}`
+                        }
                     />
 
-                    <Line
-                        type="monotone"
+                    <Bar
                         dataKey="revenue"
-                        stroke="#2563eb"
-                        strokeWidth={3}
-                        dot={{
-                            r: 4,
-                        }}
-                        activeDot={{
-                            r: 6,
-                        }}
-                    />
+                        radius={[6, 6, 0, 0]}
+                        name="Revenue"
+                    >
 
-                </LineChart>
+                        {data.map((_, index) => (
+
+                            <Cell
+                                key={index}
+                                fill={COLORS[index % COLORS.length]}
+                            />
+
+                        ))}
+
+                    </Bar>
+
+                </BarChart>
 
             </ResponsiveContainer>
 
@@ -136,4 +150,4 @@ const RevenueTrendChart = ({
 
 };
 
-export default RevenueTrendChart;
+export default BillingCycleChart;

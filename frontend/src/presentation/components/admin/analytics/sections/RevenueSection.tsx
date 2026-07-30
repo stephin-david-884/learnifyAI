@@ -2,8 +2,8 @@ import type { RevenueAnalytics } from "../../../../../types/admin/analytics";
 import RevenueTrendChart from "../charts/RevenueTrendChart";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
-
-
+import PlanBreakdownChart from "../charts/PlanBreakdownChart";
+import BillingCycleChart from "../charts/BillingCycleChart";
 
 interface RevenueSectionProps {
     revenue: RevenueAnalytics | null;
@@ -117,21 +117,10 @@ const RevenueSection = ({
 
                     {/* PlanBreakdownChart */}
 
-                    <div
-                        className="
-                            flex
-                            h-72
-                            items-center
-                            justify-center
-                            rounded-lg
-                            border-2
-                            border-dashed
-                            border-gray-200
-                            text-gray-400
-                        "
-                    >
-                        PlanBreakdownChart
-                    </div>
+                    <PlanBreakdownChart
+                        data={revenue.planBreakdown}
+                        loading={loading}
+                    />
 
                 </ChartCard>
 
@@ -143,21 +132,10 @@ const RevenueSection = ({
 
                     {/* BillingCycleChart */}
 
-                    <div
-                        className="
-                            flex
-                            h-80
-                            items-center
-                            justify-center
-                            rounded-lg
-                            border-2
-                            border-dashed
-                            border-gray-200
-                            text-gray-400
-                        "
-                    >
-                        BillingCycleChart
-                    </div>
+                    <BillingCycleChart
+                        data={revenue.billingCycleBreakdown}
+                        loading={loading}
+                    />
 
                 </ChartCard>
 

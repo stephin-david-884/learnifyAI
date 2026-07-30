@@ -207,11 +207,13 @@ export interface RevenueTrend {
 
 }
 
+export type BillingCycle = "MONTHLY" | "YEARLY";
+
 export interface PlanRevenueBreakdown {
 
     planName: string;
 
-    billingCycle: string;
+    billingCycle: BillingCycle;
 
     subscriptions: number;
 
