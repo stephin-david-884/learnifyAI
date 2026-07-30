@@ -1,7 +1,7 @@
 import type { DocumentAnalytics } from "../../../../../types/admin/analytics";
 import ChartCard from "../common/ChartCard";
 import SectionHeader from "../common/SectionHeader";
-
+import DocumentUploadChart from "../charts/DocumentUploadChart";
 
 interface DocumentSectionProps {
     documents: DocumentAnalytics | null;
@@ -120,21 +120,10 @@ const DocumentSection = ({
 
                     {/* DocumentUploadChart */}
 
-                    <div
-                        className="
-                            flex
-                            h-72
-                            items-center
-                            justify-center
-                            rounded-lg
-                            border-2
-                            border-dashed
-                            border-gray-200
-                            text-gray-400
-                        "
-                    >
-                        DocumentUploadChart
-                    </div>
+                    <DocumentUploadChart
+                        data={documents.uploadTrend}
+                        loading={loading}
+                    />
 
                 </ChartCard>
 
