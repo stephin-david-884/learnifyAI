@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 
 import { clearDashboardError, fetchDashboardSummary } from "../redux/features/dashboard/dashboardSlice";
+import { useCallback } from "react";
 
 export const useDashboard = () => {
 
@@ -11,8 +12,10 @@ export const useDashboard = () => {
         (state: RootState) => state.dashboard
     );
 
-    const getDashboardSummary = () =>
-        dispatch(fetchDashboardSummary()).unwrap();
+    const getDashboardSummary = useCallback(
+        () => dispatch(fetchDashboardSummary()).unwrap(),
+        [dispatch]
+    );
 
     const clearError = () =>
         dispatch(clearDashboardError());

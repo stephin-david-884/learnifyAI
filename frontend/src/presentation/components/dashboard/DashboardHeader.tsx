@@ -21,10 +21,6 @@ const DashboardHeader: React.FC<Props> = ({ summary }) => {
 
                 <div>
 
-                    <p className="text-sm font-medium uppercase tracking-wider text-red-100">
-                        Dashboard
-                    </p>
-
                     <h1 className="mt-2 text-3xl font-bold">
                         Welcome back
                     </h1>
