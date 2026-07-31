@@ -90,6 +90,10 @@ export const ROUTES = {
     DELETE: "/flashcards/:flashcardSetId",
   },
 
+  DASHBOARD: {
+    GET_SUMMARY: "/",
+  },
+
   ADMIN_ANALYTICS: {
     DASHBOARD: "/analytics/dashboard",
     AI: "/analytics/ai",

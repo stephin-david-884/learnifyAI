@@ -10,6 +10,7 @@ import documentRouter from './interfaces/routes/documentRoutes';
 import subscriptionRouter from './interfaces/routes/subscriptionRoutes';
 import aiRouter from "./interfaces/routes/aiRoutes";
 import profileRouter from "./interfaces/routes/profileRoutes";
+import dashboardRouter from "./interfaces/routes/dashboardRoutes";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./interfaces/middlewares/errorHandler";
 import pinoHttp from "pino-http";
@@ -37,6 +38,7 @@ userApiRouter.use("/subscription", subscriptionRouter);
 userApiRouter.use("/documents",  documentRouter);
 userApiRouter.use("/ai", aiRouter);
 userApiRouter.use("/profile", profileRouter);
+userApiRouter.use("/dashboard", dashboardRouter);
 app.use("/api/user", userApiRouter);
 app.use("/api/admin", adminRouter);
 
