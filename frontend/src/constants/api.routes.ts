@@ -103,6 +103,10 @@ export const API_ROUTES = {
         CANCEL_SUBSCRIPTION: "/user/profile/subscription/cancel",
     },
 
+    DASHBOARD: {
+        GET_DASHBOARD: "/user/dashboard",
+    },
+
     ADMIN_SUBSCRIPTION: {
         CREATE_PLAN: "/admin/subscription/plans",
         UPDATE_PLAN: "/admin/subscription/plans",

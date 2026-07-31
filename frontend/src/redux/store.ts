@@ -11,6 +11,7 @@ import quizReducer from "./features/quiz/quizSlice";
 import interviewReducer from "./features/interview/interviewSlice";
 import flashcardReducer from "./features/flashcard/flashcardSlice";
 import analyticsReducer from "./features/admin/analyticsSlice";
+import dashboardReducer from "./features/dashboard/dashboardSlice";
 
 export const store = configureStore({
     reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
         interview: interviewReducer,
         flashcard: flashcardReducer,
         analytics: analyticsReducer,
+        dashboard: dashboardReducer,
     }
 })
 
