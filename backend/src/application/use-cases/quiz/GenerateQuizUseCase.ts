@@ -26,6 +26,7 @@ import { IQuizGenerationService, } from "../../interfaces/services/ai/IQuizGener
 
 import { IGenerateQuizUseCase, } from "../../interfaces/usecases/quiz/IGenerateQuizUseCase";
 import { docMessages } from "../../constants/messages/docMessages";
+import { ISemanticRetrievalService } from "../../interfaces/services/document/ISemanticRetrievalService";
 
 export class GenerateQuizUseCase
     implements IGenerateQuizUseCase {
@@ -35,7 +36,7 @@ export class GenerateQuizUseCase
 
         private readonly _documentRepository: IDocumentRepository,
 
-        private readonly _documentChunkRepository: IDocumentChunkRepository,
+        private readonly _semanticRetrievalService: ISemanticRetrievalService,
 
         private readonly _quizGenerationService: IQuizGenerationService,
 
@@ -93,8 +94,8 @@ export class GenerateQuizUseCase
         }
 
         const chunks =
-            await this._documentChunkRepository
-                .findByDocumentAndTopics(
+            await this._semanticRetrievalService
+                .retrieveByTopics(
                     data.documentId,
                     data.topics
                 );
@@ -105,7 +106,6 @@ export class GenerateQuizUseCase
 
         const context =
             chunks
-                .slice(0, 50)
                 .map((chunk) => chunk.content)
                 .join("\n\n");
 

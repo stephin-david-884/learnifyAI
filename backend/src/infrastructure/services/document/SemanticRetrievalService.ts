@@ -8,9 +8,10 @@ export class SemanticRetrievalService implements ISemanticRetrievalService {
     constructor(
         private readonly _embeddingService: IEmbeddingService,
         private readonly _documentChunkRepository: IDocumentChunkRepository,
+        private readonly _retrievalLimitPerTopic = 5,
     ) { }
 
-    async retrieveByTopics(documentId: string, topics: string[], limitPerTopic: number): Promise<DocumentChunk[]> {
+    async retrieveByTopics(documentId: string, topics: string[]): Promise<DocumentChunk[]> {
         
         if(topics.length === 0) {
             return [];
@@ -23,7 +24,7 @@ export class SemanticRetrievalService implements ISemanticRetrievalService {
         // Retrieve chunk for each topic embedding
         for (const embedding of embeddings) {
 
-            const chunks = await this._documentChunkRepository.findSimilarChunks(embedding, limitPerTopic, documentId);
+            const chunks = await this._documentChunkRepository.findSimilarChunks(embedding, this._retrievalLimitPerTopic, documentId);
 
             for(const chunk of chunks) {
                 chunkMap.set(chunk.getId(), chunk);

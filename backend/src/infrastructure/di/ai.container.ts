@@ -61,6 +61,7 @@ import { GroqQuizGenerationService } from "../services/ai/GroqQuizGenerationServ
 import { AICostEstimator } from "../services/analytics/AICostEstimator";
 import { AIUsageRecorder } from "../services/analytics/AIUsageRecorder";
 import { AIUsageTracker } from "../services/analytics/AIUsageTracker";
+import { SemanticRetrievalService } from "../services/document/SemanticRetrievalService";
 import { CreditService } from "../services/subscription/CreditService";
 import { SubscriptionService } from "../services/subscription/SubscriptionService";
 
@@ -107,6 +108,8 @@ const interviewEvaluationService = new GroqInterviewEvaluationService(usageRecor
 
 const flashcardAIService = new GroqFlashcardGenerationService(usageRecorder);
 
+const semanticRetrievalService = new SemanticRetrievalService(embeddingService, documentChunkRepository);
+
 //USECASES
 
 const consumeCreditsUseCase: IConsumeCreditsUseCase = new ConsumeCreditsUseCase(creditService);
@@ -142,7 +145,7 @@ const generateQuizUseCase: IGenerateQuizUseCase =
     new GenerateQuizUseCase(
         quizRepository,
         documentRepository,
-        documentChunkRepository,
+        semanticRetrievalService,
         quizGenerationService,
         aiCreditService
     );
