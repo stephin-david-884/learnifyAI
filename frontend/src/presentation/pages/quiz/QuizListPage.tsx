@@ -25,7 +25,7 @@ const QuizListPage: React.FC = () => {
 
         fetchUserQuizzes();
 
-    }, []);
+    }, [fetchUserQuizzes]);
 
     if (loading) {
         return (

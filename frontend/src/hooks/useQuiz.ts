@@ -49,12 +49,14 @@ export const useQuiz = () => {
             generateQuiz(payload)
         ).unwrap();
 
-    const fetchQuiz = (
-        quizId: string
-    ) =>
-        dispatch(
-            getQuiz(quizId)
-        ).unwrap();
+    const fetchQuiz = useCallback(
+        async (quizId: string) => {
+            return dispatch(
+                getQuiz(quizId)
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
     const fetchQuizResult = useCallback(
         (quizId: string) =>
@@ -62,16 +64,20 @@ export const useQuiz = () => {
         [dispatch]
     );
 
-    const fetchUserQuizzes = (
-        page = 1,
-        limit = 10
-    ) =>
-        dispatch(
-            getUserQuizzes({
-                page,
-                limit,
-            })
-        ).unwrap();
+    const fetchUserQuizzes = useCallback(
+        async (
+            page = 1,
+            limit = 10
+        ) => {
+            return dispatch(
+                getUserQuizzes({
+                    page,
+                    limit,
+                })
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
     const submitQuizAnswers = (
         payload: Parameters<typeof submitQuiz>[0]

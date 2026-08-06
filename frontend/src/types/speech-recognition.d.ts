@@ -20,21 +20,21 @@ declare global {
         stop(): void;
         abort(): void;
 
-        onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
-        onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+        onstart: ((this: SpeechRecognition, ev: Event) => void) | null;
+        onend: ((this: SpeechRecognition, ev: Event) => void) | null;
 
         onresult:
             | ((
                   this: SpeechRecognition,
                   ev: SpeechRecognitionEvent
-              ) => any)
+              ) => void)
             | null;
 
         onerror:
             | ((
                   this: SpeechRecognition,
                   ev: SpeechRecognitionErrorEvent
-              ) => any)
+              ) => void)
             | null;
     }
 

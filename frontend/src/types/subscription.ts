@@ -147,8 +147,8 @@ export interface CreateSubscriptionPlanPayload {
     creditResetIntervalInDays: number;
 }
 
-export interface UpdateSubscriptionPlanPayload
-    extends CreateSubscriptionPlanPayload {}
+export type UpdateSubscriptionPlanPayload =
+    CreateSubscriptionPlanPayload;
 
 export interface AdminSubscriptionState {
     plans: SubscriptionPlan[];

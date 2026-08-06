@@ -55,7 +55,7 @@ const QuizAttemptPage: React.FC = () => {
 
         fetchQuiz(quizId);
 
-    }, [quizId]);
+    }, [quizId, fetchQuiz]);
 
     const currentQuestion =
         currentQuiz?.questions[

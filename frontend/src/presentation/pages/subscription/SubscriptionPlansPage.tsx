@@ -34,17 +34,18 @@ const SubscriptionPlansPage: React.FC = () => {
 
   useEffect(() => {
     fetchAvailablePlans({ page, limit });
-  }, [page, limit]);
-
-  useEffect(() => {
-    setPage(1);
-  }, [limit]);
+  }, [fetchAvailablePlans, page, limit]);
 
   useEffect(() => {
     if (error) {
       toast.error(error);
     }
   }, [error]);
+
+  const handleLimitChange = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+};
 
   const handleUpgrade = async (planId: string) => {
 
@@ -250,7 +251,7 @@ const SubscriptionPlansPage: React.FC = () => {
             totalPages={totalPages}
             limit={limit}
             onPageChange={setPage}
-            onLimitChange={setLimit}
+            onLimitChange={handleLimitChange}
           />
         </div>
       )}

@@ -14,7 +14,7 @@ const ProfilePage: React.FC = () => {
 
     useEffect(() => {
         fetchProfile();
-    },[]);
+    },[fetchProfile]);
 
     useEffect(() => {
         if(error){

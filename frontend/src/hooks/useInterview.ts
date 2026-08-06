@@ -37,10 +37,10 @@ export const useInterview = () => {
     ) =>
         dispatch(generateInterview(payload)).unwrap();
 
-    const fetchInterview = (
-        interviewId: string
-    ) =>
-        dispatch(getInterview(interviewId)).unwrap();
+    const fetchInterview = useCallback(
+        async (interviewId: string) => {
+            return dispatch(getInterview(interviewId)).unwrap();
+        } ,[dispatch]);
 
     const beginInterview = (
         interviewId: string

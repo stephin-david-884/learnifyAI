@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../redux/store";
 import { cancelSubscription, changePassword, clearProfileError, getProfile, updateProfile } from "../redux/features/profile/profileSlice";
+import { useCallback } from "react";
 
 export const useProfile = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -18,16 +19,19 @@ export const useProfile = () => {
         dispatch(clearProfileError());
     };
 
-    const fetchProfile = async () => {
-        return dispatch(getProfile()).unwrap();
-    };
+    const fetchProfile = useCallback(
+        async () => {
+            return dispatch(getProfile()).unwrap();
+        },
+        [dispatch]
+    );
 
     const updateUserProfile = async (name: string) => {
-        return dispatch(updateProfile({name})).unwrap();
+        return dispatch(updateProfile({ name })).unwrap();
     };
 
     const updatePassword = async (currentPassword: string, newPassword: string) => {
-        return dispatch(changePassword({currentPassword, newPassword})).unwrap();
+        return dispatch(changePassword({ currentPassword, newPassword })).unwrap();
     };
 
     const cancelUserSubscription = async () => {

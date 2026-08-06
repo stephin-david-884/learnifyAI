@@ -19,6 +19,9 @@ const FIVE_QUESTION_DURATION = 10 * 60;
 
 const TEN_QUESTION_DURATION = 20 * 60;
 
+const getInterviewDuration = (totalQuestions: number) =>
+    totalQuestions === 5 ? FIVE_QUESTION_DURATION : TEN_QUESTION_DURATION;
+
 const InterviewSessionPage: React.FC = () => {
 
     const { interviewId } = useParams();
@@ -77,73 +80,45 @@ const InterviewSessionPage: React.FC = () => {
 
     const autoSubmittedRef = useRef(false);
 
+    const interviewDuration = useMemo(() => {
+        if (!currentInterview) return null;
+
+        return getInterviewDuration(currentInterview.totalQuestions);
+    }, [currentInterview]);
+
     /*
     Fetch Interview
     */
 
     useEffect(() => {
-
         if (!interviewId) {
-
             navigate("/interviews");
-
             return;
-
         }
 
-        fetchInterview(interviewId)
+        const loadInterview = async () => {
+            try {
+                const interview = await fetchInterview(interviewId);
 
-            .catch(async () => {
+                autoSubmittedRef.current = false;
 
+                setRemainingSeconds(
+                    getInterviewDuration(interview.totalQuestions)
+                );
+            } catch {
                 await Swal.fire({
-
                     icon: "error",
-
                     title: "Interview not found",
-
                     text: "Unable to load interview.",
-
                 });
 
                 navigate("/interviews");
+            }
+        };
 
-            });
+        void loadInterview();
 
-    }, [
-
-        interviewId,
-
-        // fetchInterview,
-
-        navigate,
-
-    ]);
-
-    /*
-    Timer
-    */
-
-    useEffect(() => {
-
-        if (!currentInterview) {
-
-            return;
-
-        }
-
-        autoSubmittedRef.current = false;
-
-        const duration =
-
-            currentInterview.totalQuestions === 5
-
-                ? FIVE_QUESTION_DURATION
-
-                : TEN_QUESTION_DURATION;
-
-        setRemainingSeconds(duration);
-
-    }, [currentInterview,]);
+    }, [interviewId, fetchInterview, navigate]);
 
     /*
     Countdown
@@ -440,7 +415,7 @@ const InterviewSessionPage: React.FC = () => {
         },
 
             [answers, currentInterview, interviewId, navigate, saveCurrentTranscript,
-                stopRecording, submitInterviewAnswers, completeInterviewSession,]
+                stopRecording, submitInterviewAnswers, completeInterviewSession, transcript, currentQuestionIndex, resetTranscript]
 
         );
 
@@ -547,19 +522,8 @@ const InterviewSessionPage: React.FC = () => {
                 <div className="w-full lg:w-[300px]">
 
                     <InterviewTimer
-
                         remainingSeconds={remainingSeconds ?? 0}
-
-                        totalSeconds={
-
-                            currentInterview.totalQuestions === 5
-
-                                ? FIVE_QUESTION_DURATION
-
-                                : TEN_QUESTION_DURATION
-
-                        }
-
+                        totalSeconds={interviewDuration ?? 0}
                     />
 
                 </div>

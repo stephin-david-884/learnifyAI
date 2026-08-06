@@ -14,7 +14,7 @@ const PaymentHistoryPage: React.FC = () => {
 
   useEffect(() => {
     fetchUserPayments();
-  }, []);
+  }, [fetchUserPayments]);
 
   useEffect(() => {
     if (error) {

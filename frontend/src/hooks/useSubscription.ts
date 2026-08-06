@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { type AppDispatch, type RootState } from "../redux/store"
 import { clearPaymentOrder, clearSubscriptionError, createPaymentOrder, getActiveSubscription, getAvailablePlans, getCreditStatus, getUserPayments, markPaymentFailed, verifyPayment } from "../redux/features/subscription/subscriptionSlice";
 import type { GetAvailablePlansQuery } from "../types/subscription";
+import { useCallback } from "react";
 
 export const useSubscription = () => {
 
@@ -23,52 +24,63 @@ export const useSubscription = () => {
         (state: RootState) => state.subscription
     );
 
-    const clearError = () => {
+    const clearError = useCallback(() => {
         dispatch(clearSubscriptionError());
-    }
+    }, [dispatch]);
 
-    const clearOrder = () => {
+    const clearOrder = useCallback(() => {
         dispatch(clearPaymentOrder());
-    };
+    }, [dispatch]);
 
-    const fetchAvailablePlans = async (params?: GetAvailablePlansQuery) => {
-        return dispatch(getAvailablePlans(params)).unwrap();
-    };
+    const fetchAvailablePlans = useCallback(
+        async (params?: GetAvailablePlansQuery) => {
+            return dispatch(getAvailablePlans(params)).unwrap();
+        },
+        [dispatch]
+    );
 
-    const fetchActiveSubscription = async () => {
+    const fetchActiveSubscription = useCallback(async () => {
         return dispatch(getActiveSubscription()).unwrap();
-    };
+    }, [dispatch]);
 
-    const fetchUserPayments = async () => {
+    const fetchUserPayments = useCallback(async () => {
         return dispatch(getUserPayments()).unwrap();
-    };
+    }, [dispatch]);
 
-    const fetchCreditStatus = async () => {
+    const fetchCreditStatus = useCallback(async () => {
         return dispatch(getCreditStatus()).unwrap();
-    };
+    }, [dispatch]);
 
-    const createOrder = async (planId: string) => {
-        return dispatch(
-            createPaymentOrder({ planId })
-        ).unwrap();
-    };
+    const createOrder = useCallback(
+        async (planId: string) => {
+            return dispatch(
+                createPaymentOrder({ planId })
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
-    const verifySubscriptionPayment = async (
-        data: {
+    const verifySubscriptionPayment = useCallback(
+        async (data: {
             razorpayOrderId: string;
             razorpayPaymentId: string;
             razorpaySignature: string;
-        }
-    ) => {
-        return dispatch(verifyPayment(data)).unwrap();
-    };
+        }) => {
+            return dispatch(
+                verifyPayment(data)
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
-    const markSubscriptionPaymentFailed = async (
-        razorpayOrderId: string
-    ) => {
-        return dispatch(
-            markPaymentFailed({ razorpayOrderId,})).unwrap();
-    };
+    const markSubscriptionPaymentFailed = useCallback(
+        async (razorpayOrderId: string) => {
+            return dispatch(
+                markPaymentFailed({ razorpayOrderId })
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
     return {
         plans,
