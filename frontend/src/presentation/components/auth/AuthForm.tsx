@@ -6,7 +6,7 @@ import { loginSchema, registerSchema } from '../../../lib/validation/authValidat
 import { ZodError } from 'zod';
 import { googleLogin, loginUser, registerUser } from '../../../redux/features/auth/authSlice';
 import toast from 'react-hot-toast';
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 
 interface Props {
   mode: "login" | "signup";
@@ -91,7 +91,7 @@ const AuthForm = ({ mode }: Props) => {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse: any) => {
+  const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     try {
       if (!credentialResponse.credential) {
         toast.error("Google login failed");

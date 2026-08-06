@@ -1,5 +1,4 @@
 import React, {
-    useEffect,
     useState,
 } from "react";
 
@@ -39,6 +38,30 @@ const initialState: CreateSubscriptionPlanPayload = {
     creditResetIntervalInDays: 30,
 };
 
+const mapPlanToFormData = (
+    plan: SubscriptionPlan
+): CreateSubscriptionPlanPayload => ({
+    name: plan.name,
+
+    price: plan.price,
+
+    creditsPerMonth: plan.creditsPerMonth,
+
+    discount: plan.discount ?? 0,
+
+    features: {
+        maxDocuments: plan.features.maxDocuments,
+        interviewAccess: plan.features.interviewAccess,
+    },
+
+    billingCycle: plan.billingCycle,
+
+    durationInDays: plan.durationInDays,
+
+    creditResetIntervalInDays:
+        plan.creditResetIntervalInDays,
+});
+
 const EditSubscriptionPlanModal: React.FC<Props> = ({
     open,
     onClose,
@@ -52,47 +75,13 @@ const EditSubscriptionPlanModal: React.FC<Props> = ({
 
 
     const [formData, setFormData] =
-        useState<CreateSubscriptionPlanPayload>(
-            initialState
-        );
+    useState<CreateSubscriptionPlanPayload>(() =>
+        plan
+            ? mapPlanToFormData(plan)
+            : initialState
+    );
 
     const [errors, setErrors] = useState<Record<string, string>>({});
-
-    useEffect(() => {
-
-        if (!plan) return;
-
-        setFormData({
-            name: plan.name,
-
-            price: plan.price,
-
-            creditsPerMonth:
-                plan.creditsPerMonth,
-
-            discount:
-                plan.discount || 0,
-
-            features: {
-                maxDocuments:
-                    plan.features.maxDocuments,
-
-                interviewAccess:
-                    plan.features
-                        .interviewAccess,
-            },
-
-            billingCycle:
-                plan.billingCycle,
-
-            durationInDays:
-                plan.durationInDays,
-
-            creditResetIntervalInDays:
-                plan.creditResetIntervalInDays,
-        });
-
-    }, [plan]);
 
     if (!open || !plan) return null;
 

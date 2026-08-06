@@ -18,7 +18,7 @@ export const useAdminAuth = () => {
         async () => {
             try {
                 return await dispatch(getCurrentAdmin()).unwrap();
-            } catch (error) {
+            } catch {
                 return null;
             }
         },
