@@ -36,21 +36,13 @@ const AnalyticsDashboard = () => {
 
     const loadAnalytics = useCallback(async () => {
 
-        try {
-
-            await Promise.all([
-
-                fetchDashboardSummary(filter),
-                fetchRevenueAnalytics(filter),
-                fetchUserAnalytics(filter),
-                fetchDocumentAnalytics(filter),
-                fetchAIAnalytics(filter),
-
-            ]);
-
-        } catch {
-
-        }
+        await Promise.all([
+            fetchDashboardSummary(filter),
+            fetchRevenueAnalytics(filter),
+            fetchUserAnalytics(filter),
+            fetchDocumentAnalytics(filter),
+            fetchAIAnalytics(filter),
+        ]);
 
     }, [
         filter,

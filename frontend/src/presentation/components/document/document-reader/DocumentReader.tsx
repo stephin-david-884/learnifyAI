@@ -39,7 +39,7 @@ const DocumentReader: React.FC<Props> = ({
             documentId
         );
 
-    }, [documentId]);
+    }, [documentId, fetchViewerUrl]);
 
     const onDocumentLoadSuccess = ({
         numPages,

@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { adminLogin, adminLogout, clearAdminError, getCurrentAdmin } from "../redux/features/admin/adminSlice";
+import { useCallback } from "react";
 
 export const useAdminAuth = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -13,13 +14,16 @@ export const useAdminAuth = () => {
         return dispatch(adminLogin(data)).unwrap();
     };
 
-    const checkAdminAuth = async () => {
-        try {
-            return await dispatch(getCurrentAdmin()).unwrap();
-        } catch (error) {
-            return null;
-        }
-    }
+    const checkAdminAuth = useCallback(
+        async () => {
+            try {
+                return await dispatch(getCurrentAdmin()).unwrap();
+            } catch (error) {
+                return null;
+            }
+        },
+        [dispatch]
+    );
 
     const logout = async () => {
         return dispatch(adminLogout()).unwrap();

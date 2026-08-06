@@ -3,6 +3,7 @@ import type { AppDispatch, RootState } from "../redux/store";
 import { clearAdminSubscriptionError, clearAdminSubscriptionSuccess, createPlan, deactivatePlan, getAdminPayments, getAllPlans, updatePlan } from "../redux/features/adminSubscription/adminSubscriptionSlice";
 import type { CreateSubscriptionPlanPayload, GetSubscriptionPlansQuery, UpdateSubscriptionPlanPayload } from "../types/subscription";
 import type { GetAdminPaymentsQuery } from "../types/admin/payment";
+import { useCallback } from "react";
 
 export const useAdminSubscription = () => {
 
@@ -10,15 +11,25 @@ export const useAdminSubscription = () => {
         useDispatch<AppDispatch>();
 
     const {
-        plans, payments,  total, page, limit, totalPages, loading, error, successMessage} = useSelector((state: RootState) => state.adminSubscription);
+        plans, payments, total, page, limit, totalPages, loading, error, successMessage } = useSelector((state: RootState) => state.adminSubscription);
 
-    const fetchPlans = async (params?: GetSubscriptionPlansQuery) => {
-        return dispatch(getAllPlans(params)).unwrap();
-    };
+    const fetchPlans = useCallback(
+        async (params?: GetSubscriptionPlansQuery) => {
+            return dispatch(
+                getAllPlans(params)
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
-    const fetchPayments = async (params?: GetAdminPaymentsQuery) => {
-        return dispatch(getAdminPayments(params)).unwrap;
-    };
+    const fetchPayments = useCallback(
+        async (params?: GetAdminPaymentsQuery) => {
+            return dispatch(
+                getAdminPayments(params)
+            ).unwrap();
+        },
+        [dispatch]
+    );
 
     const createSubscriptionPlan =
         async (
@@ -41,15 +52,23 @@ export const useAdminSubscription = () => {
             return dispatch(deactivatePlan(planId)).unwrap();
         };
 
-    const clearError = () => {
-        dispatch(clearAdminSubscriptionError()
-        );
-    };
+    const clearError = useCallback(
+        () => {
+            dispatch(
+                clearAdminSubscriptionError()
+            );
+        },
+        [dispatch]
+    );
 
-    const clearSuccess = () => {
-        dispatch(clearAdminSubscriptionSuccess()
-        );
-    };
+    const clearSuccess = useCallback(
+        () => {
+            dispatch(
+                clearAdminSubscriptionSuccess()
+            );
+        },
+        [dispatch]
+    );
 
     return {
         plans,
@@ -70,7 +89,7 @@ export const useAdminSubscription = () => {
         createSubscriptionPlan,
         updateSubscriptionPlan,
         deactivateSubscriptionPlan,
-        
+
         clearError,
         clearSuccess,
     };

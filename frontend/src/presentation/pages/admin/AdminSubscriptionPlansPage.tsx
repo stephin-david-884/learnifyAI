@@ -18,7 +18,7 @@ const AdminSubscriptionPlansPage: React.FC = () => {
 
     const [search, setSearch] = useState("");
     const [billingCycle, setBillingCycle] = useState<BillingCycle | "">("");
-    const [status, _setStatus] = useState<boolean | "">("");
+    const [status] = useState<boolean | "">("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -45,18 +45,14 @@ const AdminSubscriptionPlansPage: React.FC = () => {
         }
 
         fetchPlans(params);
-    }, [currentPage, rowsPerPage, debouncedSearch, billingCycle, status]);
+    }, [currentPage, rowsPerPage, debouncedSearch, billingCycle, status, fetchPlans]);
 
     useEffect(() => {
         if (error) {
             toast.error(error);
             clearError();
         }
-    }, [error]);
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [debouncedSearch, billingCycle, status, rowsPerPage]);
+    }, [error, clearError]);
 
     const handleDeactivate = async (planId: string) => {
         const confirmed = window.confirm("Deactivate this subscription plan?");
@@ -123,21 +119,21 @@ const AdminSubscriptionPlansPage: React.FC = () => {
                             type="text"
                             placeholder="Search plans..."
                             value={search}
-                            onChange={(e) =>
-                                setSearch(
-                                    e.target.value
-                                )
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setCurrentPage(1);
+                            }
                             }
                             className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-indigo-500"
                         />
 
                         <select
                             value={billingCycle}
-                            onChange={(e) =>
-                                setBillingCycle(
-                                    e.target.value as BillingCycle | ""
-                                )
-                            }
+                            onChange={(e) => {
+                                setBillingCycle(e.target.value as BillingCycle | "");
+                                setCurrentPage(1);
+
+                            }}
                             className="rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-indigo-500"
                         >
 

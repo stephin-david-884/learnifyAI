@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../redux/store"
 import { clearChat, clearChatError, generateAnswer, getChatHistory } from "../redux/features/chat/chatSlice";
+import { useCallback } from "react";
 
 export const useChat = () => {
 
@@ -20,20 +21,27 @@ export const useChat = () => {
         dispatch(clearChatError());
     };
 
-    const resetChat = () => {
-        dispatch(clearChat());
-    };
+    const resetChat = useCallback(
+        () => {
+            dispatch(clearChat());
+        },
+        [dispatch]
+    );
 
-    const fetchChatHistory = async (documentId: string, page = 1, limit = 20) => {
-
-        return dispatch(
-            getChatHistory({
-                documentId,
-                page,
-                limit,
-            })
-        ).unwrap();
-    };
+    const fetchChatHistory = useCallback(
+        async (
+            documentId: string,
+            page = 1,
+            limit = 20
+        ) => {
+            return dispatch(
+                getChatHistory({
+                    documentId,
+                    page,
+                    limit,
+                })
+            ).unwrap();
+        }, [dispatch]);
 
     const askQuestion = async (documentId: string, question: string) => {
 

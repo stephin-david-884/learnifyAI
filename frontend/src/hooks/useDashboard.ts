@@ -17,8 +17,10 @@ export const useDashboard = () => {
         [dispatch]
     );
 
-    const clearError = () =>
-        dispatch(clearDashboardError());
+    const clearError = useCallback(
+        () => {
+            dispatch(clearDashboardError());
+        },[dispatch]);
 
     return {
         ...state,

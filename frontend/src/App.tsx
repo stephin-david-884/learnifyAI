@@ -51,7 +51,7 @@ const App = () => {
     } else {
       checkAuth();
     }
-  }, [isAdminRoute]);
+  }, [isAdminRoute, checkAdminAuth, checkAuth]);
 
   useEffect(() => {
     setLogoutHandler(() => {

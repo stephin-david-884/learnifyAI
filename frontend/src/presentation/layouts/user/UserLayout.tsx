@@ -15,7 +15,7 @@ type Props = {
 const UserLayout: React.FC<Props> = ({ children }) => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [blocked, _setBlocked] = useState(false);
+    const [blocked] = useState(false);
     const {fetchActiveSubscription, fetchCreditStatus} = useSubscription();
 
     const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +33,7 @@ const UserLayout: React.FC<Props> = ({ children }) => {
     useEffect(() => {
         fetchActiveSubscription();
         fetchCreditStatus();
-    },[])
+    },[fetchActiveSubscription, fetchCreditStatus])
 
     // useEffect(() => {
     //     const interval = setInterval(async () => {

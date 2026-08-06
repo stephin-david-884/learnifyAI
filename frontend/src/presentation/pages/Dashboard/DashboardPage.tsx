@@ -38,7 +38,7 @@ const DashboardPage: React.FC = () => {
 
         clearError();
 
-    }, [error]);
+    }, [error, clearError]);
 
     if (loading && !summary) {
         return (

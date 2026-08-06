@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useChat } from "../../../hooks/useChat";
 
 import ChatHeader from "./ChatHeader";
@@ -13,7 +13,6 @@ type Props = {
 const ChatContainer: React.FC<Props> = ({
     documentId,
 }) => {
-
     const {
         messages,
         loading,
@@ -26,21 +25,31 @@ const ChatContainer: React.FC<Props> = ({
         resetChat,
     } = useChat();
 
-    const [localMessages, setLocalMessages] = useState(messages);
+    const [pendingAssistant, setPendingAssistant] = useState<
+        (typeof messages)[number] | null
+    >(null);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    const displayMessages = useMemo(() => {
+        if (!pendingAssistant) {
+            return messages;
+        }
 
+        return [
+            ...messages,
+            pendingAssistant,
+        ];
+    }, [messages, pendingAssistant]);
+
+    useEffect(() => {
         messagesEndRef.current?.scrollIntoView({
             behavior: "smooth",
         });
-
-    }, [localMessages]);
+    }, [displayMessages]);
 
     useEffect(() => {
-
         resetChat();
 
         fetchChatHistory(
@@ -52,103 +61,43 @@ const ChatContainer: React.FC<Props> = ({
         return () => {
             resetChat();
         };
-
-    }, [documentId]);
-
-    useEffect(() => {
-        setLocalMessages(messages);
-    }, [messages]);
+    }, [documentId, fetchChatHistory, resetChat]);
 
     const handleSend = async (
         question: string
     ) => {
-
-        const tempUserId =
-            `user-${Date.now()}`;
-
-        const tempAssistantId =
-            `assistant-${Date.now()}`;
-
-        setLocalMessages((prev) => [
-            ...prev,
-
-            {
-                role: "USER",
-                content: question,
-                createdAt:
-                    new Date().toISOString(),
-
-                tempId: tempUserId,
-            },
-
-            {
-                role: "ASSISTANT",
-                content: "",
-                createdAt:
-                    new Date().toISOString(),
-
-                tempId: tempAssistantId,
-
-                pending: true,
-            },
-        ]);
+        setPendingAssistant({
+            role: "ASSISTANT",
+            content: "",
+            createdAt: new Date().toISOString(),
+            tempId: `assistant-${Date.now()}`,
+            pending: true,
+        });
 
         try {
-
-            const response =
-                await askQuestion(
-                    documentId,
-                    question
-                );
-
-            setLocalMessages((prev) =>
-                prev.map((message) => {
-
-                    if (
-                        message.tempId ===
-                        tempAssistantId
-                    ) {
-                        return {
-                            ...message,
-                            content:
-                                response.answer,
-
-                            pending: false,
-                        };
-                    }
-
-                    return message;
-                })
+            await askQuestion(
+                documentId,
+                question
             );
+
+            // Redux has already been updated by askQuestion()
+            setPendingAssistant(null);
 
         } catch {
-
-            setLocalMessages((prev) =>
-                prev.map((message) => {
-
-                    if (
-                        message.tempId ===
-                        tempAssistantId
-                    ) {
-                        return {
-                            ...message,
-                            content:
-                                "Something went wrong.",
-
-                            pending: false,
-                        };
-                    }
-
-                    return message;
-                })
-            );
+            setPendingAssistant({
+                role: "ASSISTANT",
+                content: "Something went wrong.",
+                createdAt: new Date().toISOString(),
+                pending: false,
+            });
         }
     };
 
     const handleScroll = () => {
-
         if (
-            !containerRef.current || loading || !hasMore
+            !containerRef.current ||
+            loading ||
+            !hasMore
         ) {
             return;
         }
@@ -156,7 +105,6 @@ const ChatContainer: React.FC<Props> = ({
         if (
             containerRef.current.scrollTop < 50
         ) {
-
             fetchChatHistory(
                 documentId,
                 page + 1,
@@ -178,20 +126,18 @@ const ChatContainer: React.FC<Props> = ({
                     <div>
                         Loading...
                     </div>
-                ) : localMessages.length === 0 ? (
+                ) : displayMessages.length === 0 ? (
                     <ChatEmptyState />
                 ) : (
                     <div className="space-y-4">
-                        {localMessages.map(
-                            (
-                                message
-                            ) => (
+                        {displayMessages.map(
+                            (message) => (
                                 <ChatMessage
-                                    key={message.tempId ??
-                                        `${message.role}-${message.createdAt}`}
-                                    message={
-                                        message
+                                    key={
+                                        message.tempId ??
+                                        `${message.role}-${message.createdAt}`
                                     }
+                                    message={message}
                                 />
                             )
                         )}

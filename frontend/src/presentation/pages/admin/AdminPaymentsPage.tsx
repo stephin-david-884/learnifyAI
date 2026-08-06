@@ -31,7 +31,7 @@ const AdminPaymentsPage: React.FC = () => {
         }
 
         fetchPayments(params);
-    }, [currentPage, rowsPerPage, debouncedSearch, status]);
+    }, [currentPage, rowsPerPage, debouncedSearch, status, fetchPayments]);
 
     useEffect(() => {
         if (error) {
@@ -39,10 +39,6 @@ const AdminPaymentsPage: React.FC = () => {
             clearError();
         }
     }, [error, clearError])
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [debouncedSearch, status, rowsPerPage])
 
     return (
         <div className="space-y-6">
@@ -72,14 +68,20 @@ const AdminPaymentsPage: React.FC = () => {
                             type="text"
                             placeholder='Search payments...'
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => {
+                                setSearch(e.target.value);
+                                setCurrentPage(1);
+                            }}
                             className='w-full rounded-xl border border-slate-300 py-3 pl-11 pr-4 text-sm outline-none transition focus:border-indigo-500'
                         />
                     </div>
 
                     <select
                         value={status}
-                        onChange={(e) => setStatus(e.target.value as PaymentStatus | "")}
+                        onChange={(e) => {
+                            setStatus(e.target.value as PaymentStatus | "");
+                            setCurrentPage(1);
+                        }}
                         className='rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-indigo-500'
                     >
 
@@ -104,7 +106,7 @@ const AdminPaymentsPage: React.FC = () => {
                 </div>
 
                 <div className="text-sm font-medium text-slate-500">
-                    Total payments: { " "}
+                    Total payments: {" "}
                     <span className="text-slate-900">
                         {total}
                     </span>
@@ -112,12 +114,12 @@ const AdminPaymentsPage: React.FC = () => {
 
             </div>
 
-            <PaymentTable 
+            <PaymentTable
                 payments={payments}
                 loading={loading}
             />
 
-            <Pagination 
+            <Pagination
                 page={page}
                 totalPages={totalPages}
                 limit={rowsPerPage}

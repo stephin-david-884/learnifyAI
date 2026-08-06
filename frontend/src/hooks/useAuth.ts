@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../redux/store";
 import { clearError, forgotPassword, getCurrentUser, googleLogin, loginUser, logoutUser, registerUser, resendOtp, resetPassword, verifyForgotPasswordOtp } from "../redux/features/auth/authSlice";
 import type { LoginPayload, RegisterPayload, ResetPasswordPayload } from "../types/user";
+import { useCallback } from "react";
 
 export const useAuth = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -13,14 +14,16 @@ export const useAuth = () => {
         return dispatch(registerUser(data)).unwrap()
     }
 
-    const checkAuth = async () => {
-        try {
-            return await dispatch(getCurrentUser()).unwrap();
-        } catch {
-
-            return null;
-        }
-    };
+    const checkAuth = useCallback(
+        async () => {
+            try {
+                return await dispatch(getCurrentUser()).unwrap();
+            } catch {
+                return null;
+            }
+        },
+        [dispatch]
+    );
 
     const resend = async (email: string) => {
         return dispatch(resendOtp({ email })).unwrap();

@@ -19,7 +19,7 @@ const AdminUsersPage = () => {
       limit: pageSize,
       search: debouncedSearch || undefined,
     });
-  }, [page, pageSize, debouncedSearch]);
+  }, [page, pageSize, debouncedSearch, getUsers]);
 
   const totalPages = Math.ceil(total / pageSize);
 
@@ -55,7 +55,7 @@ const AdminUsersPage = () => {
         timer: 1500,
         showConfirmButton: false,
       });
-    } catch (error) {
+    } catch {
       await Swal.fire({
         icon: "error",
         title: "Error",

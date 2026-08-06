@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../redux/store";
 import { fetchUsers, toggleUserBlockStatus } from "../redux/features/admin/userManagementSlice";
+import { useCallback } from "react";
 
 export const useUserManagement = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -9,13 +10,14 @@ export const useUserManagement = () => {
     (state: RootState) => state.userManagement
   );
 
-  const getUsers = async (params?: {
-    page?: number;
-    limit?: number;
-    search?: string;
-  }) => {
-    return dispatch(fetchUsers(params)).unwrap();
-  };
+  const getUsers = useCallback(
+    async (params?: {
+      page?: number;
+      limit?: number;
+      search?: string;
+    }) => {
+      return dispatch(fetchUsers(params)).unwrap();
+    },[dispatch]);
 
   const toggleBlockUser = async (data: {
     userId: string;
