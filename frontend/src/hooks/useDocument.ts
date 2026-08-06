@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "../redux/store"
 import { clearDocumentError, clearSelectedDocument, clearViewerUrl, getDocumentViewerUrl, deleteDocument, getDocumentById, getUserDocuments, uploadDocument } from "../redux/features/document/documentSlice";
 import type { GetUserDocumentsQuery, UploadDocumentPayload } from "../types/document";
+import { useCallback } from "react";
 
 export const useDocument = () => {
 
@@ -22,38 +23,50 @@ export const useDocument = () => {
         error,
     } = useSelector((state: RootState) => state.document);
 
-    const clearError = () => {
+    const clearError = useCallback(() => {
         dispatch(clearDocumentError());
-    }
+    }, [dispatch]);
 
-    const clearDocument = () => {
+    const clearDocument = useCallback(() => {
         dispatch(clearSelectedDocument());
-    };
+    }, [dispatch]);
 
-    const clearPdfViewer = () => {
+    const clearPdfViewer = useCallback(() => {
         dispatch(clearViewerUrl());
-    };
+    }, [dispatch]);
 
-    const uploadUserDocument = async (data: UploadDocumentPayload) => {
-        return dispatch(uploadDocument(data)).unwrap();
-    };
+    const uploadUserDocument = useCallback(
+        async (data: UploadDocumentPayload) => {
+            return dispatch(uploadDocument(data)).unwrap();
+        },
+        [dispatch]
+    );
 
-    const fetchUserDocuments = async (params?: GetUserDocumentsQuery) => {
-        return dispatch(getUserDocuments(params)).unwrap();
-    };
+    const fetchUserDocuments = useCallback(
+        async (params?: GetUserDocumentsQuery) => {
+            return dispatch(getUserDocuments(params)).unwrap();
+        }, [dispatch]);
 
-    const fetchDocumentById = async (documentId: string) => {
-        return dispatch(getDocumentById(documentId)).unwrap();
-    };
+    const fetchDocumentById = useCallback(
+        async (documentId: string) => {
+            return dispatch(getDocumentById(documentId)).unwrap();
+        },
+        [dispatch]
+    );
 
-    const removeDocument = async (documentId: string) => {
-        return dispatch(deleteDocument(documentId)).unwrap();
-    };
+    const removeDocument = useCallback(
+        async (documentId: string) => {
+            return dispatch(deleteDocument(documentId)).unwrap();
+        },
+        [dispatch]
+    );
 
-    const fetchViewerUrl = async (documentId: string) => {
-
-        return dispatch(getDocumentViewerUrl(documentId)).unwrap();
-    };
+    const fetchViewerUrl = useCallback(
+        async (documentId: string) => {
+            return dispatch(getDocumentViewerUrl(documentId)).unwrap();
+        },
+        [dispatch]
+    );
 
     return {
         documents,

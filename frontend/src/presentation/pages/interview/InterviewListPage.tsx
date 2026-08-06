@@ -31,7 +31,7 @@ const InterviewListPage: React.FC = () => {
 
         fetchUserInterviews(currentPage, currentLimit);
 
-    }, [currentPage, currentLimit]);
+    }, [currentPage, currentLimit, fetchUserInterviews]);
 
     if (loading) {
 

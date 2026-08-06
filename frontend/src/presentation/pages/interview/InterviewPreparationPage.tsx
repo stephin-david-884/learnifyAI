@@ -38,7 +38,7 @@ const InterviewPreparationPage: React.FC = () => {
 
         }
 
-    }, [interviewId]);
+    }, [interviewId, fetchInterview]);
 
     const estimatedMinutes =
         useMemo(() => {

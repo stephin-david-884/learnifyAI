@@ -26,7 +26,7 @@ const FlashcardControls: React.FC<Props> = ({
 
     const isFirst = currentIndex === 0;
 
-    const isLast = currentIndex === totalCards - 1;
+    const isLast = currentIndex === totalCards;
 
     return (
 

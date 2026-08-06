@@ -27,18 +27,16 @@ const DocumentDetailPage: React.FC = () => {
     const [activeTab, setActiveTab] = useState<DocumentTab>("OVERVIEW");
 
     useEffect(() => {
-
         if (!documentId) {
             return;
         }
 
-        fetchDocumentById(documentId);
+        void fetchDocumentById(documentId);
 
         return () => {
             clearDocument();
         };
-
-    }, [documentId]);
+    }, [documentId, fetchDocumentById, clearDocument]);
 
     if (loading) {
         return (

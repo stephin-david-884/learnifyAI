@@ -19,7 +19,7 @@ const DocumentListPage: React.FC = () => {
 
     useEffect(() => {
         fetchUserDocuments({ page, limit });
-    }, [page, limit]);
+    }, [page, limit, fetchUserDocuments]);
 
     useEffect(() => {
         if (error) {
@@ -38,7 +38,7 @@ const DocumentListPage: React.FC = () => {
 
         return () => clearInterval(interval)
 
-    }, [hasProcessingDocs, page, limit]);
+    }, [hasProcessingDocs, page, limit, fetchUserDocuments]);
 
     const handleUpload = async (title: string, file: File) => {
 

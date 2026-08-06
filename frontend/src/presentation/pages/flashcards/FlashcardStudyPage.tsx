@@ -8,7 +8,7 @@ import FlashcardControls from "../../components/flashcard/FlashcardControls";
 
 const FlashcardStudyPage: React.FC = () => {
 
-    const { flashcardSetId } = useParams<{flashcardSetId: string;}>();
+    const { flashcardSetId } = useParams<{ flashcardSetId: string; }>();
 
     const navigate = useNavigate();
 
@@ -25,29 +25,26 @@ const FlashcardStudyPage: React.FC = () => {
 
     useEffect(() => {
 
-        if (flashcardSetId) {
-
-            fetchFlashcardSet(
-                flashcardSetId
-            );
-
+        if (!flashcardSetId) {
+            return;
         }
+
+        const loadFlashcards = async () => {
+
+            await fetchFlashcardSet(flashcardSetId);
+
+            setCurrentIndex(0);
+            setFlipped(false);
+
+        };
+
+        void loadFlashcards();
 
     }, [flashcardSetId, fetchFlashcardSet]);
 
-    useEffect(() => {
-
-        setFlipped(false);
-
-    }, [currentIndex]);
-
-    useEffect(() => {
-
-        setCurrentIndex(0);
-
-    }, [currentFlashcardSet]);
-
-    const cards = currentFlashcardSet?.cards ?? [];
+    const cards = useMemo(
+        () => currentFlashcardSet?.cards ?? [],
+        [currentFlashcardSet]);
 
     const total = cards.length;
 
@@ -60,7 +57,7 @@ const FlashcardStudyPage: React.FC = () => {
 
             return cards[currentIndex];
 
-        }, [ cards, currentIndex ]);
+        }, [cards, currentIndex]);
 
     const handlePrevious = () => {
 
@@ -68,6 +65,7 @@ const FlashcardStudyPage: React.FC = () => {
             return;
         }
 
+        setFlipped(false);
         setCurrentIndex(prev => prev - 1);
 
     };
@@ -78,9 +76,8 @@ const FlashcardStudyPage: React.FC = () => {
             return;
         }
 
-        setCurrentIndex(
-            prev => prev + 1
-        );
+        setFlipped(false);
+        setCurrentIndex(prev => prev + 1);
 
     };
 
@@ -139,7 +136,7 @@ const FlashcardStudyPage: React.FC = () => {
 
     }
 
-    if ( !currentFlashcardSet || !currentCard) {
+    if (!currentFlashcardSet || !currentCard) {
 
         return (
 
@@ -185,7 +182,7 @@ const FlashcardStudyPage: React.FC = () => {
             </div>
 
             <FlashcardProgress
-            topic={currentFlashcardSet.topic}
+                topic={currentFlashcardSet.topic}
                 current={currentIndex + 1}
                 total={total}
             />

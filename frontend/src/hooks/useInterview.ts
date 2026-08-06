@@ -40,7 +40,7 @@ export const useInterview = () => {
     const fetchInterview = useCallback(
         async (interviewId: string) => {
             return dispatch(getInterview(interviewId)).unwrap();
-        } ,[dispatch]);
+        }, [dispatch]);
 
     const beginInterview = (
         interviewId: string
@@ -51,8 +51,10 @@ export const useInterview = () => {
         dispatch(getInterviewResult(interviewId)).unwrap(),
         [dispatch]);
 
-    const fetchUserInterviews = (page = 1, limit = 10) =>
-        dispatch(getUserInterviews({ page, limit, })).unwrap();
+    const fetchUserInterviews = useCallback(
+        async (page = 1, limit = 10) => {
+            return dispatch(getUserInterviews({page,limit,})).unwrap();
+        }, [dispatch]);
 
     const submitInterviewAnswers = (
         payload: Parameters<

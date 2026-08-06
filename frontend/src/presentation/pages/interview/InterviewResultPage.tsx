@@ -48,7 +48,7 @@ const InterviewResultPage: React.FC = () => {
 
         });
 
-    }, []);
+    }, [interviewId, navigate, fetchInterviewResult,]);
 
     const performance = useMemo(() => {
 
