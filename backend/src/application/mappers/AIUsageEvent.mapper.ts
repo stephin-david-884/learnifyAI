@@ -52,9 +52,9 @@ export const toPersistenceAIUsageEvent = (
 
         aiModel: event.aiModel,
 
-        userId: new Types.ObjectId(event.userId) ?? null,
+        userId: event.userId ? new Types.ObjectId(event.userId) : null,
 
-        documentId: new Types.ObjectId(event.documentId) ?? null,
+        documentId: event.documentId ? new Types.ObjectId(event.documentId) : null,
 
         requestTokens: event.requestTokens ?? null,
 

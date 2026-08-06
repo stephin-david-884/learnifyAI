@@ -6,9 +6,6 @@ import { IQuizRepository }
 import { IDocumentRepository }
     from "../../../domain/repositories/IDocumentRepository";
 
-import { IDocumentChunkRepository }
-    from "../../../domain/repositories/IDocumentChunkRepository";
-
 import { Quiz }
     from "../../../domain/entities/Quiz.entity";
 
