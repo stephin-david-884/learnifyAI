@@ -107,8 +107,8 @@ const RevenueTrendChart = ({
                     />
 
                     <Tooltip
-                        formatter={(value: number) => [
-                            `₹${value.toLocaleString()}`,
+                        formatter={(value) => [
+                            Number(value ?? 0).toLocaleString(),
                             "Revenue",
                         ]}
                     />

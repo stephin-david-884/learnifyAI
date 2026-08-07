@@ -119,8 +119,8 @@ const FeatureUsageChart = ({
                     />
 
                     <Tooltip
-                        formatter={(value: number) => [
-                            value.toLocaleString(),
+                        formatter={(value) => [
+                            Number(value ?? 0).toLocaleString(),
                             "Requests",
                         ]}
                         labelFormatter={(label) =>
