@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from "react";
+import React, { useState } from "react";
 
 import { X } from "lucide-react";
 
@@ -49,14 +49,6 @@ const CreateSubscriptionPlanModal: React.FC<Props> = ({
     const [formData, setFormData] = useState(initialState);
 
     const [errors, setErrors] = useState<Record<string, string>>({});
-
-    useEffect(() => {
-
-        if (open) {
-            setFormData(initialState);
-        }
-
-    }, [open]);
 
     if (!open) return null;
 

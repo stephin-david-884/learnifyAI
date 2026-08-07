@@ -38,8 +38,12 @@ export const useSpeechRecognition =
         const [isRecording, setIsRecording] =
             useState(false);
 
-        const [browserSupported, setBrowserSupported] =
-            useState(true);
+        const browserSupported =
+            typeof window !== "undefined" &&
+            Boolean(
+                window.SpeechRecognition ??
+                window.webkitSpeechRecognition
+            );
 
         const [error, setError] =
             useState<string | null>(null);
@@ -55,8 +59,6 @@ export const useSpeechRecognition =
                 window.webkitSpeechRecognition;
 
             if (!SpeechRecognitionAPI) {
-
-                setBrowserSupported(false);
 
                 return;
             }

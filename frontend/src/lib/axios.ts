@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_BACKEND_URL
     ? `${import.meta.env.VITE_BACKEND_URL}/api`
     : "http://localhost:5000/api";
 
-const CSRF_COOKIE = "XSRF-TOKEN";  
+const CSRF_COOKIE = "XSRF-TOKEN";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
     _retry?: boolean;
@@ -121,6 +121,10 @@ api.interceptors.response.use(
                 return api(originalRequest);
             } catch (error) {
                 processQueue(error);
+
+                if (_logoutHandler) {
+                    _logoutHandler();
+                }
 
                 return Promise.reject(error)
             } finally {

@@ -133,7 +133,7 @@ export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
         window.speechSynthesis.speak(
             utterance
         );
-    }, [browserSupported]);
+    }, [browserSupported, selectedVoice, selectBestVoice]);
 
     /* Stop */
 

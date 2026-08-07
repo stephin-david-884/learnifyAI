@@ -223,15 +223,16 @@ const AdminSubscriptionPlansPage: React.FC = () => {
 
             </div>
 
-            <CreateSubscriptionPlanModal
-                open={createOpen}
-                onClose={() =>
-                    setCreateOpen(false)
-                }
-            />
+            {createOpen && (
+                <CreateSubscriptionPlanModal
+                    key="create-subscription-plan"
+                    open
+                    onClose={() => setCreateOpen(false)}
+                />
+            )}
 
             <EditSubscriptionPlanModal
-                    key={selectedPlan?.id ?? "new"}
+                key={selectedPlan?.id ?? "new"}
                 open={!!selectedPlan}
                 onClose={() =>
                     setSelectedPlan(null)
