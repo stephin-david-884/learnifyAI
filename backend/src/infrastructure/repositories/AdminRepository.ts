@@ -1,11 +1,11 @@
 import { toDomainAdmin, toPersistenceAdmin } from "../../application/mappers/AdminMapper";
 import { Admin } from "../../domain/entities/Admin.entity";
 import { IAdminRepository } from "../../domain/repositories/IAdminRepository";
-import { AdminLean, AdminModel } from "../database/models/Admin";
+import { AdminDocument, AdminLean, AdminModel } from "../database/models/Admin";
 import { BaseRepository } from "./BaseRepository";
 
 export class AdminRepository
-    extends BaseRepository<Admin, AdminLean>
+    extends BaseRepository<Admin, AdminDocument>
     implements IAdminRepository {
 
         constructor() {

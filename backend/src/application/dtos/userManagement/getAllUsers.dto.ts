@@ -8,7 +8,7 @@ export interface UserListItemDTO {
     id: string;
     name: string;
     email: string;
-    subscriptionPlan: "FREE" | "PRO";
+    subscriptionPlan: string;
     credits: number;
     isBlocked: boolean;
     createdAt: Date;

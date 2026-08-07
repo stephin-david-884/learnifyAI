@@ -25,9 +25,9 @@ export class DeactivateSubscriptionPlanUseCase implements IDeactivateSubscriptio
         }
 
         const activePlans = await this._subscriptionPlanRepository
-            .findActivePlans();
+            .findActivePlans({ page: 1, limit: 10 });
 
-        if (activePlans.length <= 1) {
+        if (activePlans.items.length <= 1) {
             throw new AppError(subMessages.error.CANNOT_DEACTIVATE_LAST_ACTIVE_PLAN, statusCode.BAD_REQUEST);
         }
 

@@ -9,14 +9,14 @@
     "start": "node dist/server.js",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --fix",
-    "prepare": "husky",
+    "prepare": "husky || true",
     "worker:document": "tsx src/workers/document.worker.ts",
     "test:vision": "tsx src/test/testVision.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1053.0",
     "@aws-sdk/s3-request-presigner": "^3.1061.0",
