@@ -174,7 +174,7 @@ const generateInterviewUseCase: IGenerateInterviewUseCase =
     new GenerateInterviewUseCase(
         interviewRepository,
         documentRepository,
-        documentChunkRepository,
+        semanticRetrievalService,
         interviewGenerationService,
         userSubscriptionRepository,
         aiCreditService,

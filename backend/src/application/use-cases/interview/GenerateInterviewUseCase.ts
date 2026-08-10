@@ -13,6 +13,7 @@ import { GenerateInterviewDTO } from "../../dtos/interview/GenerateInterviewDTO"
 import { GenerateInterviewResponseDTO } from "../../dtos/interview/GenerateInterviewResponseDTO";
 import { IAICreditService } from "../../interfaces/services/ai/IAICreditService";
 import { IInterviewGenerationService } from "../../interfaces/services/ai/IInterviewGenerationService";
+import { ISemanticRetrievalService } from "../../interfaces/services/document/ISemanticRetrievalService";
 import { IGenerateInterviewUseCase } from "../../interfaces/usecases/interview/IGenerateInterviewUseCase";
 
 export class GenerateInterviewUseCase implements IGenerateInterviewUseCase {
@@ -20,7 +21,7 @@ export class GenerateInterviewUseCase implements IGenerateInterviewUseCase {
     constructor(
         private readonly _interviewRepository: IInterviewRepository,
         private readonly _documentRepository: IDocumentRepository,
-        private readonly _documentChunkRepository: IDocumentChunkRepository,
+        private readonly _semanticRetrievalService: ISemanticRetrievalService,
         private readonly _interviewGenerationService: IInterviewGenerationService,
         private readonly _subscriptionRepository: IUserSubscriptionRepository,
         private readonly _aiCreditService: IAICreditService,
@@ -78,11 +79,12 @@ export class GenerateInterviewUseCase implements IGenerateInterviewUseCase {
         }
 
         const chunks =
-            await this._documentChunkRepository
-                .findByDocumentAndTopics(
+            await this._semanticRetrievalService
+                .retrieveByTopics(
                     data.documentId,
                     data.topics
                 );
+
 
         if (!chunks.length) {
             throw new AppError("No content found for selected topics", statusCode.BAD_REQUEST);
