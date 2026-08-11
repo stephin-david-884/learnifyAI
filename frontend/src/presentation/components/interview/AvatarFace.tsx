@@ -100,7 +100,7 @@ const AvatarFace: React.FC<Props> = ({
                     `}
                 >
 
-                    {isSpeaking ? "Please listen carefully..." : "Waiting for your response."}
+                    {isSpeaking ? "" : "Waiting for your response."}
 
                 </p>
 
