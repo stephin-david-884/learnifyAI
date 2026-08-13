@@ -20,14 +20,24 @@ const userApiRouter = express.Router();
 const app = express();
 
 app.use(
-    pinoHttp({logger: pinoLogger})
+    pinoHttp({ logger: pinoLogger })
 )
 
 connectDB();
 
+const allowedOrigins = process.env.FRONTEND_URL?.split(',').map(
+    origin => origin.trim()
+) || [];
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
-    credentials: true
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS: Origin ${origin} not allowed`));
+        }
+    },
+    credentials: true,
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +45,7 @@ app.use(cookieParser());
 
 userApiRouter.use("/auth", authRouter);
 userApiRouter.use("/subscription", subscriptionRouter);
-userApiRouter.use("/documents",  documentRouter);
+userApiRouter.use("/documents", documentRouter);
 userApiRouter.use("/ai", aiRouter);
 userApiRouter.use("/profile", profileRouter);
 userApiRouter.use("/dashboard", dashboardRouter);
@@ -50,5 +60,5 @@ initializeSubscriptionJobs();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
 });
