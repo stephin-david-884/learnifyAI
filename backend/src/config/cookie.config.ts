@@ -4,7 +4,7 @@ type SameSite = "strict" | "lax" | "none";
 
 const isProduction = env.NODE_ENV === "production";
 
-const sameSite = (isProduction ? "none" : "lax") as SameSite;
+const sameSite = (isProduction ? "lax" : "lax") as SameSite;
 
 export const CSRF_COOKIE_NAME = "XSRF-TOKEN";
 
@@ -22,6 +22,9 @@ const csrfCookieBase = {
   secure: isProduction,
   sameSite,
   path: "/",
+  ...(isProduction && {
+        domain: ".learnifyai.online",
+    }),
 };
 
 export const userCookieConfig = {
