@@ -1,0 +1,84 @@
+name: Deploy Backend to EC2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-deploy.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "$EC2_SSH_KEY" > ~/.ssh/learnifyai_deploy
+
+          chmod 600 ~/.ssh/learnifyai_deploy
+
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+
+      - name: Test SSH connection
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        run: |
+          ssh \
+            -i ~/.ssh/learnifyai_deploy \
+            "$EC2_USERNAME@$EC2_HOST" \
+            "echo 'SSH connection successful'"
+
+      - name: Deploy backend
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USERNAME: ${{ secrets.EC2_USERNAME }}
+        run: |
+          ssh \
+            -i ~/.ssh/learnifyai_deploy \
+            "$EC2_USERNAME@$EC2_HOST" \
+            << 'EOF'
+
+            set -e
+
+            echo "======================================"
+            echo "Starting LearnifyAI backend deployment"
+            echo "======================================"
+
+            cd /home/ubuntu/learnifyAI
+
+            echo "Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "Moving to backend..."
+            cd backend
+
+            echo "Building and restarting Docker containers..."
+            docker compose up -d --build
+
+            echo "Removing unused Docker images..."
+            docker image prune -f
+
+            echo "Checking Docker containers..."
+            docker compose ps
+
+            echo "======================================"
+            echo "Backend deployment completed"
+            echo "======================================"
+
+          EOF
