@@ -37,6 +37,7 @@ const InterviewResultPage = lazy(() => import('./presentation/pages/interview/In
 const FlashcardListPage = lazy(() => import('./presentation/pages/flashcards/FlashcardListPage'));
 const FlashcardStudyPage = lazy(() => import('./presentation/pages/flashcards/FlashcardStudyPage'));
 const AnalyticsDashboard = lazy(() => import('./presentation/pages/admin/AnalyticsDashboard'));
+const PageNotFound = lazy(() => import('./presentation/pages/common/PageNotFound'));
 
 const App = () => {
   const { checkAuth, initialized: userInitialized, logout: userLogout } = useAuth();
@@ -117,8 +118,8 @@ const App = () => {
             <Route path="/interviews/:interviewId" element={<InterviewPreparationPage />}/>
             <Route path="/interviews/:interviewId/session" element={<InterviewSessionPage />}/>
             <Route path="/interviews/:interviewId/result" element={<InterviewResultPage />}/>
-            <Route path="flashcards" element={<FlashcardListPage />} />
-            <Route path="flashcards/:flashcardSetId" element={<FlashcardStudyPage/>} />
+            <Route path="/flashcards" element={<FlashcardListPage />} />
+            <Route path="/flashcards/:flashcardSetId" element={<FlashcardStudyPage/>} />
           </Route>
 
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -129,6 +130,8 @@ const App = () => {
             <Route path="/admin/subscriptions" element={<AdminSubscriptionPlansPage />} />
             <Route path="/admin/payments" element={<AdminPaymentsPage />} />
           </Route>
+
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
     </>

@@ -29,3 +29,25 @@
         transform: scaleY(1.8);
     }
 }
+
+@keyframes notFoundBounce {
+    0% {
+        bottom: 50%;
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    100% {
+        bottom: 0%;
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
+
+@keyframes pebbleMove {
+    0% {
+        right: -20%;
+    }
+
+    100% {
+        right: 110%;
+    }
+}
