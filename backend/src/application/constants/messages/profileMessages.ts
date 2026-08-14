@@ -1,7 +1,7 @@
 export const profileMessages = {
     success: {
         PROFILE_FETCHED: "User Profile fetched successfully",
-        PROFILE_UPDATED: "Profile updated successfully",
+        PROFILE_UPDATED: "Profile updated successfuly",
         PASSWORD_CHANGED: "Password changed successfully",
     },
 
