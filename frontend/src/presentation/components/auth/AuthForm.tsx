@@ -7,6 +7,7 @@ import { ZodError } from 'zod';
 import { googleLogin, loginUser, registerUser } from '../../../redux/features/auth/authSlice';
 import toast from 'react-hot-toast';
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
+import { Eye, EyeOff } from 'lucide-react';
 
 interface Props {
   mode: "login" | "signup";
@@ -27,6 +28,10 @@ const AuthForm = ({ mode }: Props) => {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   //validation
   const validate = () => {
@@ -127,7 +132,7 @@ const AuthForm = ({ mode }: Props) => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        
+
         {mode === "signup" && (
           <div>
             <input
@@ -145,7 +150,7 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        
+
         <div>
           <input
             type="email"
@@ -161,23 +166,52 @@ const AuthForm = ({ mode }: Props) => {
           )}
         </div>
 
-        
+
         <div>
-          <input
-            type="password"
-            placeholder="Password"
-            className={`w-full border rounded-lg px-4 py-2 ${errors.password ? "border-red-500" : "border-gray-300"
-              }`}
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              className={`w-full rounded-lg border px-4 py-2 pr-11 ${errors.password
+                ? "border-red-500"
+                : "border-gray-300"
+                }`}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  password: e.target.value,
+                })
+              }
+            />
+
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => !prev)
+              }
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-700"
+              aria-label={
+                showPassword
+                  ? "Hide password"
+                  : "Show password"
+              }
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+
           {errors.password && (
-            <p className="text-sm text-red-500">{errors.password}</p>
+            <p className="text-sm text-red-500">
+              {errors.password}
+            </p>
           )}
         </div>
 
-        
+
         {mode === "login" && (
           <div className="text-right -mt-2">
             <span
@@ -189,21 +223,51 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        
+
         {mode === "signup" && (
           <div>
-            <input
-              type="password"
-              placeholder="Confirm Password"
-              className={`w-full border rounded-lg px-4 py-2 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
-                }`}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  confirmPassword: e.target.value,
-                })
-              }
-            />
+            <div className="relative">
+              <input
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                placeholder="Confirm Password"
+                className={`w-full rounded-lg border px-4 py-2 pr-11 ${errors.confirmPassword
+                    ? "border-red-500"
+                    : "border-gray-300"
+                  }`}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    confirmPassword: e.target.value,
+                  })
+                }
+              />
+
+              <button
+                type="button"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    (prev) => !prev
+                  )
+                }
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 transition hover:text-gray-700"
+                aria-label={
+                  showConfirmPassword
+                    ? "Hide confirm password"
+                    : "Show confirm password"
+                }
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+
             {errors.confirmPassword && (
               <p className="text-sm text-red-500">
                 {errors.confirmPassword}
@@ -212,7 +276,7 @@ const AuthForm = ({ mode }: Props) => {
           </div>
         )}
 
-        
+
         <button
           type="submit"
           disabled={loading}
@@ -226,7 +290,7 @@ const AuthForm = ({ mode }: Props) => {
         </button>
       </form>
 
-      
+
       <p className="text-sm text-center mt-4">
         {mode === "login" ? (
           <>

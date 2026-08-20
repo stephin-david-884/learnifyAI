@@ -27,7 +27,7 @@ export const changePasswordSchema = z
                 "Password must contain at least 6 characters"
             )
             .regex(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/,
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/,
                 "Password must contain uppercase, lowercase, number and special character"
             ),
 

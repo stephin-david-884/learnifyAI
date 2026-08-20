@@ -15,7 +15,10 @@ export const registerSchema = z.object({
         .string()
         .trim()
         .min(6, 'Password must contain atleast 6 characters')
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/),
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/,
+            "Password must contain uppercase, lowercase, number and special character"
+        ),
     confirmPassword: z
         .string()
 })
@@ -25,7 +28,7 @@ export const registerSchema = z.object({
     })
     .transform(({ confirmPassword: _confirmPassword, ...rest }) => rest);
 
-export type RegisterBody = z.infer<typeof registerSchema>;    
+export type RegisterBody = z.infer<typeof registerSchema>;
 
 export const otpSchema = z.object({
     email: z

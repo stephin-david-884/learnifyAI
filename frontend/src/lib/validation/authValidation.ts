@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
 export const registerSchema = z.object({
     name: z
@@ -16,27 +16,30 @@ export const registerSchema = z.object({
         .string()
         .trim()
         .min(6, 'Password must contain atleast 6 characters')
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/, "Password must contain uppercase, lowercase, number and special character"),
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/,
+            "Password must contain uppercase, lowercase, number and special character"
+        ),
     confirmPassword: z
         .string()
 })
-.refine(data => data.password === data.confirmPassword, {
-    message: 'Password do not match',
-    path: ['confirmPassword']
-})
+    .refine(data => data.password === data.confirmPassword, {
+        message: 'Password do not match',
+        path: ['confirmPassword']
+    })
 
 export const loginSchema = z.object({
     email: z
         .string()
         .trim()
-        .min(1, 'Email is required')
-        .email('Invalid email'),
+        .min(1, "Email is required")
+        .email("Invalid email"),
+
     password: z
-         .string()
-         .trim()
-        .min(6, 'Password must contain atleast 6 characters')
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/, "Password must contain uppercase, lowercase, number and special character")
-})
+        .string()
+        .trim()
+        .min(1, "Password is required"),
+});
 
 export const googleLoginSchema = z.object({
     idToken: z
@@ -44,3 +47,49 @@ export const googleLoginSchema = z.object({
         .trim()
         .min(1, 'Token is missing')
 })
+
+export const resetPasswordSchema = z
+    .object({
+        email: z
+            .string()
+            .trim()
+            .min(
+                1,
+                "Email is required"
+            )
+            .email(
+                "Invalid email"
+            ),
+
+        newPassword: z
+            .string()
+            .trim()
+            .min(6, 'Password must contain atleast 6 characters')
+            .regex(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/,
+                "Password must contain uppercase, lowercase, number and special character"
+            ),
+
+        confirmPassword: z
+            .string(),
+
+        resetToken: z
+            .string()
+            .trim()
+            .min(
+                1,
+                "Reset token is missing"
+            ),
+    })
+    .refine(
+        (data) =>
+            data.newPassword ===
+            data.confirmPassword,
+        {
+            message:
+                "Password do not match",
+            path: [
+                "confirmPassword",
+            ],
+        }
+    );

@@ -7,10 +7,9 @@ export const loginSchema = z.object({
         .min(1, 'Email is required')
         .email('Invalid email'),
     password: z
-         .string()
-         .trim()
-        .min(6, 'Password must contain atleast 6 characters')
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%*&?])[a-zA-Z\d!@$%*&?]{6,}$/)
+        .string()
+        .trim()
+        .min(1, "Password is required"),
 })
 
 export const googleLoginSchema = z.object({
@@ -22,31 +21,37 @@ export const googleLoginSchema = z.object({
 
 export const forgotPasswordSchema = z.object({
     email: z
-          .string()
-          .trim()
-          .min(1, 'Email is required')
-          .email('Invalid email')
+        .string()
+        .trim()
+        .min(1, 'Email is required')
+        .email('Invalid email')
 })
 
 export const resetPasswordSchema = z.object({
     email: z
-         .string()
-         .trim()
-         .min(1, 'Email is required')
-         .email('Invalid email'),
+        .string()
+        .trim()
+        .min(1, 'Email is required')
+        .email('Invalid email'),
     newPassword: z
-          .string()
-          .trim()
-          .min(6, 'Password must contain atleast 6 characters')
-          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@$%&*?])[a-zA-Z\d!@$%&*?]{6,}$/),
+        .string()
+        .trim()
+        .min(
+            6,
+            "Password must contain at least 6 characters"
+        )
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{6,}$/,
+            "Password must contain uppercase, lowercase, number and special character"
+        ),
     confirmPassword: z
-          .string(),
+        .string(),
     resetToken: z
-          .string()
-          .trim()
-          .min(1, 'Reset token is missing')
+        .string()
+        .trim()
+        .min(1, 'Reset token is missing')
 })
-.refine(data => data.newPassword === data.confirmPassword, {
-    message: 'Password do not match',
-    path: ['confirmPassword']
-})
+    .refine(data => data.newPassword === data.confirmPassword, {
+        message: 'Password do not match',
+        path: ['confirmPassword']
+    })
