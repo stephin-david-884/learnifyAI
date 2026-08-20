@@ -1,6 +1,5 @@
 import { Interview } from "../../../domain/entities/Interview.entity";
 import { AppError } from "../../../domain/errors/AppError";
-import { IDocumentChunkRepository } from "../../../domain/repositories/IDocumentChunkRepository";
 import { IDocumentRepository } from "../../../domain/repositories/IDocumentRepository";
 import { IInterviewRepository } from "../../../domain/repositories/IInterviewRepository";
 import { IUserSubscriptionRepository } from "../../../domain/repositories/IUserSubscriptionRepository";

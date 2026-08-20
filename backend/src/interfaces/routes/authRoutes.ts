@@ -20,6 +20,7 @@ router.post(ROUTES.AUTH.LOG_OUT, verifyCsrf ,authController.logout);
 router.post(ROUTES.AUTH.GOOGLE_LOGIN, validate(googleLoginSchema, 'body'), authController.googleLogin);
 router.post(ROUTES.AUTH.LOGIN, validate(loginSchema, 'body'), authController.login);
 router.post(ROUTES.AUTH.FORGOT_PASSWORD, validate(forgotPasswordSchema, 'body'), authController.forgotPassword);
+router.post(ROUTES.AUTH.RESEND_FORGOT_PASSWORD_OTP, validate(resendOtpSchema, 'body'), authController.resendForgotPasswordOtp);
 router.post(ROUTES.AUTH.VERIFY_OTP_RESET, validate(otpSchema, 'body'), authController.verifyForgotPasswordOtp);
 router.post(ROUTES.AUTH.RESET_PASSWORD, validate(resetPasswordSchema, 'body'), authController.resetPassword);
 

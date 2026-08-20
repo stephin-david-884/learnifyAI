@@ -16,6 +16,7 @@ import { IForgotPasswordUsecase } from "../../../application/interfaces/usecases
 import { IVerifyForgotPasswordUsecase } from "../../../application/interfaces/usecases/auth/IVerifyForgotPasswordUsecase";
 import { IResetPasswordUsecase } from "../../../application/interfaces/usecases/auth/IResetPasswordUsecase";
 import { AppError } from "../../../domain/errors/AppError";
+import { IResendForgotPasswordOtpUsecase } from "../../../application/interfaces/usecases/auth/IResendForgotPasswordOtpUsecase";
 
 
 export class AuthController {
@@ -29,6 +30,7 @@ export class AuthController {
         private _googleAuth: IGoogleAuthUsecase,
         private _login: ILoginUsecase,
         private _forgotPassword: IForgotPasswordUsecase,
+        private _resendForgotPasswordOtp: IResendForgotPasswordOtpUsecase,
         private _verifyForgotPassword: IVerifyForgotPasswordUsecase,
         private _resetPassword: IResetPasswordUsecase
     ) { }
@@ -118,7 +120,7 @@ export class AuthController {
 
         const user = await this._getCurrentUser.execute(accessToken);
 
-        if(user.isBlocked) {
+        if (user.isBlocked) {
             throw new AppError(authMessages.error.UNAUTHORIZED, statusCode.FORBIDDEN);
         }
 
@@ -200,6 +202,21 @@ export class AuthController {
             authMessages.success.OTP_SEND_SUCCESS
         )
     })
+
+    resendForgotPasswordOtp = asyncHandler(async (req: Request, res: Response) => {
+
+            const { email } = req.body;
+
+            await this._resendForgotPasswordOtp.execute({email});
+
+            return sendSuccess(
+                res,
+                statusCode.OK,
+                authMessages.success.OTP_SEND_SUCCESS
+            );
+
+        }
+    );
 
     verifyForgotPasswordOtp = asyncHandler(async (req, res) => {
         const { email, otp } = req.body;

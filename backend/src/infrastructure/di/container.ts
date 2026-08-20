@@ -54,6 +54,8 @@ import { IGetCurrentAdminUsecase } from "../../application/interfaces/usecases/a
 import { IGetAllUsersUsecase } from "../../application/interfaces/usecases/userManagement/IGetAllUsersUsecase";
 import { IBlockUserUseCase } from "../../application/interfaces/usecases/admin/user/IBlockUserUseCase";
 import { BlockUserUseCase } from "../../application/use-cases/admin/user/BlockUser.usecase";
+import { IResendForgotPasswordOtpUsecase } from "../../application/interfaces/usecases/auth/IResendForgotPasswordOtpUsecase";
+import { ResendForgotPasswordOtp } from "../../application/use-cases/auth/ResendForgotPasswordOtp.auth";
 
 
 
@@ -70,13 +72,13 @@ const adminRepository = new AdminRepository();
 
 //Use cases
 const registerUser: IRegisterUserUsecase = new RegisterUser(
-  userRepository,
-  otpService,
-  logger,
-  hashService,
-  otpStore,
-  mailService,
-  tempUserStore
+    userRepository,
+    otpService,
+    logger,
+    hashService,
+    otpStore,
+    mailService,
+    tempUserStore
 );
 
 const verifyRegister: IVerifyRegisterUsecase = new VerifyRegister(
@@ -87,7 +89,7 @@ const verifyRegister: IVerifyRegisterUsecase = new VerifyRegister(
     hashService,
 );
 
-const resendOtp:IResendOtpUsecase = new ResendOtp(
+const resendOtp: IResendOtpUsecase = new ResendOtp(
     otpService,
     otpStore,
     mailService,
@@ -133,6 +135,16 @@ const forgotPassword: IForgotPasswordUsecase = new ForgotPassword(
     mailService,
     hashService
 )
+
+const resendForgotPasswordOtp: IResendForgotPasswordOtpUsecase = new ResendForgotPasswordOtp(
+
+        userRepository,
+        otpService,
+        otpStore,
+        mailService,
+        hashService
+
+    );
 
 const verifyForgotpassword: IVerifyForgotPasswordUsecase = new VerifyForgotPasswordOtp(
     otpStore,
@@ -183,6 +195,7 @@ export const authController = new AuthController(
     googleAuth,
     login,
     forgotPassword,
+    resendForgotPasswordOtp,
     verifyForgotpassword,
     resetPassword
 )

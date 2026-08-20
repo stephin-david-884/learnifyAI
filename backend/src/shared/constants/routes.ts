@@ -10,7 +10,8 @@ export const ROUTES = {
     LOGIN: "/login",
     FORGOT_PASSWORD: "/forgotpassword",
     VERIFY_OTP_RESET: "/verify-otp-forgotpassword",
-    RESET_PASSWORD: "/resetpassword"
+    RESET_PASSWORD: "/resetpassword",
+    RESEND_FORGOT_PASSWORD_OTP:"/resend-forgot-password-otp",
   },
 
   ADMIN: {
