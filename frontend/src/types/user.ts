@@ -69,3 +69,11 @@ export interface ResetPasswordPayload {
   confirmPassword: string;
   resetToken: string;
 }
+
+export interface ResendForgotPasswordOtpPayload {
+    email: string;
+}
+
+export interface ResendForgotPasswordOtpResponse {
+    message: string;
+}

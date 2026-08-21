@@ -10,7 +10,8 @@ export const API_ROUTES = {
         LOGIN: "/user/auth/login",
         FORGOT_PASSWORD: "/user/auth/forgotpassword",
         VERIFY_FORGOT_PASSWORD: "/user/auth/verify-otp-forgotpassword",
-        RESET_PASSWORD: "/user/auth/resetpassword"
+        RESET_PASSWORD: "/user/auth/resetpassword",
+        RESEND_FORGOT_PASSWORD_OTP: "/user/auth/resend-forgot-password-otp",
     },
     ADMIN: {
         LOGIN: "/admin/login",

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../redux/store";
-import { clearError, forgotPassword, getCurrentUser, googleLogin, loginUser, logoutUser, registerUser, resendOtp, resetPassword, verifyForgotPasswordOtp } from "../redux/features/auth/authSlice";
+import { clearError, forgotPassword, getCurrentUser, googleLogin, loginUser, logoutUser, registerUser, resendForgotPasswordOtp, resendOtp, resetPassword, verifyForgotPasswordOtp } from "../redux/features/auth/authSlice";
 import type { LoginPayload, RegisterPayload, ResetPasswordPayload } from "../types/user";
 import { useCallback } from "react";
 
@@ -45,6 +45,10 @@ export const useAuth = () => {
         return dispatch(forgotPassword({ email })).unwrap();
     };
 
+    const resendForgotOtp = async (email: string) => {
+        return dispatch(resendForgotPasswordOtp({email})).unwrap();
+    };
+
     const verifyForgotOtp = async (email: string, otp: string) => {
         return dispatch(verifyForgotPasswordOtp({ email, otp })).unwrap();
     };
@@ -68,6 +72,7 @@ export const useAuth = () => {
         googleAuth,
         login,
         forgotPassword: forgot,
+        resendForgotOtp,
         verifyForgotOtp,
         resetPassword: reset,
         isBlocked
