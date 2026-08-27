@@ -90,22 +90,22 @@ const GenerateQuizModal: React.FC<Props> = ({
     const handleGenerate = async () => {
 
         const error =
-        validateQuizGeneration(
-            title,
-            selectedTopics,
-            questionCount
-        );
+            validateQuizGeneration(
+                title,
+                selectedTopics,
+                questionCount
+            );
 
-    if (error) {
+        if (error) {
 
-        await Swal.fire({
-            icon: "warning",
-            title: "Validation Error",
-            text: error,
-        });
+            await Swal.fire({
+                icon: "warning",
+                title: "Validation Error",
+                text: error,
+            });
 
-        return;
-    }
+            return;
+        }
 
         if (!canGenerate) {
             return;
@@ -121,141 +121,170 @@ const GenerateQuizModal: React.FC<Props> = ({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 sm:p-4">
 
-            <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-xl">
+            <div className="flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl sm:rounded-3xl max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)]">
 
-                <div className="flex items-center justify-between">
+                {/* Header */}
+                <div className="flex shrink-0 items-center justify-between p-4 sm:p-6">
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3">
 
-                        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-50">
-                            <ClipboardList className="text-red-600" />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 sm:h-12 sm:w-12 sm:rounded-2xl">
+                            <ClipboardList className="h-5 w-5 text-red-600 sm:h-6 sm:w-6" />
                         </div>
 
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">
+                            <h2 className="text-lg font-bold text-slate-900 sm:text-2xl">
                                 Generate Quiz
                             </h2>
 
-                            <p className="text-sm text-slate-500">
+                            <p className="text-xs text-slate-500 sm:text-sm">
                                 Create a quiz from selected topics.
                             </p>
                         </div>
+
                     </div>
 
-                    <button onClick={onClose}>
-                        <X className="h-6 w-6 text-slate-500" />
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="shrink-0"
+                    >
+                        <X className="h-5 w-5 text-slate-500 sm:h-6 sm:w-6" />
                     </button>
+
                 </div>
 
-                <div className="mt-6 space-y-6">
+                {/* Scrollable Content */}
+                <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 sm:px-6 sm:pb-6">
 
-                    <div>
+                    <div className="space-y-5 sm:space-y-6">
 
-                        <label className="mb-2 block text-sm font-medium text-slate-700">
-                            Quiz Title
-                        </label>
+                        <div>
 
-                        <input
-                            type="text"
-                            value={title}
-                            onChange={(e) =>
-                                setTitle(e.target.value)
-                            }
-                            className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
-                        />
-                    </div>
-
-                    <div>
-
-                        <label className="mb-2 block text-sm font-medium text-slate-700">
-                            Question Count
-                        </label>
-
-                        <select
-                            value={questionCount}
-                            onChange={(e) =>
-                                setQuestionCount(
-                                    Number(e.target.value)
-                                )
-                            }
-                            className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
-                        >
-                            {QUESTION_OPTIONS.map(
-                                (count) => (
-                                    <option
-                                        key={count}
-                                        value={count}
-                                    >
-                                        {count} Questions
-                                    </option>
-                                )
-                            )}
-                        </select>
-                    </div>
-
-                    <div>
-
-                        <div className="mb-2 flex items-center justify-between">
-
-                            <label className="text-sm font-medium text-slate-700">
-                                Select Topics
+                            <label className="mb-2 block text-sm font-medium text-slate-700">
+                                Quiz Title
                             </label>
 
-                            <span className="text-xs text-slate-500">
-                                {remaining} remaining
-                            </span>
+                            <input
+                                type="text"
+                                value={title}
+                                onChange={(e) =>
+                                    setTitle(e.target.value)
+                                }
+                                className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+                            />
+
                         </div>
-                        <div className="max-h-64 overflow-y-auto pr-2">    
-                        <div className="grid gap-3 sm:grid-cols-2">
 
-                            {topics.map((topic) => {
+                        <div>
 
-                                const active =
-                                    selectedTopics.includes(
-                                        topic.name
-                                    );
+                            <label className="mb-2 block text-sm font-medium text-slate-700">
+                                Question Count
+                            </label>
 
-                                return (
-                                    <button
-                                        key={topic.name}
-                                        type="button"
-                                        onClick={() =>
-                                            toggleTopic(topic.name)
-                                        }
-                                        className={`
-                                            rounded-xl border p-2.5 text-left transition
-                                            
-                                            ${active
-                                                ? "border-red-500 bg-red-50 text-red-700"
-                                                : "border-slate-200 bg-white hover:border-red-300"}
-                                        `}
-                                    >
-                                        <div className="font-medium text-sm">
-                                            {topic.name}
-                                        </div>
+                            <select
+                                value={questionCount}
+                                onChange={(e) =>
+                                    setQuestionCount(
+                                        Number(e.target.value)
+                                    )
+                                }
+                                className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+                            >
+                                {QUESTION_OPTIONS.map(
+                                    (count) => (
+                                        <option
+                                            key={count}
+                                            value={count}
+                                        >
+                                            {count} Questions
+                                        </option>
+                                    )
+                                )}
+                            </select>
 
-                                        <div className="mt-1 text-[11px] text-slate-500">
-                                            Importance Score: {topic.score}
-                                        </div>
-                                    </button>
-                                );
-                            })}
                         </div>
+
+                        <div>
+
+                            <div className="mb-2 flex items-center justify-between">
+
+                                <label className="text-sm font-medium text-slate-700">
+                                    Select Topics
+                                </label>
+
+                                <span className="text-xs text-slate-500">
+                                    {remaining} remaining
+                                </span>
+
+                            </div>
+
+                            <div className="max-h-52 overflow-y-auto pr-1 sm:max-h-64 sm:pr-2">
+
+                                <div className="grid gap-2 sm:gap-3 sm:grid-cols-2">
+
+                                    {topics.map((topic) => {
+
+                                        const active =
+                                            selectedTopics.includes(
+                                                topic.name
+                                            );
+
+                                        return (
+                                            <button
+                                                key={topic.name}
+                                                type="button"
+                                                onClick={() =>
+                                                    toggleTopic(topic.name)
+                                                }
+                                                className={`
+                                                rounded-xl border p-2.5 text-left transition
+
+                                                ${active
+                                                        ? "border-red-500 bg-red-50 text-red-700"
+                                                        : "border-slate-200 bg-white hover:border-red-300"
+                                                    }
+                                            `}
+                                            >
+
+                                                <div className="text-sm font-medium">
+                                                    {topic.name}
+                                                </div>
+
+                                                <div className="mt-1 text-[11px] text-slate-500">
+                                                    Importance Score: {topic.score}
+                                                </div>
+
+                                            </button>
+                                        );
+                                    })}
+
+                                </div>
+
+                            </div>
+
                         </div>
+
+                        <div className="rounded-2xl border border-red-100 bg-red-50 p-3 sm:p-4">
+
+                            <div className="text-sm font-semibold text-red-700">
+                                Quiz Generation Cost
+                            </div>
+
+                            <div className="mt-1 text-sm text-red-600">
+                                10 Credits will be deducted.
+                            </div>
+
+                        </div>
+
                     </div>
 
-                    <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
+                </div>
 
-                        <div className="text-sm font-semibold text-red-700">
-                            Quiz Generation Cost
-                        </div>
-
-                        <div className="mt-1 text-sm text-red-600">
-                            10 Credits will be deducted.
-                        </div>
-                    </div>
+                {/* Fixed Footer */}
+                <div className="shrink-0 border-t border-slate-100 bg-white p-4 sm:px-6 sm:pb-6 sm:pt-4">
 
                     <button
                         disabled={!canGenerate || loading}
@@ -268,7 +297,9 @@ const GenerateQuizModal: React.FC<Props> = ({
                     </button>
 
                 </div>
+
             </div>
+
         </div>
     );
 };
