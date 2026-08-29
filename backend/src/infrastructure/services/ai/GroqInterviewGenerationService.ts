@@ -3,9 +3,10 @@ import { IInterviewGenerationService } from "../../../application/interfaces/ser
 import { InterviewQuestion } from "../../../domain/entities/Interview.entity";
 import { IAIUsageRecorder } from "../../../application/interfaces/services/analytics/IAIUsageRecorder";
 
-export class GroqInterviewGenerationService implements IInterviewGenerationService {
+export class GroqInterviewGenerationService
+    implements IInterviewGenerationService {
 
-    private readonly _client;
+    private readonly _client: Groq;
 
     constructor(
         private readonly _usageRecorder: IAIUsageRecorder,
@@ -15,16 +16,19 @@ export class GroqInterviewGenerationService implements IInterviewGenerationServi
         });
     }
 
-    async generateInterview(context: string, topics: string[], questionCount: number): Promise<InterviewQuestion[]> {
+    async generateInterview(
+        context: string,
+        topics: string[],
+        questionCount: number
+    ): Promise<InterviewQuestion[]> {
 
         return this._usageRecorder.record(
-
             {
                 provider: "GROQ",
 
                 feature: "INTERVIEW_GENERATION",
 
-                aiModel: "llama-3.3-70b-versatile",
+                aiModel: "openai/gpt-oss-120b",
 
                 metadata: {
                     topics: topics.join(", "),
@@ -35,112 +39,170 @@ export class GroqInterviewGenerationService implements IInterviewGenerationServi
             async () => {
 
                 const prompt = `
+                    Generate exactly ${questionCount}
+                    technical interview questions.
 
-            You are a Senior Technical Interviewer.
+                    Topics:
+                    ${topics.join(", ")}
 
-            Your task is to generate exactly ${questionCount} interview questions.
+                    Rules:
 
-            Topics:
+                    - Use ONLY the supplied context.
+                    - Questions should test conceptual understanding.
+                    - Avoid memorization questions.
+                    - Avoid asking definitions only.
+                    - Questions should encourage explanation.
+                    - Every question must be unique.
+                    - Cover multiple selected topics.
+                    - Difficulty should gradually increase.
+                    - No coding questions.
+                    - No MCQs.
+                    - No True/False.
+                    - Questions must be answerable verbally.
 
-            ${topics.join(", ")}
+                    Assign one difficulty:
 
-            Rules:
+                    EASY
+                    MEDIUM
+                    HARD
 
-            - Use ONLY the supplied context.
-            - Questions should test conceptual understanding.
-            - Avoid memorization questions.
-            - Avoid asking definitions only.
-            - Questions should encourage explanation.
-            - Every question should be unique.
-            - Cover multiple selected topics.
-            - Difficulty should gradually increase.
-            - No coding questions.
-            - No MCQs.
-            - No True/False.
-            - Questions must be answerable verbally.
+                    Generate exactly ${questionCount} questions.
 
-            Assign one difficulty:
+                    Context:
 
-            EASY
-            MEDIUM
-            HARD
-
-            Return ONLY valid JSON.
-
-            Format:
-
-            [
-            {
-            "question":"...",
-            "difficulty":"EASY"
-            }
-            ]
-
-            Context:
-
-            ${context}
-
-            `;
+                    ${context}
+                `;
 
                 const completion =
                     await this._client.chat.completions.create({
 
-                        model: "llama-3.3-70b-versatile",
+                        model: "openai/gpt-oss-120b",
 
                         temperature: 0.4,
 
                         messages: [
+                            {
+                                role: "system",
+                                content:
+                                    "You are a Senior Technical Interviewer. Generate high-quality verbal technical interview questions strictly from the supplied context.",
+                            },
                             {
                                 role: "user",
                                 content: prompt,
                             },
                         ],
 
+                        response_format: {
+                            type: "json_schema",
+
+                            json_schema: {
+                                name: "interview_generation",
+
+                                strict: true,
+
+                                schema: {
+                                    type: "object",
+
+                                    properties: {
+                                        questions: {
+                                            type: "array",
+
+                                            items: {
+                                                type: "object",
+
+                                                properties: {
+                                                    question: {
+                                                        type: "string",
+                                                    },
+
+                                                    difficulty: {
+                                                        type: "string",
+
+                                                        enum: [
+                                                            "EASY",
+                                                            "MEDIUM",
+                                                            "HARD",
+                                                        ],
+                                                    },
+                                                },
+
+                                                required: [
+                                                    "question",
+                                                    "difficulty",
+                                                ],
+
+                                                additionalProperties: false,
+                                            },
+                                        },
+                                    },
+
+                                    required: [
+                                        "questions",
+                                    ],
+
+                                    additionalProperties: false,
+                                },
+                            },
+                        },
                     });
 
                 const raw =
-                    completion.choices[0]?.message?.content ?? "[]";
+                    completion.choices[0]?.message?.content;
 
-                const cleaned = raw
-                    .replace(/```json\s*/gi, "")
-                    .replace(/```\s*/g, "")
-                    .trim();
-
-                const parsed = JSON.parse(cleaned);
-
-                if (!Array.isArray(parsed)) {
+                if (!raw) {
                     throw new Error(
-                        "Invalid interview response"
+                        "Groq returned an empty interview response"
                     );
                 }
 
-                const questions = parsed.filter(
-                    (
-                        question
-                    ): question is InterviewQuestion => {
+                const parsed: {
+                    questions: InterviewQuestion[];
+                } = JSON.parse(raw);
 
-                        const difficulty =
-                            question?.difficulty;
+                if (!Array.isArray(parsed.questions)) {
+                    throw new Error(
+                        "Invalid interview response format"
+                    );
+                }
 
-                        const validDifficulty =
-                            difficulty === "EASY" ||
-                            difficulty === "MEDIUM" ||
-                            difficulty === "HARD";
+                if (parsed.questions.length !== questionCount) {
+                    throw new Error(
+                        `Expected ${questionCount} questions but received ${parsed.questions.length}`
+                    );
+                }
 
-                        return (
-                            typeof question?.question === "string" &&
-                            validDifficulty
-                        );
+                const questions =
+                    parsed.questions.filter(
+                        (
+                            question
+                        ): question is InterviewQuestion => {
 
-                    }
-                );
+                            const difficulty =
+                                question?.difficulty;
+
+                            const validDifficulty =
+                                difficulty === "EASY" ||
+                                difficulty === "MEDIUM" ||
+                                difficulty === "HARD";
+
+                            return (
+                                typeof question?.question === "string" &&
+                                question.question.trim().length > 0 &&
+                                validDifficulty
+                            );
+                        }
+                    );
+
+                if (questions.length !== questionCount) {
+                    throw new Error(
+                        "Groq returned invalid interview questions"
+                    );
+                }
 
                 return {
-
                     result: questions,
 
                     usage: {
-
                         requestTokens:
                             completion.usage?.prompt_tokens,
 
@@ -149,13 +211,9 @@ export class GroqInterviewGenerationService implements IInterviewGenerationServi
 
                         totalTokens:
                             completion.usage?.total_tokens,
-
                     },
-
                 };
-
             }
-
         );
     }
 }

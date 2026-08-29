@@ -5,7 +5,8 @@ import { buildFlashcardPrompt } from "../../../application/prompts/flashcard/bui
 import { parseFlashcardResponse } from "../../../application/parsers/flashcard/parseFlashcardResponse";
 import { IAIUsageRecorder } from "../../../application/interfaces/services/analytics/IAIUsageRecorder";
 
-export class GroqFlashcardGenerationService implements IFlashcardGenerationService {
+export class GroqFlashcardGenerationService
+    implements IFlashcardGenerationService {
 
     private readonly _client;
 
@@ -17,7 +18,11 @@ export class GroqFlashcardGenerationService implements IFlashcardGenerationServi
         });
     }
 
-    async generateFlashcards(context: string, topic: string, cardCount: number): Promise<Flashcard[]> {
+    async generateFlashcards(
+        context: string,
+        topic: string,
+        cardCount: number
+    ): Promise<Flashcard[]> {
 
         return this._usageRecorder.record(
 
@@ -26,7 +31,7 @@ export class GroqFlashcardGenerationService implements IFlashcardGenerationServi
 
                 feature: "FLASHCARD_GENERATION",
 
-                aiModel: "llama-3.3-70b-versatile",
+                aiModel: "openai/gpt-oss-120b",
 
                 metadata: {
                     topic,
@@ -46,7 +51,7 @@ export class GroqFlashcardGenerationService implements IFlashcardGenerationServi
                 const completion =
                     await this._client.chat.completions.create({
 
-                        model: "llama-3.3-70b-versatile",
+                        model: "openai/gpt-oss-120b",
 
                         temperature: 0.3,
 

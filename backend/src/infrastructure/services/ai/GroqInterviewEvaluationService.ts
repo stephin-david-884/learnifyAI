@@ -3,7 +3,8 @@ import { IInterviewEvaluationService } from "../../../application/interfaces/ser
 import { InterviewAnswer } from "../../../domain/entities/Interview.entity";
 import { IAIUsageRecorder } from "../../../application/interfaces/services/analytics/IAIUsageRecorder";
 
-export class GroqInterviewEvaluationService implements IInterviewEvaluationService {
+export class GroqInterviewEvaluationService
+    implements IInterviewEvaluationService {
 
     private readonly _client;
 
@@ -12,10 +13,12 @@ export class GroqInterviewEvaluationService implements IInterviewEvaluationServi
     ) {
         this._client = new Groq({
             apiKey: process.env.GROQ_API_KEY,
-        })
+        });
     }
 
-    async evaluateInterview(answers: InterviewAnswer[]): Promise<InterviewAnswer[]> {
+    async evaluateInterview(
+        answers: InterviewAnswer[]
+    ): Promise<InterviewAnswer[]> {
 
         return this._usageRecorder.record(
 
@@ -24,7 +27,7 @@ export class GroqInterviewEvaluationService implements IInterviewEvaluationServi
 
                 feature: "INTERVIEW_EVALUATION",
 
-                aiModel: "llama-3.3-70b-versatile",
+                aiModel: "openai/gpt-oss-120b",
 
                 metadata: {
                     answerCount: answers.length,
@@ -90,7 +93,7 @@ export class GroqInterviewEvaluationService implements IInterviewEvaluationServi
                 const completion =
                     await this._client.chat.completions.create({
 
-                        model: "llama-3.3-70b-versatile",
+                        model: "openai/gpt-oss-120b",
 
                         temperature: 0.2,
 
@@ -124,9 +127,7 @@ export class GroqInterviewEvaluationService implements IInterviewEvaluationServi
 
                     const evaluation =
                         parsed.find(
-                            (
-                                item
-                            ) =>
+                            (item) =>
                                 item.questionIndex ===
                                 answer.questionIndex
                         );
